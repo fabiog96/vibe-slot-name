@@ -10,16 +10,16 @@ const App: React.FC = () => {
   // --- Data States ---
   const [participants, setParticipants] = useState<Participant[]>([
     { id: '1', name: 'Il Conte di Arcore' },
-    { id: '2', name: 'Rayan Gosling' },
+    { id: '2', name: 'Ryan Gosling' },
     { id: '3', name: 'Michael Jackson' },
     { id: '4', name: 'Polymarket Specialist' },
     { id: '5', name: 'Oh Yang' },
     { id: '6', name: 'Meme Master' },
-    { id: '7', name: 'Leoliviericlerc' },
+    { id: '7', name: 'Tifoso Ferrari ma felice' },
     { id: '8', name: 'Dynantico' },
-    { id: '9', name: 'Neozelandese' },
-    { id: '10', name: 'Una Gioia' },
-    { id: '11', name: 'Ash Manduca' }
+    { id: '9', name: 'Nuovazendaya' },
+    { id: '10', name: 'La Gioia' },
+    { id: '11', name: 'Ash Ketchum' }
 
   ]);
 
@@ -137,7 +137,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-3">
             
             <h1 className="text-2xl font-display bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text text-transparent font-bold">
-            Vibe Slot
+            Vibe Slot Name
             </h1>
         </div>
         <button 
@@ -185,11 +185,14 @@ const App: React.FC = () => {
           <span className="inline-block px-4 bg-gradient-to-b from-amber-200 via-amber-500 to-amber-800 bg-clip-text text-transparent drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
             VIBE SLOT
           </span>
+          <span className="block text-2xl mb-2 tracking-[0.3em] text-amber-400 font-light not-italic drop-shadow-sm">
+            NAME
+          </span>
         </h2>
         
         {/* Decorative Stars */}
-        <span className="absolute -top-4 -left-2 text-3xl animate-bounce"><img src="/assets/icons/favicon.ico" alt="" className="w-8 h-8" /></span>
-        <span className="absolute -bottom-4 -right-2 text-3xl animate-bounce delay-100"><img src="/assets/icons/favicon.ico" alt="" className="w-8 h-8" /></span>
+        <span className="absolute -top-4 -left-2 text-3xl animate-bounce">🎰</span>
+        <span className="absolute -bottom-4 -right-2 text-3xl animate-bounce delay-100">🎰</span>
       </div>
 
       {/* Slot Machine Lever */}
