@@ -1,0 +1,5 @@
+{
+  "name": "Role Roulette",
+  "description": "A Slot Machine style webapp to randomly select a Moderator and a Notary from a list of participants.",
+  "requestFramePermissions": []
+}
