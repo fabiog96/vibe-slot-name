@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import Confetti from 'react-confetti';
 import { Participant, SpinResult, GameState, Role } from './types';
 import SlotReel from './components/SlotReel';
 import ControlPanel from './components/ControlPanel';
@@ -11,13 +12,14 @@ const App: React.FC = () => {
     { id: '1', name: 'Il Conte di Arcore' },
     { id: '2', name: 'Rayan Gosling' },
     { id: '3', name: 'Michael Jackson' },
-    { id: '4', name: 'Polymarket specialist' },
+    { id: '4', name: 'Polymarket Specialist' },
     { id: '5', name: 'Oh Yang' },
     { id: '6', name: 'Meme Master' },
     { id: '7', name: 'Leoliviericlerc' },
     { id: '8', name: 'Dynantico' },
     { id: '9', name: 'Neozelandese' },
-    { id: '10', name: 'Una Gioia' }
+    { id: '10', name: 'Una Gioia' },
+    { id: '11', name: 'Ash Manduca' }
 
   ]);
 
@@ -122,7 +124,8 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white overflow-hidden flex flex-col">
-      <SettingsModal 
+      {gameState === GameState.RESULT && <Confetti />}
+      <SettingsModal
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)}
         roles={roles}
@@ -276,13 +279,13 @@ const App: React.FC = () => {
           {/* Result / Announcement Area */}
           <div className="mt-8 w-full max-w-2xl min-h-[120px] flex items-center justify-center text-center">
              {gameState === GameState.RESULT && (
-                <div className="animate-fade-in-up bg-slate-800/90 border border-amber-500/30 p-6 rounded-xl shadow-lg w-full backdrop-blur-sm">
+                <div className="animate-fade-in-up bg-slate-800/90 border border-amber-500/30 p-6 rounded-xl shadow-lg w-full backdrop-blur-sm relative">
                    {announcement ? (
-                       <p className="text-lg md:text-xl text-amber-100 italic font-serif leading-relaxed">
+                       <p className="text-lg md:text-xl text-amber-100 italic font-serif leading-relaxed relative z-10">
                            "{announcement}"
                        </p>
                    ) : (
-                       <div className="flex justify-center gap-2">
+                       <div className="flex justify-center gap-2 relative z-10">
                            <span className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span>
                            <span className="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-75"></span>
                            <span className="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>

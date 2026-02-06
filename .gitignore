@@ -6,3 +6,5 @@ dist/
 .idea/
 *.log
 coverage/
+yarn.lock
+package-lock.json
