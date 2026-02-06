@@ -8,12 +8,17 @@ import { generateAnnouncement } from './services/generateAnnouncement';
 const App: React.FC = () => {
   // --- Data States ---
   const [participants, setParticipants] = useState<Participant[]>([
-    { id: '1', name: 'Fabio' },
-    { id: '2', name: 'Luigi' },
-    { id: '3', name: 'Peach' },
-    { id: '4', name: 'Toad' },
-    { id: '5', name: 'Yoshi' },
-    { id: '6', name: 'Bowser' },
+    { id: '1', name: 'Il Conte di Arcore' },
+    { id: '2', name: 'Rayan Gosling' },
+    { id: '3', name: 'Michael Jackson' },
+    { id: '4', name: 'Polymarket specialist' },
+    { id: '5', name: 'Oh Yang' },
+    { id: '6', name: 'Meme Master' },
+    { id: '7', name: 'Leoliviericlerc' },
+    { id: '8', name: 'Dynantico' },
+    { id: '9', name: 'Neozelandese' },
+    { id: '10', name: 'Una Gioia' }
+
   ]);
 
   const [roles, setRoles] = useState<Role[]>([
