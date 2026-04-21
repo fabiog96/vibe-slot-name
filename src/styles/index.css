@@ -1,0 +1,362 @@
+@import "tailwindcss";
+
+/* ── Theme tokens ─────────────────────────────── */
+
+/* ── Light (default) ── */
+:root {
+  --paper:        oklch(0.965 0.012 80);
+  --paper-2:      oklch(0.945 0.014 80);
+  --paper-3:      oklch(0.92  0.016 80);
+  --ink:          oklch(0.22  0.012 60);
+  --ink-2:        oklch(0.36  0.012 60);
+  --ink-3:        oklch(0.55  0.014 60);
+  --ink-4:        oklch(0.72  0.012 70);
+  --rule:         oklch(0.87  0.014 70);
+  --rule-strong:  oklch(0.78  0.016 65);
+  --accent:       oklch(0.62  0.17  50);
+  --accent-ink:   oklch(0.32  0.14  50);
+  --accent-wash:  oklch(0.92  0.05  60);
+  --teal:         oklch(0.58  0.08  210);
+  --teal-wash:    oklch(0.92  0.03  200);
+  --ok:           oklch(0.60  0.11  135);
+  --warn:         oklch(0.72  0.13  80);
+  --err:          oklch(0.55  0.18  28);
+}
+
+/* ── Dark ── */
+:root.dark {
+  --paper:        oklch(0.18  0.012 70);
+  --paper-2:      oklch(0.22  0.012 70);
+  --paper-3:      oklch(0.26  0.014 70);
+  --ink:          oklch(0.93  0.010 80);
+  --ink-2:        oklch(0.80  0.010 80);
+  --ink-3:        oklch(0.64  0.012 80);
+  --ink-4:        oklch(0.48  0.010 70);
+  --rule:         oklch(0.32  0.014 70);
+  --rule-strong:  oklch(0.42  0.014 70);
+  --accent-wash:  oklch(0.32  0.07  55);
+  --teal-wash:    oklch(0.30  0.04  210);
+  /* accent, accent-ink, teal, ok, warn, err inherit from :root */
+}
+
+@theme {
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Menlo', monospace;
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-wash: var(--accent-wash);
+  --color-teal: var(--teal);
+  --color-teal-wash: var(--teal-wash);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-err: var(--err);
+}
+
+/* ── Animations ───────────────────────────────── */
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reel-tick {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-1px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+
+@keyframes spin-border {
+  0%   { border-color: var(--accent); }
+  50%  { border-color: var(--teal); }
+  100% { border-color: var(--accent); }
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@utility animate-spin-border {
+  animation: spin-border 2s ease-in-out infinite;
+}
+
+/* ── Base ─────────────────────────────────────── */
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rule-strong);
+}
+
+/* ── Utilities ────────────────────────────────── */
+
+.rule {
+  height: 1px;
+  background: var(--rule);
+}
+
+.rule-strong {
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.rule-accent {
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+
+/* Reel card — recessed paper look */
+.reel-card {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+:root.dark .reel-card {
+  box-shadow:
+    inset 0 1px 4px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.reel-card.active {
+  border-color: var(--accent);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.04),
+    0 0 0 3px var(--accent-wash);
+}
+
+.reel-card.result {
+  border-color: var(--teal);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.04),
+    0 0 0 3px var(--teal-wash);
+}
+
+/* Transition for theme switch */
+body, .reel-card {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Slot Machine Parts ──────────────────────── */
+
+.slot-crown {
+  background: var(--accent-ink);
+  box-shadow:
+    inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+    0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.slot-body {
+  box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.08), -4px 0 12px -4px rgba(0, 0, 0, 0.08);
+}
+
+.slot-base {
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.06),
+    0 4px 16px -4px rgba(0, 0, 0, 0.12);
+}
+
+:root.dark .slot-crown {
+  box-shadow:
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4),
+    0 -4px 16px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark .slot-body {
+  box-shadow: 4px 0 16px -4px rgba(0, 0, 0, 0.3), -4px 0 16px -4px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark .slot-base {
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.2),
+    0 4px 20px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Rivets ──────────────────────────────────── */
+
+.rivet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rule-strong) 0%, var(--rule) 60%, var(--rule-strong) 100%);
+  border: 1px solid var(--rule);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.3),
+    inset 0 -1px 1px rgba(0,0,0,0.15);
+}
+
+:root.dark .rivet {
+  background: linear-gradient(135deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 60%, oklch(0.35 0.01 70) 100%);
+  border-color: oklch(0.25 0.01 70);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.05),
+    inset 0 -1px 1px rgba(0,0,0,0.3);
+}
+
+/* ── Reel viewport frame ─────────────────────── */
+
+.reel-viewport {
+  background: var(--paper-3);
+  border: 2px solid var(--rule-strong);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+:root.dark .reel-viewport {
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Glass reflection overlay */
+.reel-viewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+:root.dark .reel-viewport::after {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+}
+
+/* ── Side light strip ────────────────────────── */
+
+.side-light {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rule);
+  transition: all 0.3s;
+}
+
+.side-light.active {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
+}
+
+/* ── Credit display (7-segment style) ────────── */
+
+.credit-display {
+  background: oklch(0.14 0.01 70);
+  border: 1px solid oklch(0.20 0.01 70);
+  border-radius: 4px;
+  padding: 4px 10px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Lever arm ───────────────────────────────── */
+
+.lever-mount {
+  background: linear-gradient(180deg, var(--rule-strong) 0%, var(--rule) 100%);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.1);
+}
+
+:root.dark .lever-mount {
+  background: linear-gradient(180deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 100%);
+  border-color: oklch(0.22 0.01 70);
+}
+
+.lever-track {
+  width: 6px;
+  background: linear-gradient(90deg, var(--rule) 0%, var(--rule-strong) 50%, var(--rule) 100%);
+  border-radius: 3px;
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+}
+
+:root.dark .lever-track {
+  background: linear-gradient(90deg, oklch(0.25 0.01 70) 0%, oklch(0.30 0.01 70) 50%, oklch(0.25 0.01 70) 100%);
+}
+
+.lever-ball {
+  background: radial-gradient(circle at 35% 35%, var(--accent), var(--accent-ink));
+  border: 2px solid var(--accent-ink);
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.3),
+    inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+/* ── Pay line arrows ─────────────────────────── */
+
+.payline-arrow {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.payline-arrow.left {
+  border-left: 6px solid var(--accent);
+}
+
+.payline-arrow.right {
+  border-right: 6px solid var(--accent);
+}
+
+/* ── Winner flash ────────────────────────────── */
+
+@keyframes winner-flash {
+  0%, 100% { border-color: var(--accent); }
+  25%      { border-color: var(--teal); }
+  50%      { border-color: var(--accent); }
+  75%      { border-color: var(--warn); }
+}
+
+.slot-winner .slot-crown,
+.slot-winner .slot-base {
+  animation: winner-flash 1.5s ease-in-out infinite;
+}

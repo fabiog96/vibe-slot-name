@@ -8,3 +8,4 @@ dist/
 coverage/
 yarn.lock
 package-lock.json
+.claude/
