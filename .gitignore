@@ -7,5 +7,4 @@ dist/
 *.log
 coverage/
 yarn.lock
-package-lock.json
 .claude/
