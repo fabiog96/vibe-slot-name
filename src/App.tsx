@@ -110,7 +110,7 @@ export const App: React.FC = () => {
           <div className={`w-full max-w-2xl relative ${gameState === GameState.RESULT ? 'slot-winner' : ''}`}>
 
             {/* === CROWN / MARQUEE === */}
-            <div className="slot-crown relative bg-accent-ink text-paper rounded-t-2xl px-6 pt-6 pb-5 text-center border-x-2 border-t-2 border-accent/40 overflow-hidden">
+            <div className="slot-crown relative bg-accent-ink text-white rounded-t-2xl px-6 pt-6 pb-5 text-center border-x-2 border-t-2 border-accent/40 overflow-hidden">
               {/* Corner rivets */}
               <div className="rivet absolute top-3 left-3" />
               <div className="rivet absolute top-3 right-3" />
@@ -155,7 +155,7 @@ export const App: React.FC = () => {
                 </h2>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <span className="text-accent/40 text-[8px]">&#9830;</span>
-                  <p className="font-mono text-[9px] tracking-[0.4em] uppercase text-paper/50">
+                  <p className="font-mono text-[9px] tracking-[0.4em] uppercase text-white/50">
                     Name
                   </p>
                   <span className="text-accent/40 text-[8px]">&#9830;</span>
@@ -292,7 +292,7 @@ export const App: React.FC = () => {
                             ? 'bg-paper-3 text-ink-4 cursor-not-allowed border border-rule'
                             : isGameActive
                               ? 'bg-accent-wash text-accent/40 border border-accent/20 scale-[0.98] cursor-wait'
-                              : 'bg-accent-ink text-paper border-2 border-accent/30 hover:border-accent/60 hover:shadow-[0_0_20px_var(--accent-wash)] active:scale-[0.95] shadow-md'
+                              : 'bg-accent-ink text-white border-2 border-accent/30 hover:border-accent/60 hover:shadow-[0_0_20px_var(--accent-wash)] active:scale-[0.95] shadow-md'
                         }
                       `}
                     >

@@ -115,7 +115,7 @@ export const SlotReel: React.FC<SlotReelProps> = ({
                 transition-all duration-100
                 ${internalSpinning
                   ? 'text-ink-3 blur-[1.5px] opacity-50'
-                  : 'text-accent-ink blur-0 opacity-100'
+                  : 'text-ink blur-0 opacity-100'
                 }
               `}
             >

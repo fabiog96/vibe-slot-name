@@ -66,12 +66,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         <span className="absolute top-2 right-4 text-accent/20 text-[8px]">&#9733;</span>
         <span className="absolute bottom-1 left-8 text-accent/15 text-[6px]">&#9733;</span>
 
-        <h2 className="font-display text-lg font-bold text-paper italic tracking-tight">
+        <h2 className="font-display text-lg font-bold text-white italic tracking-tight">
           VIP List
         </h2>
         <div className="flex items-center justify-center gap-2 mt-1">
           <div className="w-6 h-px bg-accent/30" />
-          <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-paper/40">
+          <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-white/40">
             {participants.length} player{participants.length !== 1 ? 's' : ''}
           </span>
           <div className="w-6 h-px bg-accent/30" />
@@ -100,7 +100,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         <button
           onClick={handleAdd}
           disabled={!inputValue.trim()}
-          className="w-full py-2.5 bg-accent-ink text-paper text-xs font-mono tracking-[0.15em] uppercase rounded-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-20 disabled:cursor-not-allowed"
+          className="w-full py-2.5 bg-accent-ink text-white text-xs font-mono tracking-[0.15em] uppercase rounded-lg transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-20 disabled:cursor-not-allowed"
         >
           Add Player
         </button>

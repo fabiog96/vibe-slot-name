@@ -28,15 +28,16 @@
   --paper:        oklch(0.18  0.012 70);
   --paper-2:      oklch(0.22  0.012 70);
   --paper-3:      oklch(0.26  0.014 70);
-  --ink:          oklch(0.93  0.010 80);
-  --ink-2:        oklch(0.80  0.010 80);
-  --ink-3:        oklch(0.64  0.012 80);
-  --ink-4:        oklch(0.48  0.010 70);
+  --ink:          oklch(0.95  0.005 80);
+  --ink-2:        oklch(0.85  0.008 80);
+  --ink-3:        oklch(0.68  0.010 80);
+  --ink-4:        oklch(0.50  0.008 70);
   --rule:         oklch(0.32  0.014 70);
   --rule-strong:  oklch(0.42  0.014 70);
   --accent-wash:  oklch(0.32  0.07  55);
   --teal-wash:    oklch(0.30  0.04  210);
-  /* accent, accent-ink, teal, ok, warn, err inherit from :root */
+  --err:          oklch(0.65  0.18  28);
+  /* accent, accent-ink, teal, ok, warn keep from :root */
 }
 
 @theme {
