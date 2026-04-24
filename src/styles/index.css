@@ -362,3 +362,75 @@ body, .reel-card {
 .slot-winner .slot-base {
   animation: winner-flash 1.5s ease-in-out infinite;
 }
+
+/* ── Easter Eggs ────────────────────────────────── */
+
+/* Jackpot Mode — rainbow cycling glow */
+@keyframes jackpot-glow {
+  0%   { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  16%  { box-shadow: 0 0 15px #ff7700, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  33%  { box-shadow: 0 0 15px #ffff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  50%  { box-shadow: 0 0 15px #00ff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  66%  { box-shadow: 0 0 15px #0077ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  83%  { box-shadow: 0 0 15px #8800ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
+  100% { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
+}
+
+@keyframes jackpot-border {
+  0%   { border-color: #ff0000; }
+  16%  { border-color: #ff7700; }
+  33%  { border-color: #ffff00; }
+  50%  { border-color: #00ff00; }
+  66%  { border-color: #0077ff; }
+  83%  { border-color: #8800ff; }
+  100% { border-color: #ff0000; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@utility animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.jackpot-mode .slot-crown {
+  animation: jackpot-glow 2s linear infinite;
+}
+
+.jackpot-mode .slot-base {
+  animation: jackpot-border 2s linear infinite;
+}
+
+.jackpot-mode .side-light {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
+  animation: pulse-dot 0.4s ease-in-out infinite;
+}
+
+.jackpot-mode .reel-viewport {
+  border-color: var(--accent);
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.08),
+    0 0 12px var(--accent-wash);
+}
+
+/* Konami — screen flash */
+@keyframes konami-flash {
+  0%   { background: transparent; }
+  5%   { background: rgba(255, 255, 255, 0.3); }
+  10%  { background: transparent; }
+  15%  { background: rgba(255, 215, 0, 0.15); }
+  25%  { background: transparent; }
+}
+
+.konami-active::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  animation: konami-flash 1s ease-out;
+}
+

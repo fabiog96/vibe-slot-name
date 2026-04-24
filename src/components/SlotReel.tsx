@@ -73,9 +73,9 @@ export const SlotReel: React.FC<SlotReelProps> = ({
   const hasResult = target && !internalSpinning;
 
   return (
-    <div className="flex flex-col items-center w-48 relative">
+    <div className="flex flex-col items-center w-40 relative">
       {/* Role label with decorative diamonds */}
-      <div className="flex items-center gap-2 mb-2.5">
+      <div className="flex items-center gap-2 mb-1.5">
         <span className="text-accent/25 text-[7px]">&#9830;</span>
         <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-3 font-medium">
           {label}
@@ -86,7 +86,7 @@ export const SlotReel: React.FC<SlotReelProps> = ({
       {/* Reel window */}
       <div
         className={`
-          reel-card relative w-full h-28 rounded-xl overflow-hidden
+          reel-card relative w-full h-20 rounded-xl overflow-hidden
           flex items-center justify-center
           transition-all duration-400
           ${internalSpinning ? 'active' : ''}
@@ -94,8 +94,8 @@ export const SlotReel: React.FC<SlotReelProps> = ({
         `}
       >
         {/* Top/bottom fades */}
-        <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-paper-2 to-transparent pointer-events-none z-10" />
-        <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-paper-2 to-transparent pointer-events-none z-10" />
+        <div className="absolute top-0 left-0 w-full h-5 bg-gradient-to-b from-paper-2 to-transparent pointer-events-none z-10" />
+        <div className="absolute bottom-0 left-0 w-full h-5 bg-gradient-to-t from-paper-2 to-transparent pointer-events-none z-10" />
 
         {/* Center line indicator */}
         <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-px bg-accent/10 z-10 pointer-events-none" />
@@ -105,13 +105,13 @@ export const SlotReel: React.FC<SlotReelProps> = ({
           {participants.length === 0 ? (
             <span className="text-ink-4 text-xs italic">Add players</span>
           ) : !target ? (
-            <span className="font-display text-2xl text-ink-4 italic">
+            <span className="font-display text-xl text-ink-4 italic">
               ?
             </span>
           ) : (
             <span
               className={`
-                font-display text-xl md:text-2xl font-bold whitespace-nowrap
+                font-display text-base md:text-lg font-bold whitespace-nowrap
                 transition-all duration-100
                 ${internalSpinning
                   ? 'text-ink-3 blur-[1.5px] opacity-50'
@@ -126,7 +126,7 @@ export const SlotReel: React.FC<SlotReelProps> = ({
       </div>
 
       {/* Respin */}
-      <div className="mt-2.5 h-7 flex justify-center items-center">
+      <div className="mt-1.5 h-6 flex justify-center items-center">
         {!internalSpinning && showRespin && onRespin ? (
           <button
             onClick={onRespin}

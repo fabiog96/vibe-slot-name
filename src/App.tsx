@@ -5,6 +5,7 @@ import { Participant, GameState, Role } from './types';
 import { SlotReel, ControlPanel, SettingsModal } from './components';
 import { useSlotMachine } from './hooks/useSlotMachine';
 import { useTheme } from './hooks/useTheme';
+import { useEasterEggs } from './hooks/useEasterEggs';
 
 const DEFAULT_PARTICIPANTS: Participant[] = [
   { id: '1', name: 'Capra ' },
@@ -43,15 +44,24 @@ export const App: React.FC = () => {
     handleReelStop,
   } = useSlotMachine(participants, roles);
 
+  const {
+    konamiActive,
+    jackpotMode,
+    handleLogoClick,
+  } = useEasterEggs(handleFullSpin);
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {gameState === GameState.RESULT && (
+    <div className={`h-screen flex flex-col overflow-hidden ${jackpotMode ? 'jackpot-mode' : ''} ${konamiActive ? 'konami-active' : ''}`}>
+      {(gameState === GameState.RESULT || konamiActive) && (
         <Confetti
           recycle={false}
-          numberOfPieces={150}
-          gravity={0.1}
-          colors={['#c2703e', '#5a8a7a', '#d4a853', '#7a6240', '#3d7a6a']}
-          opacity={0.6}
+          numberOfPieces={konamiActive ? 400 : 150}
+          gravity={konamiActive ? 0.05 : 0.1}
+          colors={konamiActive
+            ? ['#ff0000', '#ff7700', '#ffff00', '#00ff00', '#0077ff', '#8800ff', '#ff00ff']
+            : ['#c2703e', '#5a8a7a', '#d4a853', '#7a6240', '#3d7a6a']
+          }
+          opacity={konamiActive ? 0.9 : 0.6}
         />
       )}
 
@@ -65,14 +75,17 @@ export const App: React.FC = () => {
       />
 
       {/* ── Header ── */}
-      <header className="px-6 md:px-10 pt-6 pb-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <span className="text-accent text-xl">&#127920;</span>
+      <header className="px-6 md:px-10 pt-3 pb-2 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span
+            className={`text-accent text-base cursor-pointer select-none transition-transform duration-200 hover:scale-110 ${jackpotMode ? 'animate-spin-slow' : ''}`}
+            onClick={handleLogoClick}
+          >&#127920;</span>
           <div>
-            <h1 className="font-display text-xl md:text-2xl font-bold text-ink tracking-tight italic">
-              Vibe Slot Name
+            <h1 className="font-display text-base md:text-lg font-bold text-ink tracking-tight italic leading-tight">
+              Vibe Slot 
             </h1>
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-3 mt-0.5">
+            <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-ink-3">
               Role Assignment Machine
             </p>
           </div>
@@ -93,10 +106,10 @@ export const App: React.FC = () => {
       <div className="rule mx-6 md:mx-10" />
 
       {/* ── Main ── */}
-      <main className="flex-1 px-4 md:px-10 py-6 md:py-10 flex flex-col lg:flex-row gap-6 lg:gap-10 max-w-7xl mx-auto w-full">
+      <main className="flex-1 min-h-0 px-4 md:px-10 py-4 md:py-6 flex flex-col lg:flex-row gap-4 lg:gap-8 max-w-7xl mx-auto w-full overflow-hidden">
 
         {/* Left: Participants */}
-        <div className="w-full lg:w-80 xl:w-[340px] h-[520px] lg:h-auto order-2 lg:order-1 shrink-0">
+        <div className="w-full lg:w-80 xl:w-[340px] min-h-0 order-2 lg:order-1 shrink-0 lg:h-full">
           <ControlPanel
             participants={participants}
             setParticipants={setParticipants}
@@ -104,13 +117,13 @@ export const App: React.FC = () => {
         </div>
 
         {/* Center: Machine */}
-        <div className="flex-1 flex flex-col items-center justify-center order-1 lg:order-2">
+        <div className="flex-1 min-h-0 flex flex-col items-center justify-center order-1 lg:order-2 overflow-hidden">
 
           {/* ── THE SLOT MACHINE ── */}
-          <div className={`w-full max-w-2xl relative ${gameState === GameState.RESULT ? 'slot-winner' : ''}`}>
+          <div className={`w-full max-w-xl relative ${gameState === GameState.RESULT ? 'slot-winner' : ''}`}>
 
             {/* === CROWN / MARQUEE === */}
-            <div className="slot-crown relative bg-accent-ink text-white rounded-t-2xl px-6 pt-6 pb-5 text-center border-x-2 border-t-2 border-accent/40 overflow-hidden">
+            <div className="slot-crown relative bg-accent-ink text-white rounded-t-2xl px-4 pt-4 pb-3 text-center border-x-2 border-t-2 border-accent/40 overflow-hidden">
               {/* Corner rivets */}
               <div className="rivet absolute top-3 left-3" />
               <div className="rivet absolute top-3 right-3" />
@@ -150,10 +163,10 @@ export const App: React.FC = () => {
               <span className="absolute top-5 right-7 text-accent/20 text-[10px]">&#9733;</span>
 
               <div className="mt-1 mb-1">
-                <h2 className="font-display text-4xl md:text-5xl font-black italic tracking-tight leading-none">
+                <h2 className="font-display text-2xl md:text-3xl font-black italic tracking-tight leading-none">
                   Vibe Slot
                 </h2>
-                <div className="flex items-center justify-center gap-2 mt-2">
+                <div className="flex items-center justify-center gap-2 mt-1">
                   <span className="text-accent/40 text-[8px]">&#9830;</span>
                   <p className="font-mono text-[9px] tracking-[0.4em] uppercase text-white/50">
                     Name
@@ -167,8 +180,8 @@ export const App: React.FC = () => {
             <div className="slot-body relative flex">
 
               {/* Left side light strip */}
-              <div className="hidden md:flex flex-col items-center justify-center gap-3 w-5 bg-accent-ink/5 border-l-2 border-accent/30 py-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+              <div className="hidden md:flex flex-col items-center justify-center gap-2 w-5 bg-accent-ink/5 border-l-2 border-accent/30 py-3">
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={`left-${i}`}
                     className={`side-light ${isGameActive ? 'active' : ''}`}
@@ -186,7 +199,7 @@ export const App: React.FC = () => {
                 <div className="rivet absolute bottom-2 right-2 z-10" />
 
                 {/* Credit & Status display bar */}
-                <div className="px-5 py-3 flex items-center justify-between border-b border-rule bg-paper-3/50">
+                <div className="px-4 py-2 flex items-center justify-between border-b border-rule bg-paper-3/50">
                   <div className="flex items-center gap-3">
                     <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                       isGameActive ? 'bg-accent shadow-[0_0_8px_var(--accent)]' : gameState === GameState.RESULT ? 'bg-teal shadow-[0_0_6px_var(--teal)]' : 'bg-rule'
@@ -214,8 +227,8 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Reel viewport — framed glass panel */}
-                <div className="p-4 md:p-6">
-                  <div className="reel-viewport p-4 md:p-6">
+                <div className="p-3 md:p-4">
+                  <div className="reel-viewport p-3 md:p-4">
                     {roles.length === 0 ? (
                       <div className="text-center py-12">
                         <p className="text-ink-3 text-sm mb-3">No roles configured</p>
@@ -269,8 +282,8 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Spin button area */}
-                <div className="px-5 md:px-8 pb-5 md:pb-6">
-                  <div className="pt-4 border-t border-rule flex items-center justify-center gap-4">
+                <div className="px-4 md:px-6 pb-3 md:pb-4">
+                  <div className="pt-3 border-t border-rule flex items-center justify-center gap-4">
                     {/* Decorative buttons (left) */}
                     <div className="hidden md:flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-rule border border-rule-strong" />
@@ -285,7 +298,7 @@ export const App: React.FC = () => {
                         roles.length === 0
                       }
                       className={`
-                        px-12 py-3.5 rounded-full font-mono text-xs tracking-[0.2em] uppercase
+                        px-10 py-2.5 rounded-full font-mono text-xs tracking-[0.2em] uppercase
                         transition-all duration-200 transform
                         ${
                           participants.length < roles.length || roles.length === 0
@@ -309,8 +322,8 @@ export const App: React.FC = () => {
               </div>
 
               {/* Right side light strip */}
-              <div className="hidden md:flex flex-col items-center justify-center gap-3 w-5 bg-accent-ink/5 border-r-2 border-accent/30 py-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+              <div className="hidden md:flex flex-col items-center justify-center gap-2 w-5 bg-accent-ink/5 border-r-2 border-accent/30 py-3">
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={`right-${i}`}
                     className={`side-light ${isGameActive ? 'active' : ''}`}
@@ -327,7 +340,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Lever arm */}
-                <div className="lever-track h-28 relative rounded-full">
+                <div className="lever-track h-20 relative rounded-full">
                   {/* Lever ball handle */}
                   <div
                     className={`
@@ -352,7 +365,7 @@ export const App: React.FC = () => {
               <div className="rivet absolute bottom-3 right-3" />
 
               {/* Payout display */}
-              <div className="px-5 py-3 flex items-center justify-center gap-3">
+              <div className="px-4 py-2 flex items-center justify-center gap-3">
                 <div className="h-px flex-1 bg-rule" />
                 <div className="flex items-center gap-2">
                   <span className="text-accent/30 text-[8px]">&#9733;</span>
@@ -365,7 +378,7 @@ export const App: React.FC = () => {
               </div>
 
               {/* Coin tray with lip */}
-              <div className="mx-auto w-48 mb-3">
+              <div className="mx-auto w-40 mb-2">
                 <div className="h-1 bg-rule-strong rounded-t-sm" />
                 <div className="h-5 bg-paper-3 border-x border-b border-rule rounded-b-lg shadow-inner flex items-center justify-center">
                   <div className="w-6 h-0.5 bg-rule rounded-full" />
@@ -375,9 +388,9 @@ export const App: React.FC = () => {
           </div>
 
           {/* ── Announcement ── */}
-          <div className="mt-6 w-full max-w-xl min-h-[60px] flex items-center justify-center text-center">
+          <div className="mt-3 w-full max-w-xl min-h-[40px] flex items-center justify-center text-center">
             {gameState === GameState.RESULT && (
-              <div className="animate-fade-in-up w-full px-6 py-5 bg-accent-wash rounded-xl border-2 border-accent/20 relative overflow-hidden">
+              <div className="animate-fade-in-up w-full px-4 py-3 bg-accent-wash rounded-xl border-2 border-accent/20 relative overflow-hidden">
                 {/* Corner decorations */}
                 <span className="absolute top-2 left-3 text-accent/20 text-[10px]">&#9733;</span>
                 <span className="absolute top-2 right-3 text-accent/20 text-[10px]">&#9733;</span>
@@ -406,14 +419,14 @@ export const App: React.FC = () => {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="py-4 text-center">
-        <div className="flex items-center justify-center gap-3 mb-2">
+      <footer className="py-2 text-center">
+        <div className="flex items-center justify-center gap-3 mb-1">
           <div className="w-8 h-px bg-rule" />
           <span className="text-accent/20 text-[8px]">&#9733; &#9830; &#9733;</span>
           <div className="w-8 h-px bg-rule" />
         </div>
         <p className="font-mono text-[9px] tracking-[0.4em] uppercase text-ink-4">
-          Vibe Slot Name &mdash; What happens in Vegas...
+          Vibe Slot &mdash; What happens in Vegas...
         </p>
       </footer>
     </div>
