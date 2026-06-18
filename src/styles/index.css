@@ -1,436 +1,355 @@
 @import "tailwindcss";
 
-/* ── Theme tokens ─────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   BetMarket // Night City — Cyberpunk Design System
+   Dark-only. Tokens per DESIGN.md §2–§4.
+   ══════════════════════════════════════════════════════════════ */
 
-/* ── Light (default) ── */
 :root {
-  --paper:        oklch(0.965 0.012 80);
-  --paper-2:      oklch(0.945 0.014 80);
-  --paper-3:      oklch(0.92  0.016 80);
-  --ink:          oklch(0.22  0.012 60);
-  --ink-2:        oklch(0.36  0.012 60);
-  --ink-3:        oklch(0.55  0.014 60);
-  --ink-4:        oklch(0.72  0.012 70);
-  --rule:         oklch(0.87  0.014 70);
-  --rule-strong:  oklch(0.78  0.016 65);
-  --accent:       oklch(0.62  0.17  50);
-  --accent-ink:   oklch(0.32  0.14  50);
-  --accent-wash:  oklch(0.92  0.05  60);
-  --teal:         oklch(0.58  0.08  210);
-  --teal-wash:    oklch(0.92  0.03  200);
-  --ok:           oklch(0.60  0.11  135);
-  --warn:         oklch(0.72  0.13  80);
-  --err:          oklch(0.55  0.18  28);
-}
+  /* ── Surfaces ── */
+  --cb-void:    #050208;
+  --cb-bg-0:    #0a0612;
+  --cb-bg-1:    #110828;
+  --cb-bg-2:    #1a0f3d;
+  --cb-bg-3:    #251456;
+  --cb-line:    #2d1a5e;
+  --cb-line-2:  #3d2680;
 
-/* ── Dark ── */
-:root.dark {
-  --paper:        oklch(0.18  0.012 70);
-  --paper-2:      oklch(0.22  0.012 70);
-  --paper-3:      oklch(0.26  0.014 70);
-  --accent-ink:     oklch(0.62  0.17  50);
-  --ink:          oklch(0.95  0.005 80);
-  --ink-2:        oklch(0.85  0.008 80);
-  --ink-3:        oklch(0.68  0.010 80);
-  --ink-4:        oklch(0.50  0.008 70);
-  --rule:         oklch(0.32  0.014 70);
-  --rule-strong:  oklch(0.42  0.014 70);
-  --accent-wash:  oklch(0.32  0.07  55);
-  --teal-wash:    oklch(0.30  0.04  210);
-  --err:          oklch(0.65  0.18  28);
-  /* accent, accent-ink, teal, ok, warn keep from :root */
+  /* ── Neon accents ── */
+  --cb-magenta:       #ff2a6d;
+  --cb-magenta-soft:  #ff66a0;
+  --cb-magenta-deep:  #b81353;
+  --cb-cyan:          #05d9e8;
+  --cb-cyan-soft:     #6ef0fa;
+  --cb-cyan-deep:     #008a96;
+  --cb-violet:        #a855f7;
+  --cb-violet-deep:   #6a25c4;
+  --cb-acid:          #ccff00;
+  --cb-acid-soft:     #e2ff5a;
+  --cb-amber:         #ffb800;
+
+  /* ── Semantic ── */
+  --cb-win:       #39ff14;
+  --cb-win-soft:  #74ff5a;
+  --cb-loss:      #ff003c;
+  --cb-loss-soft: #ff5a7a;
+
+  /* ── Text ── */
+  --cb-text-0: #f0e9ff;
+  --cb-text-1: #b8a8e0;
+  --cb-text-2: #8174b8;
+  --cb-text-3: #5a4d8a;
+  --cb-text-4: #3a3260;
 }
 
 @theme {
-  --font-display: 'Playfair Display', 'Georgia', serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', 'Menlo', monospace;
+  --font-display: 'Orbitron', sans-serif;
+  --font-head:    'Rajdhani', sans-serif;
+  --font-mono:    'Share Tech Mono', ui-monospace, monospace;
+  --font-body:    'Inter', system-ui, sans-serif;
 
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-paper-3: var(--paper-3);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
-  --color-ink-4: var(--ink-4);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-wash: var(--accent-wash);
-  --color-teal: var(--teal);
-  --color-teal-wash: var(--teal-wash);
-  --color-ok: var(--ok);
-  --color-warn: var(--warn);
-  --color-err: var(--err);
-}
+  --color-void:   var(--cb-void);
+  --color-bg-0:   var(--cb-bg-0);
+  --color-bg-1:   var(--cb-bg-1);
+  --color-bg-2:   var(--cb-bg-2);
+  --color-bg-3:   var(--cb-bg-3);
+  --color-line:   var(--cb-line);
+  --color-line-2: var(--cb-line-2);
 
-/* ── Animations ───────────────────────────────── */
+  --color-magenta:      var(--cb-magenta);
+  --color-magenta-soft: var(--cb-magenta-soft);
+  --color-magenta-deep: var(--cb-magenta-deep);
+  --color-cyan:         var(--cb-cyan);
+  --color-cyan-soft:    var(--cb-cyan-soft);
+  --color-cyan-deep:    var(--cb-cyan-deep);
+  --color-violet:       var(--cb-violet);
+  --color-violet-deep:  var(--cb-violet-deep);
+  --color-acid:         var(--cb-acid);
+  --color-acid-soft:    var(--cb-acid-soft);
+  --color-amber:        var(--cb-amber);
 
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+  --color-win:  var(--cb-win);
+  --color-loss: var(--cb-loss);
 
-@keyframes reel-tick {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-1px); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.3; }
-  50%      { opacity: 1; }
-}
-
-@keyframes spin-border {
-  0%   { border-color: var(--accent); }
-  50%  { border-color: var(--teal); }
-  100% { border-color: var(--accent); }
-}
-
-@utility animate-fade-in-up {
-  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@utility animate-pulse-dot {
-  animation: pulse-dot 1.4s ease-in-out infinite;
-}
-
-@utility animate-spin-border {
-  animation: spin-border 2s ease-in-out infinite;
+  --color-text-0: var(--cb-text-0);
+  --color-text-1: var(--cb-text-1);
+  --color-text-2: var(--cb-text-2);
+  --color-text-3: var(--cb-text-3);
+  --color-text-4: var(--cb-text-4);
 }
 
 /* ── Base ─────────────────────────────────────── */
 
 body {
-  background-color: var(--paper);
-  color: var(--ink);
-  font-feature-settings: 'cv11', 'ss01';
+  background-color: var(--cb-bg-0);
+  color: var(--cb-text-1);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Scrollbar ────────────────────────────────── */
 
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--cb-void); }
 ::-webkit-scrollbar-thumb {
-  background: var(--rule);
-  border-radius: 3px;
+  background: var(--cb-line-2);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--cb-violet-deep); }
+
+/* ══════════════════════════════════════════════════════════════
+   4. Decoration & Effects
+   ══════════════════════════════════════════════════════════════ */
+
+/* 4.1 Scanlines (full-page overlay) */
+.cb-bg { position: relative; }
+.cb-bg::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--rule-strong);
+/* 4.2 Grid floor */
+.cb-grid {
+  background:
+    linear-gradient(90deg, rgba(5,217,232,.08) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(0deg,  rgba(5,217,232,.08) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(ellipse at 50% 0%, rgba(255,42,109,.05), transparent 60%),
+    var(--cb-bg-0);
 }
 
-/* ── Utilities ────────────────────────────────── */
-
-.rule {
-  height: 1px;
-  background: var(--rule);
+/* 4.3 Clip-path notched corners */
+.notch-all {
+  clip-path: polygon(
+    12px 0, calc(100% - 12px) 0, 100% 12px,
+    100% calc(100% - 12px), calc(100% - 12px) 100%,
+    12px 100%, 0 calc(100% - 12px), 0 12px
+  );
+}
+.notch {
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+}
+.notch-bl {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
 }
 
-.rule-strong {
-  height: 1px;
-  background: var(--rule-strong);
+/* Panel surface */
+.cb-panel {
+  background: linear-gradient(160deg, var(--cb-bg-1), var(--cb-bg-0));
+  border: 1px solid var(--cb-line);
 }
 
-.rule-accent {
-  height: 2px;
-  background: var(--accent);
-  opacity: 0.4;
-}
-
-/* Reel card — recessed paper look */
-.reel-card {
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
+/* 4.4 Neon frame */
+.cb-frame {
+  border: 1px solid var(--cb-magenta);
   box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 1px 0 rgba(255, 255, 255, 0.6);
+    0 0 0 1px rgba(255,42,109,.15),
+    inset 0 0 12px rgba(255,42,109,.08),
+    0 0 18px rgba(255,42,109,.12);
 }
-
-:root.dark .reel-card {
+.cb-frame.cyan {
+  border-color: var(--cb-cyan);
   box-shadow:
-    inset 0 1px 4px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.02);
+    0 0 0 1px rgba(5,217,232,.15),
+    inset 0 0 12px rgba(5,217,232,.08),
+    0 0 18px rgba(5,217,232,.12);
 }
-
-.reel-card.active {
-  border-color: var(--accent);
+.cb-frame.acid {
+  border-color: var(--cb-acid);
   box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 0 0 3px var(--accent-wash);
+    0 0 0 1px rgba(204,255,0,.15),
+    inset 0 0 12px rgba(204,255,0,.08),
+    0 0 18px rgba(204,255,0,.12);
 }
-
-.reel-card.result {
-  border-color: var(--teal);
+.cb-frame.win {
+  border-color: var(--cb-win);
   box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 0 0 3px var(--teal-wash);
+    0 0 0 1px rgba(57,255,20,.18),
+    inset 0 0 14px rgba(57,255,20,.10),
+    0 0 22px rgba(57,255,20,.18);
 }
 
-/* Transition for theme switch */
-body, .reel-card {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* 4.5 Corner brackets */
+.cb-bracket { position: relative; }
+.cb-bracket::before, .cb-bracket::after {
+  content: ""; position: absolute; width: 10px; height: 10px;
+  border: 1px solid var(--cb-cyan); pointer-events: none;
+}
+.cb-bracket::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.cb-bracket::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+/* 4.6 Glow text utilities */
+.cb-glow-magenta { color: var(--cb-magenta); text-shadow: 0 0 6px rgba(255,42,109,.7), 0 0 14px rgba(255,42,109,.45); }
+.cb-glow-cyan    { color: var(--cb-cyan);    text-shadow: 0 0 6px rgba(5,217,232,.7), 0 0 14px rgba(5,217,232,.45); }
+.cb-glow-acid    { color: var(--cb-acid);    text-shadow: 0 0 6px rgba(204,255,0,.6), 0 0 12px rgba(204,255,0,.4); }
+.cb-glow-violet  { color: var(--cb-violet);  text-shadow: 0 0 6px rgba(168,85,247,.7), 0 0 14px rgba(168,85,247,.45); }
+.cb-glow-win     { color: var(--cb-win);     text-shadow: 0 0 6px rgba(57,255,20,.7), 0 0 14px rgba(57,255,20,.4); }
+.cb-glow-loss    { color: var(--cb-loss);    text-shadow: 0 0 6px rgba(255,0,60,.7), 0 0 14px rgba(255,0,60,.4); }
+
+/* 4.7 Glitch */
+@keyframes cbGlitch {
+  0%, 92%, 100% { transform: translate(0); }
+  93% { transform: translate(-1px, 1px); }
+  94% { transform: translate(1px, -1px); }
+  95% { transform: translate(-1px, 0); }
+  96% { transform: translate(1px, 0); }
+}
+@utility cb-glitch { animation: cbGlitch 4s infinite; }
+
+/* 4.8 Pulse */
+@keyframes cbPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+  50%      { opacity: .55; box-shadow: 0 0 10px currentColor; }
+}
+.cb-live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor; animation: cbPulse 1.4s infinite;
 }
 
-/* ── Slot Machine Parts ──────────────────────── */
-
-.slot-crown {
-  background: var(--accent-ink);
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.15),
-    0 -4px 12px rgba(0, 0, 0, 0.1);
+/* 4.9 Scrolling ticker */
+@keyframes cbScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.cb-ticker-track {
+  display: inline-flex; gap: 32px; white-space: nowrap;
+  animation: cbScroll 40s linear infinite;
 }
 
-.slot-body {
-  box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.08), -4px 0 12px -4px rgba(0, 0, 0, 0.08);
+/* 4.10 Confetti handled by react-confetti (recolored in App) */
+
+/* ══════════════════════════════════════════════════════════════
+   5. Core Components
+   ══════════════════════════════════════════════════════════════ */
+
+/* 5.1 Hexagon chip */
+.cb-hex {
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700;
+  color: var(--cb-text-0); letter-spacing: 0.02em;
 }
 
-.slot-base {
-  box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.06),
-    0 4px 16px -4px rgba(0, 0, 0, 0.12);
+/* 5.3 Button */
+.cb-btn {
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  padding: 12px 18px;
+  background: var(--cb-bg-2);
+  border: 1px solid var(--cb-line-2);
+  color: var(--cb-text-1);
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
-
-:root.dark .slot-crown {
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.4),
-    0 -4px 16px rgba(0, 0, 0, 0.3);
+.cb-btn:hover:not(:disabled) {
+  border-color: var(--cb-cyan);
+  color: var(--cb-cyan-soft);
+  background: var(--cb-bg-3);
 }
-
-:root.dark .slot-body {
-  box-shadow: 4px 0 16px -4px rgba(0, 0, 0, 0.3), -4px 0 16px -4px rgba(0, 0, 0, 0.3);
+.cb-btn.primary {
+  background: linear-gradient(135deg, var(--cb-magenta-deep), var(--cb-violet-deep));
+  border-color: var(--cb-magenta);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(255,42,109,.45), inset 0 0 10px rgba(255,42,109,.2);
 }
-
-:root.dark .slot-base {
-  box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.2),
-    0 4px 20px -4px rgba(0, 0, 0, 0.4);
+.cb-btn.primary:hover:not(:disabled) {
+  box-shadow: 0 0 26px rgba(255,42,109,.7), inset 0 0 12px rgba(255,42,109,.3);
+  color: #fff;
 }
-
-/* ── Rivets ──────────────────────────────────── */
-
-.rivet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--rule-strong) 0%, var(--rule) 60%, var(--rule-strong) 100%);
-  border: 1px solid var(--rule);
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.3),
-    inset 0 -1px 1px rgba(0,0,0,0.15);
+.cb-btn.cyan {
+  background: linear-gradient(135deg, var(--cb-cyan-deep), var(--cb-cyan));
+  border-color: var(--cb-cyan);
+  color: #04141a;
+  box-shadow: 0 0 16px rgba(5,217,232,.4);
 }
-
-:root.dark .rivet {
-  background: linear-gradient(135deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 60%, oklch(0.35 0.01 70) 100%);
-  border-color: oklch(0.25 0.01 70);
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.05),
-    inset 0 -1px 1px rgba(0,0,0,0.3);
+.cb-btn.acid {
+  background: linear-gradient(135deg, #8aa800, var(--cb-acid));
+  border-color: var(--cb-acid);
+  color: #1a1f00;
+  box-shadow: 0 0 16px rgba(204,255,0,.35);
 }
+.cb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ── Reel viewport frame ─────────────────────── */
+/* 5.8 Section head bar */
+.cb-section-bar {
+  width: 4px; height: 14px;
+  background: var(--cb-cyan);
+  box-shadow: 0 0 8px var(--cb-cyan);
+}
+.cb-section-bar.magenta { background: var(--cb-magenta); box-shadow: 0 0 8px var(--cb-magenta); }
+.cb-section-bar.acid    { background: var(--cb-acid);    box-shadow: 0 0 8px var(--cb-acid); }
 
-.reel-viewport {
-  background: var(--paper-3);
-  border: 2px solid var(--rule-strong);
-  border-radius: 12px;
-  box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.08),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.04);
+/* 5.10 Reel */
+.cb-reel {
   position: relative;
-}
-
-:root.dark .reel-viewport {
+  background: var(--cb-void);
+  border: 1px solid var(--cb-cyan);
   box-shadow:
-    inset 0 3px 10px rgba(0, 0, 0, 0.35),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+    inset 0 0 24px rgba(5,217,232,.18),
+    0 0 14px rgba(5,217,232,.18);
+  overflow: hidden;
 }
-
-/* Glass reflection overlay */
-.reel-viewport::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 35%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-  border-radius: 10px 10px 0 0;
-  pointer-events: none;
-  z-index: 20;
+.cb-reel::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background-image: repeating-linear-gradient(0deg, rgba(5,217,232,.06) 0 1px, transparent 1px 4px);
 }
-
-:root.dark .reel-viewport::after {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+/* Magenta payline through center */
+.cb-reel::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px;
+  transform: translateY(-50%); pointer-events: none; z-index: 3;
+  background: var(--cb-magenta);
+  box-shadow: 0 0 8px var(--cb-magenta), 0 0 16px rgba(255,42,109,.5);
 }
-
-/* ── Side light strip ────────────────────────── */
-
-.side-light {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--rule);
-  transition: all 0.3s;
-}
-
-.side-light.active {
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
-}
-
-/* ── Credit display (7-segment style) ────────── */
-
-.credit-display {
-  background: oklch(0.14 0.01 70);
-  border: 1px solid oklch(0.20 0.01 70);
-  border-radius: 4px;
-  padding: 4px 10px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Lever arm ───────────────────────────────── */
-
-.lever-mount {
-  background: linear-gradient(180deg, var(--rule-strong) 0%, var(--rule) 100%);
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.1);
-}
-
-:root.dark .lever-mount {
-  background: linear-gradient(180deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 100%);
-  border-color: oklch(0.22 0.01 70);
-}
-
-.lever-track {
-  width: 6px;
-  background: linear-gradient(90deg, var(--rule) 0%, var(--rule-strong) 50%, var(--rule) 100%);
-  border-radius: 3px;
-  box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
-}
-
-:root.dark .lever-track {
-  background: linear-gradient(90deg, oklch(0.25 0.01 70) 0%, oklch(0.30 0.01 70) 50%, oklch(0.25 0.01 70) 100%);
-}
-
-.lever-ball {
-  background: radial-gradient(circle at 35% 35%, var(--accent), var(--accent-ink));
-  border: 2px solid var(--accent-ink);
+.cb-reel.result {
+  border-color: var(--cb-win);
   box-shadow:
-    0 2px 8px rgba(0,0,0,0.3),
-    inset 0 2px 4px rgba(255,255,255,0.2);
+    inset 0 0 24px rgba(57,255,20,.18),
+    0 0 18px rgba(57,255,20,.22);
+}
+.cb-reel.result::after {
+  background: var(--cb-win);
+  box-shadow: 0 0 8px var(--cb-win), 0 0 16px rgba(57,255,20,.5);
 }
 
-/* ── Pay line arrows ─────────────────────────── */
-
-.payline-arrow {
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
+@keyframes cbReelSpin {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-25%); }
 }
+.cb-reel-strip { animation: cbReelSpin .18s linear infinite; }
 
-.payline-arrow.left {
-  border-left: 6px solid var(--accent);
+/* ── Result overlay slide ── */
+@keyframes cbSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+@utility cb-slide-up { animation: cbSlideUp .4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-.payline-arrow.right {
-  border-right: 6px solid var(--accent);
-}
-
-/* ── Winner flash ────────────────────────────── */
-
-@keyframes winner-flash {
-  0%, 100% { border-color: var(--accent); }
-  25%      { border-color: var(--teal); }
-  50%      { border-color: var(--accent); }
-  75%      { border-color: var(--warn); }
-}
-
-.slot-winner .slot-crown,
-.slot-winner .slot-base {
-  animation: winner-flash 1.5s ease-in-out infinite;
-}
-
-/* ── Easter Eggs ────────────────────────────────── */
-
-/* Jackpot Mode — rainbow cycling glow */
-@keyframes jackpot-glow {
-  0%   { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  16%  { box-shadow: 0 0 15px #ff7700, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  33%  { box-shadow: 0 0 15px #ffff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  50%  { box-shadow: 0 0 15px #00ff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  66%  { box-shadow: 0 0 15px #0077ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  83%  { box-shadow: 0 0 15px #8800ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  100% { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
-}
+/* ══════════════════════════════════════════════════════════════
+   Easter eggs (preserved, recolored to neon)
+   ══════════════════════════════════════════════════════════════ */
 
 @keyframes jackpot-border {
-  0%   { border-color: #ff0000; }
-  16%  { border-color: #ff7700; }
-  33%  { border-color: #ffff00; }
-  50%  { border-color: #00ff00; }
-  66%  { border-color: #0077ff; }
-  83%  { border-color: #8800ff; }
-  100% { border-color: #ff0000; }
+  0%   { border-color: var(--cb-magenta); box-shadow: 0 0 18px var(--cb-magenta); }
+  33%  { border-color: var(--cb-cyan);    box-shadow: 0 0 18px var(--cb-cyan); }
+  66%  { border-color: var(--cb-acid);    box-shadow: 0 0 18px var(--cb-acid); }
+  100% { border-color: var(--cb-magenta); box-shadow: 0 0 18px var(--cb-magenta); }
 }
+@keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@utility animate-spin-slow { animation: spin-slow 3s linear infinite; }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@utility animate-spin-slow {
-  animation: spin-slow 3s linear infinite;
-}
-
-.jackpot-mode .slot-crown {
-  animation: jackpot-glow 2s linear infinite;
-}
-
-.jackpot-mode .slot-base {
+.jackpot-mode .cb-reel {
   animation: jackpot-border 2s linear infinite;
 }
 
-.jackpot-mode .side-light {
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
-  animation: pulse-dot 0.4s ease-in-out infinite;
-}
-
-.jackpot-mode .reel-viewport {
-  border-color: var(--accent);
-  box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.08),
-    0 0 12px var(--accent-wash);
-}
-
-/* Konami — screen flash */
 @keyframes konami-flash {
   0%   { background: transparent; }
-  5%   { background: rgba(255, 255, 255, 0.3); }
+  5%   { background: rgba(5,217,232,.25); }
   10%  { background: transparent; }
-  15%  { background: rgba(255, 215, 0, 0.15); }
+  15%  { background: rgba(255,42,109,.18); }
   25%  { background: transparent; }
 }
-
-.konami-active::before {
+.konami-active::after {
   content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  pointer-events: none;
+  position: fixed; inset: 0; z-index: 100; pointer-events: none;
   animation: konami-flash 1s ease-out;
 }
-
