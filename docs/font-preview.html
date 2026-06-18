@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Font Preview — BetMarket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cb-void: #050208;
+    --cb-bg-0: #0a0612;
+    --cb-bg-1: #110828;
+    --cb-bg-2: #1a0f3d;
+    --cb-bg-3: #251456;
+    --cb-line: #2d1a5e;
+    --cb-line-2: #3d2680;
+    --cb-magenta: #ff2a6d;
+    --cb-magenta-soft: #ff66a0;
+    --cb-cyan: #05d9e8;
+    --cb-cyan-soft: #6ef0fa;
+    --cb-acid: #ccff00;
+    --cb-violet: #a855f7;
+    --cb-amber: #ffb800;
+    --cb-win: #39ff14;
+    --cb-loss: #ff003c;
+    --cb-text-0: #f0e9ff;
+    --cb-text-1: #b8a8e0;
+    --cb-text-2: #8174b8;
+    --cb-text-3: #5a4d8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cb-bg-0);
+    color: var(--cb-text-0);
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .font-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .font-label {
+    font-family: system-ui;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cb-text-3);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--cb-line);
+    margin-bottom: 8px;
+  }
+
+  /* ── Space Grotesk column ── */
+  .sg { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ── Chakra Petch column ── */
+  .cp { font-family: 'Chakra Petch', sans-serif; }
+
+  /* ── Shared component styles ── */
+
+  .scanlines {
+    position: relative;
+  }
+  .scanlines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px);
+    z-index: 1;
+  }
+
+  /* Header */
+  .preview-header {
+    background: var(--cb-bg-1);
+    border-bottom: 1px solid var(--cb-magenta);
+    box-shadow: 0 4px 24px rgba(255,42,109,.15);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-hex {
+    width: 40px;
+    height: 44px;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: linear-gradient(135deg, #b81353, var(--cb-magenta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 0 8px rgba(255,42,109,.8);
+  }
+
+  .logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .logo-text .bet { color: var(--cb-magenta); text-shadow: 0 0 6px rgba(255,42,109,.7), 0 0 14px rgba(255,42,109,.45); }
+  .logo-text .market { color: var(--cb-cyan); text-shadow: 0 0 6px rgba(5,217,232,.7), 0 0 14px rgba(5,217,232,.45); }
+  .logo-text .ver { font-size: 9px; font-weight: 400; color: var(--cb-text-3); letter-spacing: 0.15em; margin-left: 6px; vertical-align: super; }
+
+  .hud-cluster {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hud-chip {
+    background: var(--cb-bg-2);
+    border: 1px solid var(--cb-line);
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .hud-chip.streak { color: var(--cb-amber); border-color: var(--cb-amber); }
+  .hud-chip.balance { color: var(--cb-cyan); border-color: var(--cb-cyan); box-shadow: 0 0 8px rgba(5,217,232,.2); }
+  .hud-chip .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* Section head */
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+  }
+  .section-bar {
+    width: 4px;
+    height: 18px;
+    background: var(--cb-cyan);
+    box-shadow: 0 0 6px rgba(5,217,232,.6);
+    border-radius: 1px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cb-cyan);
+    text-shadow: 0 0 6px rgba(5,217,232,.5);
+  }
+  .section-badge {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--cb-text-2);
+    border: 1px solid var(--cb-line);
+    padding: 2px 8px;
+    margin-left: auto;
+  }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .cb-btn {
+    background: var(--cb-bg-2);
+    border: 1px solid var(--cb-line);
+    color: var(--cb-text-0);
+    padding: 10px 18px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition: all 0.15s;
+  }
+  .cb-btn.primary {
+    background: linear-gradient(135deg, var(--cb-magenta), var(--cb-violet));
+    border-color: var(--cb-magenta);
+    color: white;
+    box-shadow: 0 0 14px rgba(255,42,109,.3);
+  }
+  .cb-btn.cyan-btn {
+    background: linear-gradient(135deg, var(--cb-cyan), #008a96);
+    border-color: var(--cb-cyan);
+    color: var(--cb-bg-0);
+  }
+  .cb-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Odds pills */
+  .odds-row { display: flex; gap: 10px; align-items: center; }
+
+  .odds-pill {
+    background: var(--cb-bg-2);
+    border: 1px solid var(--cb-line);
+    padding: 8px 16px;
+    text-align: center;
+    min-width: 72px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .odds-pill:hover {
+    border-color: var(--cb-cyan);
+    background: rgba(5,217,232,.06);
+  }
+  .odds-pill.picked {
+    border-color: var(--cb-magenta);
+    background: rgba(255,42,109,.08);
+    box-shadow: 0 0 10px rgba(255,42,109,.2);
+  }
+  .odds-val {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .odds-pill.picked .odds-val {
+    color: var(--cb-magenta);
+    text-shadow: 0 0 6px rgba(255,42,109,.5);
+  }
+  .odds-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cb-text-3);
+    margin-top: 2px;
+  }
+
+  /* Market row */
+  .market-row {
+    background: var(--cb-bg-1);
+    border: 1px solid var(--cb-line);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hex-chip {
+    width: 30px;
+    height: 34px;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .hex-chip.mag { background: linear-gradient(135deg, #b81353, var(--cb-magenta)); }
+  .hex-chip.cyn { background: linear-gradient(135deg, #008a96, var(--cb-cyan)); }
+  .hex-chip.vio { background: linear-gradient(135deg, #6a25c4, var(--cb-violet)); }
+
+  .runner-info { flex: 1; }
+  .runner-name { font-size: 14px; font-weight: 600; letter-spacing: 0.02em; }
+  .runner-meta { font-size: 9px; color: var(--cb-text-3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  .runner-prob {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cb-text-2);
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* Reel preview */
+  .reel-preview {
+    background: var(--cb-void);
+    border: 1px solid var(--cb-cyan);
+    box-shadow: inset 0 0 24px rgba(5,217,232,.12), 0 0 14px rgba(5,217,232,.08);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .reel-preview::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 4px);
+    pointer-events: none;
+  }
+  .reel-preview::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%; height: 2px;
+    background: var(--cb-magenta);
+    box-shadow: 0 0 8px rgba(255,42,109,.6), 0 0 20px rgba(255,42,109,.3);
+  }
+  .reel-role {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cb-text-3);
+    margin-bottom: 8px;
+  }
+  .reel-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cb-magenta);
+    text-shadow: 0 0 8px rgba(255,42,109,.7), 0 0 20px rgba(255,42,109,.4);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Activity feed */
+  .feed-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--cb-text-2);
+  }
+  .feed-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .feed-dot.mag { background: var(--cb-magenta); box-shadow: 0 0 4px var(--cb-magenta); }
+  .feed-dot.cyn { background: var(--cb-cyan); box-shadow: 0 0 4px var(--cb-cyan); }
+  .feed-dot.acid { background: var(--cb-acid); box-shadow: 0 0 4px var(--cb-acid); }
+  .feed-ts { color: var(--cb-text-3); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+  /* Numbers showcase */
+  .numbers-row {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+  }
+  .num-big {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--cb-cyan);
+    text-shadow: 0 0 8px rgba(5,217,232,.5);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+  .num-med {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cb-acid);
+    text-shadow: 0 0 6px rgba(204,255,0,.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .num-small {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cb-text-1);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Microcopy */
+  .micro-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .micro {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cb-text-3);
+  }
+  .micro.comment { font-style: normal; }
+
+  /* Body text */
+  .body-text {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--cb-text-1);
+    max-width: 440px;
+  }
+
+  /* Footer */
+  .preview-footer {
+    background: var(--cb-void);
+    border-top: 1px solid var(--cb-line);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cb-text-3);
+  }
+  .footer-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--cb-win);
+    box-shadow: 0 0 4px var(--cb-win);
+    display: inline-block;
+    margin-right: 4px;
+  }
+
+  /* Bet slip mini */
+  .betslip {
+    background: var(--cb-bg-1);
+    border-left: 2px solid var(--cb-magenta);
+    box-shadow: -4px 0 16px rgba(255,42,109,.1);
+    padding: 16px;
+  }
+  .betslip-head {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cb-text-0);
+    margin-bottom: 12px;
+  }
+  .betslip-sel {
+    background: var(--cb-bg-2);
+    border: 1px solid var(--cb-line);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .betslip-sel::before, .betslip-sel::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--cb-cyan);
+  }
+  .betslip-sel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .betslip-sel::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+  .betslip-runner { font-size: 12px; font-weight: 600; }
+  .betslip-market { font-size: 9px; color: var(--cb-text-3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+  .betslip-odds { font-size: 16px; font-weight: 700; color: var(--cb-magenta); text-shadow: 0 0 4px rgba(255,42,109,.4); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  /* Divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--cb-line);
+  }
+
+  /* Stepper */
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    background: var(--cb-void);
+    border: 1px solid var(--cb-line);
+  }
+  .stepper-btn {
+    background: none;
+    border: none;
+    color: var(--cb-cyan);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .stepper-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cb-acid);
+    text-shadow: 0 0 4px rgba(204,255,0,.3);
+    padding: 0 12px;
+    font-variant-numeric: tabular-nums;
+    min-width: 50px;
+    text-align: center;
+    border-left: 1px solid var(--cb-line);
+    border-right: 1px solid var(--cb-line);
+  }
+
+  /* Toast */
+  .toast {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .toast.win {
+    background: rgba(57,255,20,.08);
+    border: 1px solid var(--cb-win);
+    color: var(--cb-win);
+    box-shadow: 0 0 10px rgba(57,255,20,.15);
+  }
+  .toast.loss {
+    background: rgba(255,0,60,.08);
+    border: 1px solid var(--cb-loss);
+    color: var(--cb-loss);
+    box-shadow: 0 0 10px rgba(255,0,60,.15);
+  }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--cb-line); padding-bottom: 0; }
+  .tab {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cb-text-2);
+    padding-bottom: 8px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+  .tab.active {
+    color: var(--cb-cyan);
+    border-bottom-color: var(--cb-cyan);
+    text-shadow: 0 0 6px rgba(5,217,232,.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-grid">
+
+  <!-- ═══════════ SPACE GROTESK ═══════════ -->
+  <div class="font-column sg">
+    <div class="font-label" style="font-family:system-ui">SPACE GROTESK</div>
+
+    <!-- Header -->
+    <div class="preview-header scanlines">
+      <div class="logo-area">
+        <div class="logo-hex">B</div>
+        <div class="logo-text">
+          <span class="bet">BET</span><span class="market">MARKET</span>
+          <span class="ver">v2.077</span>
+        </div>
+      </div>
+      <div class="hud-cluster">
+        <div class="hud-chip streak">🔥 <span class="val">3</span></div>
+        <div class="hud-chip balance">₡ <span class="val">01,250</span></div>
+      </div>
+    </div>
+
+    <!-- Section head -->
+    <div class="section-head">
+      <div class="section-bar"></div>
+      <div class="section-title">Markets Board</div>
+      <div class="section-badge">EVT·WK12·R1</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active">All</div>
+      <div class="tab">Favorites</div>
+      <div class="tab">Longshots</div>
+    </div>
+
+    <!-- Market row -->
+    <div class="market-row">
+      <div class="hex-chip mag">FAB</div>
+      <div class="runner-info">
+        <div class="runner-name">Fabio G.</div>
+        <div class="runner-meta">Streak: 3 · Last: MOD</div>
+      </div>
+      <div class="runner-prob">12.4%</div>
+      <div class="odds-pill picked">
+        <div class="odds-val">8.1x</div>
+        <div class="odds-label">Moderator</div>
+      </div>
+      <div class="odds-pill">
+        <div class="odds-val">7.6x</div>
+        <div class="odds-label">Notary</div>
+      </div>
+    </div>
+    <div class="market-row">
+      <div class="hex-chip cyn">MRC</div>
+      <div class="runner-info">
+        <div class="runner-name">Marco R.</div>
+        <div class="runner-meta">Streak: 0 · Last: —</div>
+      </div>
+      <div class="runner-prob">8.7%</div>
+      <div class="odds-pill">
+        <div class="odds-val">10.9x</div>
+        <div class="odds-label">Moderator</div>
+      </div>
+      <div class="odds-pill">
+        <div class="odds-val">10.2x</div>
+        <div class="odds-label">Notary</div>
+      </div>
+    </div>
+
+    <!-- Reel -->
+    <div class="reel-preview">
+      <div class="reel-role">◆ Moderator</div>
+      <div class="reel-name">FABIO G.</div>
+    </div>
+
+    <!-- Numbers -->
+    <div class="numbers-row">
+      <div class="num-big">₡ 01,250</div>
+      <div class="num-med">+125 XP</div>
+      <div class="num-small">02:00 remaining</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="cb-btn primary">⚡ Lock & Spin</button>
+      <button class="cb-btn cyan-btn">▶ Initiate Round</button>
+      <button class="cb-btn">◇ Markets</button>
+      <button class="cb-btn disabled">Locked</button>
+    </div>
+
+    <!-- Bet slip -->
+    <div class="betslip">
+      <div class="betslip-head">▣ Bet Slip 2</div>
+      <div class="betslip-sel">
+        <div class="betslip-runner">Fabio G. → Moderator</div>
+        <div class="betslip-market">Single · Mod</div>
+        <div class="betslip-odds">8.1x</div>
+      </div>
+      <div class="betslip-sel">
+        <div class="betslip-runner">Marco R. → Notary</div>
+        <div class="betslip-market">Single · Not</div>
+        <div class="betslip-odds">10.2x</div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="stepper">
+          <button class="stepper-btn">−</button>
+          <div class="stepper-val">25₡</div>
+          <button class="stepper-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toasts -->
+    <div style="display:flex;gap:10px">
+      <div class="toast win">✓ +203₡ Jackpot</div>
+      <div class="toast loss">✕ −50₡ Liquidated</div>
+    </div>
+
+    <!-- Microcopy -->
+    <div class="micro-row">
+      <div class="micro comment">// awaiting signals //</div>
+      <div class="micro">⚡ RNG Executing ⚡</div>
+      <div class="micro">━━━ Round 12 Complete ━━━</div>
+    </div>
+
+    <!-- Body text -->
+    <div class="body-text">
+      Tap any odds pill in the markets table to add a selection to your bet slip.
+      Combined payouts are calculated in real-time as you adjust your stake.
+      Odds shift dynamically based on market activity — lock in early for the best value.
+    </div>
+
+    <!-- Feed -->
+    <div>
+      <div class="feed-item"><span class="feed-dot mag"></span> FAB placed 25₡ on Marco → MOD @ 10.9x <span class="feed-ts">00:42</span></div>
+      <div class="feed-item"><span class="feed-dot cyn"></span> MRC locked in combo: FAB×MOD + LCA×NOT <span class="feed-ts">00:38</span></div>
+      <div class="feed-item"><span class="feed-dot acid"></span> +50 XP · Achievement unlocked: FIRST SPIN <span class="feed-ts">00:12</span></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="preview-footer">
+      <span><span class="footer-dot"></span>Uplink · 12ms</span>
+      <span><span class="footer-dot"></span>RNG · Verified</span>
+      <span><span class="footer-dot"></span>Session · Live</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHAKRA PETCH ═══════════ -->
+  <div class="font-column cp">
+    <div class="font-label" style="font-family:system-ui">CHAKRA PETCH</div>
+
+    <!-- Header -->
+    <div class="preview-header scanlines">
+      <div class="logo-area">
+        <div class="logo-hex">B</div>
+        <div class="logo-text">
+          <span class="bet">BET</span><span class="market">MARKET</span>
+          <span class="ver">v2.077</span>
+        </div>
+      </div>
+      <div class="hud-cluster">
+        <div class="hud-chip streak">🔥 <span class="val">3</span></div>
+        <div class="hud-chip balance">₡ <span class="val">01,250</span></div>
+      </div>
+    </div>
+
+    <!-- Section head -->
+    <div class="section-head">
+      <div class="section-bar"></div>
+      <div class="section-title">Markets Board</div>
+      <div class="section-badge">EVT·WK12·R1</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active">All</div>
+      <div class="tab">Favorites</div>
+      <div class="tab">Longshots</div>
+    </div>
+
+    <!-- Market row -->
+    <div class="market-row">
+      <div class="hex-chip mag">FAB</div>
+      <div class="runner-info">
+        <div class="runner-name">Fabio G.</div>
+        <div class="runner-meta">Streak: 3 · Last: MOD</div>
+      </div>
+      <div class="runner-prob">12.4%</div>
+      <div class="odds-pill picked">
+        <div class="odds-val">8.1x</div>
+        <div class="odds-label">Moderator</div>
+      </div>
+      <div class="odds-pill">
+        <div class="odds-val">7.6x</div>
+        <div class="odds-label">Notary</div>
+      </div>
+    </div>
+    <div class="market-row">
+      <div class="hex-chip cyn">MRC</div>
+      <div class="runner-info">
+        <div class="runner-name">Marco R.</div>
+        <div class="runner-meta">Streak: 0 · Last: —</div>
+      </div>
+      <div class="runner-prob">8.7%</div>
+      <div class="odds-pill">
+        <div class="odds-val">10.9x</div>
+        <div class="odds-label">Moderator</div>
+      </div>
+      <div class="odds-pill">
+        <div class="odds-val">10.2x</div>
+        <div class="odds-label">Notary</div>
+      </div>
+    </div>
+
+    <!-- Reel -->
+    <div class="reel-preview">
+      <div class="reel-role">◆ Moderator</div>
+      <div class="reel-name">FABIO G.</div>
+    </div>
+
+    <!-- Numbers -->
+    <div class="numbers-row">
+      <div class="num-big">₡ 01,250</div>
+      <div class="num-med">+125 XP</div>
+      <div class="num-small">02:00 remaining</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="cb-btn primary">⚡ Lock & Spin</button>
+      <button class="cb-btn cyan-btn">▶ Initiate Round</button>
+      <button class="cb-btn">◇ Markets</button>
+      <button class="cb-btn disabled">Locked</button>
+    </div>
+
+    <!-- Bet slip -->
+    <div class="betslip">
+      <div class="betslip-head">▣ Bet Slip 2</div>
+      <div class="betslip-sel">
+        <div class="betslip-runner">Fabio G. → Moderator</div>
+        <div class="betslip-market">Single · Mod</div>
+        <div class="betslip-odds">8.1x</div>
+      </div>
+      <div class="betslip-sel">
+        <div class="betslip-runner">Marco R. → Notary</div>
+        <div class="betslip-market">Single · Not</div>
+        <div class="betslip-odds">10.2x</div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="stepper">
+          <button class="stepper-btn">−</button>
+          <div class="stepper-val">25₡</div>
+          <button class="stepper-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toasts -->
+    <div style="display:flex;gap:10px">
+      <div class="toast win">✓ +203₡ Jackpot</div>
+      <div class="toast loss">✕ −50₡ Liquidated</div>
+    </div>
+
+    <!-- Microcopy -->
+    <div class="micro-row">
+      <div class="micro comment">// awaiting signals //</div>
+      <div class="micro">⚡ RNG Executing ⚡</div>
+      <div class="micro">━━━ Round 12 Complete ━━━</div>
+    </div>
+
+    <!-- Body text -->
+    <div class="body-text">
+      Tap any odds pill in the markets table to add a selection to your bet slip.
+      Combined payouts are calculated in real-time as you adjust your stake.
+      Odds shift dynamically based on market activity — lock in early for the best value.
+    </div>
+
+    <!-- Feed -->
+    <div>
+      <div class="feed-item"><span class="feed-dot mag"></span> FAB placed 25₡ on Marco → MOD @ 10.9x <span class="feed-ts">00:42</span></div>
+      <div class="feed-item"><span class="feed-dot cyn"></span> MRC locked in combo: FAB×MOD + LCA×NOT <span class="feed-ts">00:38</span></div>
+      <div class="feed-item"><span class="feed-dot acid"></span> +50 XP · Achievement unlocked: FIRST SPIN <span class="feed-ts">00:12</span></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="preview-footer">
+      <span><span class="footer-dot"></span>Uplink · 12ms</span>
+      <span><span class="footer-dot"></span>RNG · Verified</span>
+      <span><span class="footer-dot"></span>Session · Live</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

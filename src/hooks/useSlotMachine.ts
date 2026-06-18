@@ -3,7 +3,8 @@ import { useState, useCallback } from 'react';
 import { Participant, Role, SpinResult, GameState } from '../types';
 import { generateAnnouncement } from '../services/generateAnnouncement';
 
-/** Fisher-Yates shuffle — uniform distribution */
+const BETTING_DURATION_MS = 120_000;
+
 const shuffle = <T,>(arr: T[]): T[] => {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -19,6 +20,7 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
   const [announcement, setAnnouncement] = useState('');
   const [reelsStoppedCount, setReelsStoppedCount] = useState(0);
   const [activeReelIds, setActiveReelIds] = useState<string[]>([]);
+  const [bettingEndsAt, setBettingEndsAt] = useState<number | null>(null);
 
   const startSpinSequence = (roleIdsToSpin: string[]) => {
     setGameState(GameState.SPINNING);
@@ -34,14 +36,14 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
   };
 
   const handleFullSpin = () => {
-    if (roles.length === 0) {
-      alert('Please configure at least one role in settings!');
-      return;
-    }
-    if (participants.length < roles.length) {
-      alert(`Need at least ${roles.length} participants to fill all roles!`);
-      return;
-    }
+    if (roles.length === 0 || participants.length < roles.length) return;
+
+    setGameState(GameState.BETTING);
+    setBettingEndsAt(Date.now() + BETTING_DURATION_MS);
+  };
+
+  const handleExecuteSpin = useCallback(() => {
+    setBettingEndsAt(null);
 
     const shuffled = shuffle(participants);
     const newResults: SpinResult = {};
@@ -52,7 +54,23 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
 
     setSpinResult(newResults);
     startSpinSequence(roles.map((r) => r.id));
-  };
+
+    return newResults;
+  }, [participants, roles]);
+
+  const handleDirectSpin = useCallback(() => {
+    if (roles.length === 0 || participants.length < roles.length) return;
+
+    const shuffled = shuffle(participants);
+    const newResults: SpinResult = {};
+
+    roles.forEach((role, index) => {
+      newResults[role.id] = shuffled[index];
+    });
+
+    setSpinResult(newResults);
+    startSpinSequence(roles.map((r) => r.id));
+  }, [participants, roles]);
 
   const handleRespin = (roleId: string) => {
     const winnersOfOtherRoles = roles
@@ -64,10 +82,7 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
       (p) => !winnersOfOtherRoles.includes(p.id),
     );
 
-    if (candidates.length === 0) {
-      alert('No available participants left to switch to!');
-      return;
-    }
+    if (candidates.length === 0) return;
 
     const newWinner = candidates[Math.floor(Math.random() * candidates.length)];
 
@@ -97,8 +112,17 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
     });
   }, [activeReelIds.length, roles, spinResult]);
 
+  const handleReset = useCallback(() => {
+    setGameState(GameState.IDLE);
+    setSpinResult({});
+    setAnnouncement('');
+    setBettingEndsAt(null);
+  }, []);
+
   const isGameActive =
-    gameState === GameState.SPINNING || gameState === GameState.STOPPING;
+    gameState === GameState.BETTING ||
+    gameState === GameState.SPINNING ||
+    gameState === GameState.STOPPING;
 
   return {
     gameState,
@@ -106,8 +130,12 @@ export const useSlotMachine = (participants: Participant[], roles: Role[]) => {
     announcement,
     activeReelIds,
     isGameActive,
+    bettingEndsAt,
     handleFullSpin,
+    handleExecuteSpin,
+    handleDirectSpin,
     handleRespin,
     handleReelStop,
+    handleReset,
   };
 };

@@ -4,6 +4,7 @@ import { Participant } from '../types';
 
 interface SlotReelProps {
   label: string;
+  slotNumber: number;
   participants: Participant[];
   target: Participant | null;
   isSpinning: boolean;
@@ -15,6 +16,7 @@ interface SlotReelProps {
 
 export const SlotReel: React.FC<SlotReelProps> = ({
   label,
+  slotNumber,
   participants,
   target,
   isSpinning,
@@ -68,54 +70,68 @@ export const SlotReel: React.FC<SlotReelProps> = ({
     ? currentParticipant.name
     : participants.length > 0
       ? participants[0].name
-      : '???';
+      : '---';
 
   const hasResult = target && !internalSpinning;
+  const showPlaceholder = !target && !internalSpinning;
 
   return (
-    <div className="flex flex-col items-center w-40 relative">
-      {/* Role label with decorative diamonds */}
-      <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-accent/25 text-[7px]">&#9830;</span>
-        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-3 font-medium">
-          {label}
+    <div className="flex flex-col flex-1 min-w-0">
+      {/* Label row */}
+      <div className="flex items-center justify-between mb-2 px-1">
+        <span className="font-body text-xs font-bold tracking-[0.12em] uppercase text-neon-cyan glow-cyan">
+          &#9670; {label}
         </span>
-        <span className="text-accent/25 text-[7px]">&#9830;</span>
+        <span className="font-mono text-[9px] tracking-[0.15em] uppercase text-ink-4">
+          SLOT {String(slotNumber).padStart(2, '0')}
+        </span>
       </div>
 
-      {/* Reel window */}
+      {/* Reel box */}
       <div
         className={`
-          reel-card relative w-full h-20 rounded-xl overflow-hidden
+          relative w-full h-[120px] overflow-hidden scanlines
           flex items-center justify-center
-          transition-all duration-400
-          ${internalSpinning ? 'active' : ''}
-          ${hasResult ? 'result' : ''}
+          transition-all duration-300
+          ${internalSpinning
+            ? 'border border-neon-cyan shadow-[0_0_12px_oklch(0.80_0.14_195/0.2),inset_0_0_20px_oklch(0.80_0.14_195/0.08)]'
+            : hasResult
+              ? 'border border-neon-magenta shadow-[0_0_12px_oklch(0.62_0.26_12/0.2),inset_0_0_20px_oklch(0.62_0.26_12/0.08)]'
+              : 'border border-neon-cyan/60 shadow-[0_0_8px_oklch(0.80_0.14_195/0.12),inset_0_0_16px_oklch(0.80_0.14_195/0.06)]'
+          }
         `}
+        style={{ background: 'var(--void)' }}
       >
-        {/* Top/bottom fades */}
-        <div className="absolute top-0 left-0 w-full h-5 bg-gradient-to-b from-paper-2 to-transparent pointer-events-none z-10" />
-        <div className="absolute bottom-0 left-0 w-full h-5 bg-gradient-to-t from-paper-2 to-transparent pointer-events-none z-10" />
+        {/* Reel fades */}
+        <div className="reel-fade-top absolute top-0 left-0 w-full h-6 pointer-events-none z-20" />
+        <div className="reel-fade-bottom absolute bottom-0 left-0 w-full h-6 pointer-events-none z-20" />
 
-        {/* Center line indicator */}
-        <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-px bg-accent/10 z-10 pointer-events-none" />
+        {/* Payline — magenta glow line through center */}
+        <div
+          className="absolute left-0 right-0 top-1/2 h-[2px] z-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent, oklch(0.62 0.26 12 / 0.6) 10%, oklch(0.62 0.26 12 / 0.6) 90%, transparent)',
+            boxShadow: '0 0 8px oklch(0.62 0.26 12 / 0.4), 0 0 20px oklch(0.62 0.26 12 / 0.15)',
+          }}
+        />
 
-        {/* Name */}
-        <div className="z-0 px-4 text-center">
-          {participants.length === 0 ? (
-            <span className="text-ink-4 text-xs italic">Add players</span>
-          ) : !target ? (
-            <span className="font-display text-xl text-ink-4 italic">
-              ?
+        {/* Content */}
+        <div className="relative z-10 px-4 text-center">
+          {showPlaceholder ? (
+            <span
+              className="font-body text-3xl font-bold text-neon-magenta/50 tracking-[0.08em] italic"
+              style={{ textShadow: '0 0 10px oklch(0.62 0.26 12 / 0.3)' }}
+            >
+              ?????
             </span>
           ) : (
             <span
               className={`
-                font-display text-base md:text-lg font-bold whitespace-nowrap
+                font-body text-2xl font-bold whitespace-nowrap uppercase tracking-[0.06em]
                 transition-all duration-100
                 ${internalSpinning
-                  ? 'text-ink-3 blur-[1.5px] opacity-50'
-                  : 'text-ink blur-0 opacity-100'
+                  ? 'text-neon-cyan/60 blur-[2px]'
+                  : 'text-neon-magenta glow-magenta'
                 }
               `}
             >
@@ -126,20 +142,18 @@ export const SlotReel: React.FC<SlotReelProps> = ({
       </div>
 
       {/* Respin */}
-      <div className="mt-1.5 h-6 flex justify-center items-center">
+      <div className="mt-1.5 h-5 flex justify-center items-center">
         {!internalSpinning && showRespin && onRespin ? (
           <button
             onClick={onRespin}
-            className="text-ink-4 hover:text-accent p-1.5 rounded-full hover:bg-accent-wash transition-all duration-300 transform hover:rotate-180 border border-transparent hover:border-accent/20"
+            className="text-ink-4 hover:text-neon-cyan p-1 hover:bg-neon-cyan/10 transition-all duration-300 transform hover:rotate-180"
             title="Respin"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
-        ) : (
-          <div className="text-accent/20 text-xs">&#9650;</div>
-        )}
+        ) : null}
       </div>
     </div>
   );

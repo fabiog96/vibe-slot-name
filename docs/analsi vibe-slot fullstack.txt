@@ -1,0 +1,3205 @@
+╭─── Claude Code v2.1.91 ──────────────────────────────────────────────────────╮
+│                                                   │ Tips for getting started │
+│                Welcome back Fabio!                │ Run /init to create a C… │
+│                                                   │ ──────────────────────── │
+│                      ▐▛███▜▌                      │ Recent activity          │
+│                     ▝▜█████▛▘                     │ No recent activity       │
+│                       ▘▘ ▝▝                       │                          │
+│                                                   │                          │
+│   Opus 4.6 (1M context) · Claude Team · Adkaora   │                          │
+│         ~/Documents/GitHub/vibe-slot-name         │                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+❯ riesci a togliere l'overflow al progetto, imposterei delle dimensione fisse   
+al massimo aggiugnerei la scrollbar alla vip list                               
+
+⏺ Explore(Explore project structure)
+  ⎿  Done (13 tool uses · 68.2k tokens · 33s)
+  (ctrl+o to expand)
+
+  Read 3 files (ctrl+o to expand)
+
+⏺ Ecco le modifiche necessarie:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      44    } = useSlotMachine(participants, roles);
+      45  
+      46    return (
+      47 -    <div className="min-h-screen flex flex-col">               
+      47 +    <div className="h-screen flex flex-col overflow-hidden">   
+      48        {gameState === GameState.RESULT && (
+      49          <Confetti
+      50            recycle={false}
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      93        <div className="rule mx-6 md:mx-10" />
+      94  
+      95        {/* ── Main ── */}
+      96 -      <main className="flex-1 px-4 md:px-10 py-6 md:py-10 flex 
+         -flex-col lg:flex-row gap-6 lg:gap-10 max-w-7xl mx-auto w-full">
+      96 +      <main className="flex-1 min-h-0 px-4 md:px-10 py-6 md:py-
+         +10 flex flex-col lg:flex-row gap-6 lg:gap-10 max-w-7xl mx-auto 
+         +w-full overflow-hidden">                                       
+      97  
+      98          {/* Left: Participants */}
+      99          <div className="w-full lg:w-80 xl:w-[340px] h-[520px] l
+          g:h-auto order-2 lg:order-1 shrink-0">
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+       96        <main className="flex-1 min-h-0 px-4 md:px-10 py-6 md:py
+           -10 flex flex-col lg:flex-row gap-6 lg:gap-10 max-w-7xl mx-aut
+           o w-full overflow-hidden">
+       97  
+       98          {/* Left: Participants */}
+       99 -        <div className="w-full lg:w-80 xl:w-[340px] h-[520px] 
+          -lg:h-auto order-2 lg:order-1 shrink-0">                       
+       99 +        <div className="w-full lg:w-80 xl:w-[340px] min-h-0 or
+          +der-2 lg:order-1 shrink-0 lg:h-full">                         
+      100            <ControlPanel
+      101              participants={participants}
+      102              setParticipants={setParticipants}
+
+⏺ Now let me also make the center section scrollable so the slot machine can be
+  seen fully on smaller screens:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      104          </div>
+      105  
+      106          {/* Center: Machine */}
+      107 -        <div className="flex-1 flex flex-col items-center just
+          -ify-center order-1 lg:order-2">                               
+      107 +        <div className="flex-1 min-h-0 flex flex-col items-cen
+          +ter justify-center order-1 lg:order-2 overflow-y-auto">       
+      108  
+      109            {/* ── THE SLOT MACHINE ── */}
+      110            <div className={`w-full max-w-2xl relative ${gameSta
+           te === GameState.RESULT ? 'slot-winner' : ''}`}>
+
+⏺ Verifico che il build funzioni:
+
+⏺ Bash(npx tsc --noEmit 2>&1 | head -20)
+  ⎿  (No output)
+
+⏺ Tutto ok. Ecco il riepilogo delle modifiche:
+
+  1. Root div: min-h-screen → h-screen overflow-hidden — blocca l'altezza alla
+  viewport, niente overflow sulla pagina
+  2. Main: aggiunto min-h-0 overflow-hidden — permette ai figli flex di ridursi
+  correttamente
+  3. VIP List wrapper: rimosso h-[520px] fisso, aggiunto min-h-0 lg:h-full — si
+  adatta allo spazio disponibile
+  4. Centro (slot machine): aggiunto min-h-0 overflow-y-auto — scrollabile se la
+   slot non entra nello spazio
+
+  La VIP list aveva già overflow-y-auto sulla lista dei player
+  (ControlPanel.tsx:110), quindi la scrollbar compare automaticamente quando i
+  nomi superano lo spazio disponibile.
+
+✻ Worked for 1m 20s
+
+❯ no però la slot  machine rimanee tagliata falla più piccola e rimuovi la      
+scroll per questa parte. inoltre diminuirei l'header                            
+
+  Read 2 files (ctrl+o to expand)
+
+⏺ Applico le modifiche: header più compatto, slot machine più piccola, no scroll
+   al centro.
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 5 lines, removed 5 lines
+      65        />
+      66  
+      67        {/* ── Header ── */}
+      68 -      <header className="px-6 md:px-10 pt-6 pb-4 flex justify-b
+         -etween items-center">                                          
+      69 -        <div className="flex items-center gap-3">              
+      70 -          <span className="text-accent text-xl">&#127920;</span
+         ->                                                              
+      68 +      <header className="px-6 md:px-10 pt-3 pb-2 flex justify-b
+         +etween items-center">                                          
+      69 +        <div className="flex items-center gap-2">              
+      70 +          <span className="text-accent text-base">&#127920;</sp
+         +an>                                                            
+      71            <div>
+      72 -            <h1 className="font-display text-xl md:text-2xl fon
+         -t-bold text-ink tracking-tight italic">                        
+      72 +            <h1 className="font-display text-base md:text-lg fo
+         +nt-bold text-ink tracking-tight italic leading-tight">         
+      73                Vibe Slot Name
+      74              </h1>
+      75 -            <p className="font-mono text-[10px] tracking-[0.2em
+         -] uppercase text-ink-3 mt-0.5">                                
+      75 +            <p className="font-mono text-[9px] tracking-[0.2em]
+         + uppercase text-ink-3">                                        
+      76                Role Assignment Machine
+      77              </p>
+      78            </div>
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      93        <div className="rule mx-6 md:mx-10" />
+      94  
+      95        {/* ── Main ── */}
+      96 -      <main className="flex-1 min-h-0 px-4 md:px-10 py-6 md:py-
+         -10 flex flex-col lg:flex-row gap-6 lg:gap-10 max-w-7xl mx-auto 
+         -w-full overflow-hidden">                                       
+      96 +      <main className="flex-1 min-h-0 px-4 md:px-10 py-4 md:py-
+         +6 flex flex-col lg:flex-row gap-4 lg:gap-8 max-w-7xl mx-auto w-
+         +full overflow-hidden">                                         
+      97  
+      98          {/* Left: Participants */}
+      99          <div className="w-full lg:w-80 xl:w-[340px] min-h-0 ord
+          er-2 lg:order-1 shrink-0 lg:h-full">
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      104          </div>
+      105  
+      106          {/* Center: Machine */}
+      107 -        <div className="flex-1 min-h-0 flex flex-col items-cen
+          -ter justify-center order-1 lg:order-2 overflow-y-auto">       
+      107 +        <div className="flex-1 min-h-0 flex flex-col items-cen
+          +ter justify-center order-1 lg:order-2 overflow-hidden">       
+      108  
+      109            {/* ── THE SLOT MACHINE ── */}
+      110            <div className={`w-full max-w-2xl relative ${gameSta
+           te === GameState.RESULT ? 'slot-winner' : ''}`}>
+
+⏺ Ora riduco la crown della slot machine:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      110            <div className={`w-full max-w-2xl relative ${gameSta
+           te === GameState.RESULT ? 'slot-winner' : ''}`}>
+      111  
+      112              {/* === CROWN / MARQUEE === */}
+      113 -            <div className="slot-crown relative bg-accent-ink 
+          -text-white rounded-t-2xl px-6 pt-6 pb-5 text-center border-x-2
+          - border-t-2 border-accent/40 overflow-hidden">                
+      113 +            <div className="slot-crown relative bg-accent-ink 
+          +text-white rounded-t-2xl px-4 pt-4 pb-3 text-center border-x-2
+          + border-t-2 border-accent/40 overflow-hidden">                
+      114                {/* Corner rivets */}
+      115                <div className="rivet absolute top-3 left-3" />
+      116                <div className="rivet absolute top-3 right-3" />
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      150                <span className="absolute top-5 right-7 text-acc
+           ent/20 text-[10px]">&#9733;</span>
+      151  
+      152                <div className="mt-1 mb-1">
+      153 -                <h2 className="font-display text-4xl md:text-5
+          -xl font-black italic tracking-tight leading-none">            
+      153 +                <h2 className="font-display text-2xl md:text-3
+          +xl font-black italic tracking-tight leading-none">            
+      154                    Vibe Slot
+      155                  </h2>
+      156 -                <div className="flex items-center justify-cent
+          -er gap-2 mt-2">                                               
+      156 +                <div className="flex items-center justify-cent
+          +er gap-2 mt-1">                                               
+      157                    <span className="text-accent/40 text-[8px]">
+           &#9830;</span>
+      158                    <p className="font-mono text-[9px] tracking-
+           [0.4em] uppercase text-white/50">
+      159                      Name
+
+⏺ Riduco i padding del body e del reel viewport:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      186                  <div className="rivet absolute bottom-2 right-
+           2 z-10" />
+      187  
+      188                  {/* Credit & Status display bar */}
+      189 -                <div className="px-5 py-3 flex items-center ju
+          -stify-between border-b border-rule bg-paper-3/50">            
+      189 +                <div className="px-4 py-2 flex items-center ju
+          +stify-between border-b border-rule bg-paper-3/50">            
+      190                    <div className="flex items-center gap-3">
+      191                      <div className={`w-2.5 h-2.5 rounded-full 
+           transition-all duration-300 ${
+      192                        isGameActive ? 'bg-accent shadow-[0_0_8p
+           x_var(--accent)]' : gameState === GameState.RESULT ? 'bg-teal 
+           shadow-[0_0_6px_var(--teal)]' : 'bg-rule'
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      214                  </div>
+      215  
+      216                  {/* Reel viewport — framed glass panel */}
+      217 -                <div className="p-4 md:p-6">                  
+      218 -                  <div className="reel-viewport p-4 md:p-6">  
+      217 +                <div className="p-3 md:p-4">                  
+      218 +                  <div className="reel-viewport p-3 md:p-4">  
+      219                      {roles.length === 0 ? (
+      220                        <div className="text-center py-12">
+      221                          <p className="text-ink-3 text-sm mb-3"
+           >No roles configured</p>
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      269                  </div>
+      270  
+      271                  {/* Spin button area */}
+      272 -                <div className="px-5 md:px-8 pb-5 md:pb-6">   
+      273 -                  <div className="pt-4 border-t border-rule fl
+          -ex items-center justify-center gap-4">                        
+      272 +                <div className="px-4 md:px-6 pb-3 md:pb-4">   
+      273 +                  <div className="pt-3 border-t border-rule fl
+          +ex items-center justify-center gap-4">                        
+      274                      {/* Decorative buttons (left) */}
+      275                      <div className="hidden md:flex items-cente
+           r gap-2">
+      276                        <div className="w-3 h-3 rounded-full bg-
+           rule border border-rule-strong" />
+
+⏺ Riduco il bottone spin e il coin tray:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      285                          roles.length === 0
+      286                        }
+      287                        className={`
+      288 -                        px-12 py-3.5 rounded-full font-mono te
+          -xt-xs tracking-[0.2em] uppercase                              
+      288 +                        px-10 py-2.5 rounded-full font-mono te
+          +xt-xs tracking-[0.2em] uppercase                              
+      289                          transition-all duration-200 transform
+      290                          ${
+      291                            participants.length < roles.length |
+           | roles.length === 0
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      352                <div className="rivet absolute bottom-3 right-3"
+            />
+      353  
+      354                {/* Payout display */}
+      355 -              <div className="px-5 py-3 flex items-center just
+          -ify-center gap-3">                                            
+      355 +              <div className="px-4 py-2 flex items-center just
+          +ify-center gap-3">                                            
+      356                  <div className="h-px flex-1 bg-rule" />
+      357                  <div className="flex items-center gap-2">
+      358                    <span className="text-accent/30 text-[8px]">
+           &#9733;</span>
+     ...
+      365                </div>
+      366  
+      367                {/* Coin tray with lip */}
+      368 -              <div className="mx-auto w-48 mb-3">             
+      368 +              <div className="mx-auto w-40 mb-2">             
+      369                  <div className="h-1 bg-rule-strong rounded-t-s
+           m" />
+      370                  <div className="h-5 bg-paper-3 border-x border
+           -b border-rule rounded-b-lg shadow-inner flex items-center jus
+           tify-center">
+      371                    <div className="w-6 h-0.5 bg-rule rounded-fu
+           ll" />
+
+⏺ Riduco l'announcement e il lever:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      375            </div>
+      376  
+      377            {/* ── Announcement ── */}
+      378 -          <div className="mt-6 w-full max-w-xl min-h-[60px] fl
+          -ex items-center justify-center text-center">                  
+      378 +          <div className="mt-3 w-full max-w-xl min-h-[40px] fl
+          +ex items-center justify-center text-center">                  
+      379              {gameState === GameState.RESULT && (
+      380 -              <div className="animate-fade-in-up w-full px-6 p
+          -y-5 bg-accent-wash rounded-xl border-2 border-accent/20 relati
+          -ve overflow-hidden">                                          
+      380 +              <div className="animate-fade-in-up w-full px-4 p
+          +y-3 bg-accent-wash rounded-xl border-2 border-accent/20 relati
+          +ve overflow-hidden">                                          
+      381                  {/* Corner decorations */}
+      382                  <span className="absolute top-2 left-3 text-ac
+           cent/20 text-[10px]">&#9733;</span>
+      383                  <span className="absolute top-2 right-3 text-a
+           ccent/20 text-[10px]">&#9733;</span>
+
+⏺ Riduco il lever track e la reel card height:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      327                  </div>
+      328  
+      329                  {/* Lever arm */}
+      330 -                <div className="lever-track h-28 relative roun
+          -ded-full">                                                    
+      330 +                <div className="lever-track h-20 relative roun
+          +ded-full">                                                    
+      331                    {/* Lever ball handle */}
+      332                    <div
+      333                      className={`
+
+⏺ Ora riduco le reel card nel componente SlotReel:
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      73    const hasResult = target && !internalSpinning;
+      74  
+      75    return (
+      76 -    <div className="flex flex-col items-center w-48 relative"> 
+      76 +    <div className="flex flex-col items-center w-40 relative"> 
+      77        {/* Role label with decorative diamonds */}
+      78 -      <div className="flex items-center gap-2 mb-2.5">         
+      78 +      <div className="flex items-center gap-2 mb-1.5">         
+      79          <span className="text-accent/25 text-[7px]">&#9830;</sp
+          an>
+      80          <span className="font-mono text-[10px] tracking-[0.2em]
+           uppercase text-ink-3 font-medium">
+      81            {label}
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 1 line, removed 1 line
+      86        {/* Reel window */}
+      87        <div
+      88          className={`
+      89 -          reel-card relative w-full h-28 rounded-xl overflow-hi
+         -dden                                                           
+      89 +          reel-card relative w-full h-20 rounded-xl overflow-hi
+         +dden                                                           
+      90            flex items-center justify-center
+      91            transition-all duration-400
+      92            ${internalSpinning ? 'active' : ''}
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+       94          `}
+       95        >
+       96          {/* Top/bottom fades */}
+       97 -        <div className="absolute top-0 left-0 w-full h-8 bg-gr
+          -adient-to-b from-paper-2 to-transparent pointer-events-none z-
+          -10" />                                                        
+       98 -        <div className="absolute bottom-0 left-0 w-full h-8 bg
+          --gradient-to-t from-paper-2 to-transparent pointer-events-none
+          - z-10" />                                                     
+       97 +        <div className="absolute top-0 left-0 w-full h-5 bg-gr
+          +adient-to-b from-paper-2 to-transparent pointer-events-none z-
+          +10" />                                                        
+       98 +        <div className="absolute bottom-0 left-0 w-full h-5 bg
+          +-gradient-to-t from-paper-2 to-transparent pointer-events-none
+          + z-10" />                                                     
+       99  
+      100          {/* Center line indicator */}
+      101          <div className="absolute left-2 right-2 top-1/2 -trans
+           late-y-1/2 h-px bg-accent/10 z-10 pointer-events-none" />
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 1 line, removed 1 line
+      105            {participants.length === 0 ? (
+      106              <span className="text-ink-4 text-xs italic">Add pl
+           ayers</span>
+      107            ) : !target ? (
+      108 -            <span className="font-display text-2xl text-ink-4 
+          -italic">                                                      
+      108 +            <span className="font-display text-xl text-ink-4 i
+          +talic">                                                       
+      109                ?
+      110              </span>
+      111            ) : (
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 1 line, removed 1 line
+      111            ) : (
+      112              <span
+      113                className={`
+      114 -                font-display text-xl md:text-2xl font-bold whi
+          -tespace-nowrap                                                
+      114 +                font-display text-base md:text-lg font-bold wh
+          +itespace-nowrap                                               
+      115                  transition-all duration-100
+      116                  ${internalSpinning
+      117                    ? 'text-ink-3 blur-[1.5px] opacity-50'
+
+⏺ Update(src/components/SlotReel.tsx)
+  ⎿  Added 1 line, removed 1 line
+      126        </div>
+      127  
+      128        {/* Respin */}
+      129 -      <div className="mt-2.5 h-7 flex justify-center items-cen
+          -ter">                                                         
+      129 +      <div className="mt-1.5 h-6 flex justify-center items-cen
+          +ter">                                                         
+      130          {!internalSpinning && showRespin && onRespin ? (
+      131            <button
+      132              onClick={onRespin}
+
+⏺ Riduco anche il footer e il side light strip:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      406        </main>
+      407  
+      408        {/* ── Footer ── */}
+      409 -      <footer className="py-4 text-center">                   
+      410 -        <div className="flex items-center justify-center gap-3
+          - mb-2">                                                       
+      409 +      <footer className="py-2 text-center">                   
+      410 +        <div className="flex items-center justify-center gap-3
+          + mb-1">                                                       
+      411            <div className="w-8 h-px bg-rule" />
+      412            <span className="text-accent/20 text-[8px]">&#9733; 
+           &#9830; &#9733;</span>
+      413            <div className="w-8 h-px bg-rule" />
+
+⏺ Riduco anche le side light strips da 6 a 4:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      167              <div className="slot-body relative flex">
+      168  
+      169                {/* Left side light strip */}
+      170 -              <div className="hidden md:flex flex-col items-ce
+          -nter justify-center gap-3 w-5 bg-accent-ink/5 border-l-2 borde
+          -r-accent/30 py-4">                                            
+      171 -                {Array.from({ length: 6 }).map((_, i) => (    
+      170 +              <div className="hidden md:flex flex-col items-ce
+          +nter justify-center gap-2 w-5 bg-accent-ink/5 border-l-2 borde
+          +r-accent/30 py-3">                                            
+      171 +                {Array.from({ length: 4 }).map((_, i) => (    
+      172                    <div
+      173                      key={`left-${i}`}
+      174                      className={`side-light ${isGameActive ? 'a
+           ctive' : ''}`}
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      309                </div>
+      310  
+      311                {/* Right side light strip */}
+      312 -              <div className="hidden md:flex flex-col items-ce
+          -nter justify-center gap-3 w-5 bg-accent-ink/5 border-r-2 borde
+          -r-accent/30 py-4">                                            
+      313 -                {Array.from({ length: 6 }).map((_, i) => (    
+      312 +              <div className="hidden md:flex flex-col items-ce
+          +nter justify-center gap-2 w-5 bg-accent-ink/5 border-r-2 borde
+          +r-accent/30 py-3">                                            
+      313 +                {Array.from({ length: 4 }).map((_, i) => (    
+      314                    <div
+      315                      key={`right-${i}`}
+      316                      className={`side-light ${isGameActive ? 'a
+           ctive' : ''}`}
+
+⏺ Riduco anche il max-w della slot machine:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line, removed 1 line
+      107          <div className="flex-1 min-h-0 flex flex-col items-cen
+           ter justify-center order-1 lg:order-2 overflow-hidden">
+      108  
+      109            {/* ── THE SLOT MACHINE ── */}
+      110 -          <div className={`w-full max-w-2xl relative ${gameSta
+          -te === GameState.RESULT ? 'slot-winner' : ''}`}>              
+      110 +          <div className={`w-full max-w-xl relative ${gameStat
+          +e === GameState.RESULT ? 'slot-winner' : ''}`}>               
+      111  
+      112              {/* === CROWN / MARQUEE === */}
+      113              <div className="slot-crown relative bg-accent-ink 
+           text-white rounded-t-2xl px-4 pt-4 pb-3 text-center border-x-2
+            border-t-2 border-accent/40 overflow-hidden">
+
+⏺ Verifico il build:
+⏺ Bash(npx tsc --noEmit 2>&1 | head -10)
+  ⎿  (No output)
+
+⏺ Tutto compila. Ecco il riepilogo:
+
+  Header - padding ridotto (pt-3 pb-2), font da text-xl/2xl a text-base/lg
+
+  Slot machine (complessivamente molto più compatta):
+  - Crown: padding ridotto, titolo da text-4xl/5xl a text-2xl/3xl
+  - Status bar: padding ridotto
+  - Reel viewport: padding da p-4/p-6 a p-3/p-4
+  - Reel card: altezza da h-28 a h-20, larghezza da w-48 a w-40, font nomi
+  ridotto
+  - Spin button: padding ridotto
+  - Side lights: da 6 a 4, gap e padding ridotti
+  - Lever: track da h-28 a h-20
+  - Coin tray: più piccolo
+  - Base: padding ridotto
+  - Max width: da max-w-2xl a max-w-xl
+
+  Centro: scroll rimossa (overflow-hidden al posto di overflow-y-auto)
+
+  Footer: padding ridotto
+
+  Announcement: margin e padding ridotti
+
+✻ Worked for 2m 24s
+
+❯ inseriamo qualche easter egg?                                                 
+  ⎿  ⧉ Selected 421 lines from src/App.tsx in Visual Studio Code
+
+⏺ Bella idea! Qualche proposta che si adatta bene al tema:
+
+  1. Konami Code - inserendo la sequenza classica (su su giu giu sx dx sx dx B
+  A) parte uno spin automatico con effetto speciale
+  2. Click 7 volte sulla slot machine emoji nell'header - attiva una "modalita'
+  jackpot" con colori e animazioni extra
+  3. Messaggio segreto nel coin tray - cliccando sul coin tray esce una moneta
+  animata con un messaggio random
+  4. "777" nei credits - se i partecipanti sono esattamente 7 e i ruoli 7,
+  appare un effetto speciale
+
+  Quali ti piacciono? Ne aggiungo tutti o preferisci sceglierne qualcuno?
+
+❯ i primi 3                                                                     
+
+  Read 2 files (ctrl+o to expand)
+
+⏺ Creo l'hook per gli easter eggs e poi lo integro.
+
+⏺ Write(src/hooks/useEasterEggs.ts)
+  ⎿  Wrote 87 lines to src/hooks/useEasterEggs.ts
+       1 import { useCallback, useEffect, useRef, useState } from 'react'
+         ;
+       2 
+       3 const KONAMI_SEQUENCE = [
+       4   'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+       5   'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+       6   'KeyB', 'KeyA',
+       7 ];
+       8 
+       9 const COIN_MESSAGES = [
+      10   'May the odds be ever in your favor!',
+     … +77 lines (ctrl+o to expand)
+
+⏺ Ora integro nell'App.tsx:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 1 line
+       5  import { SlotReel, ControlPanel, SettingsModal } from './compon
+          ents';
+       6  import { useSlotMachine } from './hooks/useSlotMachine';
+       7  import { useTheme } from './hooks/useTheme';
+       8 +import { useEasterEggs } from './hooks/useEasterEggs';         
+       9  
+      10  const DEFAULT_PARTICIPANTS: Participant[] = [
+      11    { id: '1', name: 'Capra ' },
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 8 lines
+      44      handleReelStop,
+      45    } = useSlotMachine(participants, roles);
+      46  
+      47 +  const {                                                      
+      48 +    konamiActive,                                              
+      49 +    jackpotMode,                                               
+      50 +    coinMessage,                                               
+      51 +    handleLogoClick,                                           
+      52 +    handleCoinTrayClick,                                       
+      53 +  } = useEasterEggs(handleFullSpin);                           
+      54 +                                                               
+      55    return (
+      56      <div className="h-screen flex flex-col overflow-hidden">
+      57        {gameState === GameState.RESULT && (
+
+⏺ Ora aggiungo le classi condizionali e i gestori. Prima il Konami + Jackpot
+  mode sul container root:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      53    } = useEasterEggs(handleFullSpin);
+      54  
+      55    return (
+      56 -    <div className="h-screen flex flex-col overflow-hidden">   
+      57 -      {gameState === GameState.RESULT && (                     
+      56 +    <div className={`h-screen flex flex-col overflow-hidden ${j
+         +ackpotMode ? 'jackpot-mode' : ''} ${konamiActive ? 'konami-acti
+         +ve' : ''}`}>                                                   
+      57 +      {(gameState === GameState.RESULT || konamiActive) && (   
+      58          <Confetti
+      59            recycle={false}
+      60            numberOfPieces={150}
+
+⏺ Aggiungo il confetti extra per il konami:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 7 lines, removed 4 lines
+      57        {(gameState === GameState.RESULT || konamiActive) && (
+      58          <Confetti
+      59            recycle={false}
+      60 -          numberOfPieces={150}                                 
+      61 -          gravity={0.1}                                        
+      62 -          colors={['#c2703e', '#5a8a7a', '#d4a853', '#7a6240', 
+         -'#3d7a6a']}                                                    
+      63 -          opacity={0.6}                                        
+      60 +          numberOfPieces={konamiActive ? 400 : 150}            
+      61 +          gravity={konamiActive ? 0.05 : 0.1}                  
+      62 +          colors={konamiActive                                 
+      63 +            ? ['#ff0000', '#ff7700', '#ffff00', '#00ff00', '#00
+         +77ff', '#8800ff', '#ff00ff']                                   
+      64 +            : ['#c2703e', '#5a8a7a', '#d4a853', '#7a6240', '#3d
+         +7a6a']                                                         
+      65 +          }                                                    
+      66 +          opacity={konamiActive ? 0.9 : 0.6}                   
+      67          />
+      68        )}
+      69  
+
+⏺ Ora il click sulla emoji del logo:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 4 lines, removed 1 line
+      79        {/* ── Header ── */}
+      80        <header className="px-6 md:px-10 pt-3 pb-2 flex justify-b
+          etween items-center">
+      81          <div className="flex items-center gap-2">
+      82 -          <span className="text-accent text-base">&#127920;</sp
+         -an>                                                            
+      82 +          <span                                                
+      83 +            className={`text-accent text-base cursor-pointer se
+         +lect-none transition-transform duration-200 hover:scale-110 ${j
+         +ackpotMode ? 'animate-spin-slow' : ''}`}                       
+      84 +            onClick={handleLogoClick}                          
+      85 +          >&#127920;</span>                                    
+      86            <div>
+      87              <h1 className="font-display text-base md:text-lg fo
+          nt-bold text-ink tracking-tight italic leading-tight">
+      88                Vibe Slot 
+
+⏺ Ora il coin tray cliccabile con il messaggio:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 14 lines, removed 2 lines
+      380                </div>
+      381  
+      382                {/* Coin tray with lip */}
+      383 -              <div className="mx-auto w-40 mb-2">             
+      383 +              <div className="mx-auto w-40 mb-2 relative">    
+      384                  <div className="h-1 bg-rule-strong rounded-t-s
+           m" />
+      385 -                <div className="h-5 bg-paper-3 border-x border
+          --b border-rule rounded-b-lg shadow-inner flex items-center jus
+          -tify-center">                                                 
+      385 +                <div                                          
+      386 +                  className="h-5 bg-paper-3 border-x border-b 
+          +border-rule rounded-b-lg shadow-inner flex items-center justif
+          +y-center cursor-pointer hover:bg-paper-2 transition-colors"   
+      387 +                  onClick={handleCoinTrayClick}               
+      388 +                  title="..."                                 
+      389 +                >                                             
+      390                    <div className="w-6 h-0.5 bg-rule rounded-fu
+           ll" />
+      391                  </div>
+      392 +                {coinMessage && (                             
+      393 +                  <div className="coin-message absolute -top-1
+          +0 left-1/2 -translate-x-1/2 whitespace-nowrap animate-fade-in-
+          +up z-30">                                                     
+      394 +                    <div className="bg-accent-ink text-white t
+          +ext-[10px] font-mono px-3 py-1.5 rounded-lg shadow-lg relative
+          +">                                                            
+      395 +                      {coinMessage}                           
+      396 +                      <div className="absolute -bottom-1 left-
+          +1/2 -translate-x-1/2 w-2 h-2 bg-accent-ink rotate-45" />      
+      397 +                    </div>                                    
+      398 +                  </div>                                      
+      399 +                )}                                            
+      400                </div>
+      401              </div>
+      402            </div>
+
+⏺ Ora aggiungo le animazioni CSS per jackpot mode e konami:
+
+⏺ Update(src/styles/index.css)
+  ⎿  Added 76 lines
+      362  .slot-winner .slot-base {
+      363    animation: winner-flash 1.5s ease-in-out infinite;
+      364  }
+      365 +                                                              
+      366 +/* ── Easter Eggs ────────────────────────────────── */       
+      367 +                                                              
+      368 +/* Jackpot Mode — rainbow cycling glow */                     
+      369 +@keyframes jackpot-glow {                                     
+      370 +  0%   { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      371 +  16%  { box-shadow: 0 0 15px #ff7700, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      372 +  33%  { box-shadow: 0 0 15px #ffff00, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      373 +  50%  { box-shadow: 0 0 15px #00ff00, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      374 +  66%  { box-shadow: 0 0 15px #0077ff, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      375 +  83%  { box-shadow: 0 0 15px #8800ff, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      376 +  100% { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0
+          +,0,0,0.15); }                                                 
+      377 +}                                                             
+      378 +                                                              
+      379 +@keyframes jackpot-border {                                   
+      380 +  0%   { border-color: #ff0000; }                             
+      381 +  16%  { border-color: #ff7700; }                             
+      382 +  33%  { border-color: #ffff00; }                             
+      383 +  50%  { border-color: #00ff00; }                             
+      384 +  66%  { border-color: #0077ff; }                             
+      385 +  83%  { border-color: #8800ff; }                             
+      386 +  100% { border-color: #ff0000; }                             
+      387 +}                                                             
+      388 +                                                              
+      389 +@keyframes spin-slow {                                        
+      390 +  from { transform: rotate(0deg); }                           
+      391 +  to   { transform: rotate(360deg); }                         
+      392 +}                                                             
+      393 +                                                              
+      394 +@utility animate-spin-slow {                                  
+      395 +  animation: spin-slow 3s linear infinite;                    
+      396 +}                                                             
+      397 +                                                              
+      398 +.jackpot-mode .slot-crown {                                   
+      399 +  animation: jackpot-glow 2s linear infinite;                 
+      400 +}                                                             
+      401 +                                                              
+      402 +.jackpot-mode .slot-base {                                    
+      403 +  animation: jackpot-border 2s linear infinite;               
+      404 +}                                                             
+      405 +                                                              
+      406 +.jackpot-mode .side-light {                                   
+      407 +  background: var(--accent);                                  
+      408 +  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-was
+          +h);                                                           
+      409 +  animation: pulse-dot 0.4s ease-in-out infinite;             
+      410 +}                                                             
+      411 +                                                              
+      412 +.jackpot-mode .reel-viewport {                                
+      413 +  border-color: var(--accent);                                
+      414 +  box-shadow:                                                 
+      415 +    inset 0 3px 8px rgba(0, 0, 0, 0.08),                      
+      416 +    0 0 12px var(--accent-wash);                              
+      417 +}                                                             
+      418 +                                                              
+      419 +/* Konami — screen flash */                                   
+      420 +@keyframes konami-flash {                                     
+      421 +  0%   { background: transparent; }                           
+      422 +  5%   { background: rgba(255, 255, 255, 0.3); }              
+      423 +  10%  { background: transparent; }                           
+      424 +  15%  { background: rgba(255, 215, 0, 0.15); }               
+      425 +  25%  { background: transparent; }                           
+      426 +}                                                             
+      427 +                                                              
+      428 +.konami-active::before {                                      
+      429 +  content: '';                                                
+      430 +  position: fixed;                                            
+      431 +  inset: 0;                                                   
+      432 +  z-index: 100;                                               
+      433 +  pointer-events: none;                                       
+      434 +  animation: konami-flash 1s ease-out;                        
+      435 +}                                                             
+      436 +                                                              
+      437 +/* Coin message tooltip */                                    
+      438 +.coin-message {                                               
+      439 +  animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);   
+      440 +}                                                             
+
+⏺ Verifico il build:
+
+⏺ Bash(npx tsc --noEmit 2>&1 | head -20)
+  ⎿  (No output)
+
+⏺ Tutto compila. Ecco i 3 easter egg:
+
+  1. Konami Code (up up down down left right left right B A) — flash sullo
+  schermo, pioggia di confetti arcobaleno (400 pezzi!) e spin automatico
+  2. 7 click sulla slot emoji nell'header — attiva/disattiva la Jackpot Mode:
+  glow arcobaleno su crown e base, luci laterali pulsanti, viewport luminoso,
+  emoji che ruota
+  3. Click sul coin tray (la fessura in basso alla slot) — appare un tooltip con
+   un messaggio random tipo "Insert coin to continue...", "This is not a bug, 
+  it's a feature", ecc. Scompare dopo 3 secondi
+
+✻ Churned for 1m 29s
+
+❯ il terzo easter egg non mi piace, rimuovilo                                     ⎿  Found 5 new diagnostic issues in 1 file (ctrl+o to expand)
+
+⏺ Update(src/hooks/useEasterEggs.ts)
+  ⎿  Removed 15 lines
+       6    'KeyB', 'KeyA',
+       7  ];
+       8  
+       9 -const COIN_MESSAGES = [                                        
+      10 -  'May the odds be ever in your favor!',                       
+      11 -  'Insert coin to continue...',                                
+      12 -  'You found a lucky penny!',                                  
+      13 -  'The house always wins... or does it?',                      
+      14 -  'Jackpot loading... please wait.',                           
+      15 -  'This is not a bug, it\'s a feature.',                       
+      16 -  'Have you tried turning it off and on again?',               
+      17 -  'Achievement unlocked: Curiosity!',                          
+      18 -  '42 — The answer to everything.',                            
+      19 -  'Hello from the coin tray!',                                 
+      20 -];                                                             
+      21 -                                                               
+       9  export const useEasterEggs = (onKonamiSpin: () => void) => {
+      10    const [konamiActive, setKonamiActive] = useState(false);
+      11    const [jackpotMode, setJackpotMode] = useState(false);
+      25 -  const [coinMessage, setCoinMessage] = useState<string | null>
+         -(null);                                                        
+      12  
+      13    const konamiIndex = useRef(0);
+      14    const logoClicks = useRef(0);
+      15    const logoTimeout = useRef<number | null>(null);
+      30 -  const coinTimeout = useRef<number | null>(null);             
+      16  
+      17    // ── Konami Code ──
+      18    useEffect(() => {
+
+⏺ Update(src/hooks/useEasterEggs.ts)
+  ⎿  Removed 14 lines
+      50      }
+      51    }, []);
+      52  
+      53 -  // ── Coin Tray Message ──                                   
+      54 -  const handleCoinTrayClick = useCallback(() => {              
+      55 -    if (coinTimeout.current) clearTimeout(coinTimeout.current);
+      56 -                                                               
+      57 -    const msg = COIN_MESSAGES[Math.floor(Math.random() * COIN_M
+         -ESSAGES.length)];                                              
+      58 -    setCoinMessage(msg);                                       
+      59 -                                                               
+      60 -    coinTimeout.current = window.setTimeout(() => {            
+      61 -      setCoinMessage(null);                                    
+      62 -    }, 3000);                                                  
+      63 -  }, []);                                                      
+      64 -                                                               
+      53    return {
+      54      konamiActive,
+      55      jackpotMode,
+      68 -    coinMessage,                                               
+      56      handleLogoClick,
+      70 -    handleCoinTrayClick,                                       
+      57    };
+      58  };
+
+⏺ Ora rimuovo dal App.tsx:
+
+⏺ Update(src/App.tsx)
+  ⎿  Removed 2 lines
+      47    const {
+      48      konamiActive,
+      49      jackpotMode,
+      50 -    coinMessage,                                               
+      50      handleLogoClick,
+      52 -    handleCoinTrayClick,                                       
+      51    } = useEasterEggs(handleFullSpin);
+      52  
+      53    return (
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ piuttosto si può creare una sezione per le scommesse in pieno stile           
+polymarket                                                                      
+
+  Read 1 file (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ finisci prima la rimozione dell'easter egg e poi procedi con l'altra          
+richiesta                                                                       
+
+⏺ Prima pulisco il coin tray residuo nel JSX:
+
+⏺ Update(src/App.tsx)
+  ⎿  Added 2 lines, removed 14 lines
+      378                </div>
+      379  
+      380                {/* Coin tray with lip */}
+      381 -              <div className="mx-auto w-40 mb-2 relative">    
+      381 +              <div className="mx-auto w-40 mb-2">             
+      382                  <div className="h-1 bg-rule-strong rounded-t-s
+           m" />
+      383 -                <div                                          
+      384 -                  className="h-5 bg-paper-3 border-x border-b 
+          -border-rule rounded-b-lg shadow-inner flex items-center justif
+          -y-center cursor-pointer hover:bg-paper-2 transition-colors"   
+      385 -                  onClick={handleCoinTrayClick}               
+      386 -                  title="..."                                 
+      387 -                >                                             
+      383 +                <div className="h-5 bg-paper-3 border-x border
+          +-b border-rule rounded-b-lg shadow-inner flex items-center jus
+          +tify-center">                                                 
+      384                    <div className="w-6 h-0.5 bg-rule rounded-fu
+           ll" />
+      385                  </div>
+      390 -                {coinMessage && (                             
+      391 -                  <div className="coin-message absolute -top-1
+          -0 left-1/2 -translate-x-1/2 whitespace-nowrap animate-fade-in-
+          -up z-30">                                                     
+      392 -                    <div className="bg-accent-ink text-white t
+          -ext-[10px] font-mono px-3 py-1.5 rounded-lg shadow-lg relative
+          -">                                                            
+      393 -                      {coinMessage}                           
+      394 -                      <div className="absolute -bottom-1 left-
+          -1/2 -translate-x-1/2 w-2 h-2 bg-accent-ink rotate-45" />      
+      395 -                    </div>                                    
+      396 -                  </div>                                      
+      397 -                )}                                            
+      386                </div>
+      387              </div>
+      388            </div>
+
+⏺ E rimuovo il CSS residuo del coin message:
+
+⏺ Update(src/styles/index.css)
+  ⎿  Removed 4 lines
+      434    animation: konami-flash 1s ease-out;
+      435  }
+      436  
+      437 -/* Coin message tooltip */                                    
+      438 -.coin-message {                                               
+      439 -  animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);   
+      440 -}                                                             
+
+⏺ Bash(npx tsc --noEmit 2>&1 | head -10)
+  ⎿  (No output)
+  ⎿  Found 5 new diagnostic issues in 1 file (ctrl+o to expand)
+
+⏺ Tutto pulito. Easter egg del coin tray rimosso completamente (hook, JSX e
+  CSS). I warning CSS su @theme e @utility sono normali — sono direttive
+  Tailwind v4, il linter VS Code non le riconosce ma funzionano.
+
+  Ora vuoi che proceda con la sezione scommesse stile Polymarket?
+
+❯ si facciamo un plan                                                           
+
+⏺ Entered plan mode
+  Claude is now exploring and designing an implementation approach.
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ aspetta                                                                       
+
+⏺ Dimmi!
+
+❯ no niente procedi                                                             
+
+⏺ Explore(Explore current layout and types)
+  ⎿  Done (4 tool uses · 58.8k tokens · 16s)
+  (ctrl+o to expand)
+
+⏺ Plan(Design Polymarket betting panel)
+  ⎿  Done (11 tool uses · 38.4k tokens · 1m 35s)
+  (ctrl+o to expand)
+
+⏺ Updated plan
+  ⎿  /plan to preview  ⎿  Tool use rejected
+
+⏺ Buona domanda. Ci sono pro e contro:
+
+  Stessa pagina (pannello destro)
+  - Tutto visibile in un colpo d'occhio — piazzi la bet e vedi lo spin in tempo
+  reale
+  - Esperienza piu' immersiva, tipo live betting
+  - Pero' su schermi < 1280px le 3 colonne si stringono parecchio
+
+  Pagina/sezione dedicata
+  - Piu' spazio per un'esperienza Polymarket completa (griglia di mercati,
+  storico, leaderboard)
+  - La pagina principale resta pulita e focalizzata sulla slot
+  - Navigazione via tab/toggle — tipo "Machine | Bets"
+  - Scalabile se vuoi aggiungere piu' features in futuro (classifica, storico
+  scommesse)
+
+  La mia raccomandazione: una sezione dedicata accessibile da un tab/toggle
+  nell'header o sotto la slot machine. La pagina e' gia' piena con VIP list +
+  slot machine, aggiungere una terza colonna la appesantirebbe. Con una vista
+  separata hai spazio per fare un'esperienza Polymarket fatta bene senza
+  compromessi.
+
+  Cosa preferisci?
+
+✻ Baked for 2m 57s
+
+❯ piuttosto farei una toggle nell'hader che apre una modale che in overview     
+sulla pagina da le le possibilità ad ogni utente di poter fare la bet. So che   
+effetivamente serve un BE con la gestione delle sessioni per permettere ad ogni 
+ persona di fare una bet                                                        
+
+⏺ User answered Claude's questions:
+  ⎿  · Hai ragione che per le bet multi-utente serve un BE. Come vuoi procedere 
+     per ora? → Per adesso vorri qualcosa di visuale con solo mock fe, poi 
+     magari implementiamo la possibilità di gestire le varie sessioni
+
+⏺ Perfetto, aggiorno il piano con l'approccio frontend mock + modale.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+  ⎿  Tool use rejected
+
+⏺ User answered Claude's questions:
+  ⎿  · Che tipo di scommesse vuoi supportare inizialmente? → Avanzato
+     · Come funzionano le chip iniziali? → Budget fisso e in caso di bancarotta 
+     la settimana successiva può assegnarsi di default ad una delle due 
+     posizioni ( non so se ha senso)
+     · Le quote come si calcolano? → Frequenza storica
+
+⏺ User answered Claude's questions:
+  ⎿  · Per la bancarotta: ha senso come meccanica sociale (chi perde tutto si 
+     'sacrifica' la settimana dopo). Vuoi che lo implementi gia' nel mock o lo 
+     teniamo come regola futura da gestire col BE? → gestisciala con un mock 
+     adesso ma nel piano inseriamola come decisione da attuare lato BE
+     · Per il self-betting (scommettere su se stessi): vuoi che sia permesso nel
+      mock? → Si, permesso
+
+⏺ Ora ho tutto chiaro. Aggiorno il piano finale.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+  ⎿  Tool use rejected
+
+⏺ Bash(git checkout -b feat/betting-modal)
+  ⎿  Switched to a new branch 'feat/betting-modal'
+
+⏺ Branch feat/betting-modal creato. Procedo con l'implementazione?
+
+✻ Churned for 2m 5s
+
+❯ si                                                                            
+
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/cosmic-dazzling-curry.md · /plan to edit
+     Betting Modal — Polymarket Style (Frontend Mock)
+
+     Context
+
+     Modale scommesse stile Polymarket accessibile da toggle nell'header. Mock
+     frontend con logica completa: chip, quote dinamiche basate su frequenza
+     storica, tipi di scommessa avanzati (singola, combo, inversa). Self-betting
+      permesso. In futuro BE con sessioni multi-utente.
+
+     Sistema di Quote (Odds)
+
+     Le quote si basano sulla frequenza storica di uscita di ogni partecipante:
+
+     quota = totalSpins / (timesSelected + 1)
+
+     - Capra uscito 5/20 volte → quota ~3.3x (bassa, esce spesso)
+     - Yang uscito 0/20 volte → quota ~20x (alta, non esce mai)
+     - Minimo 1.1x, massimo capped a 20x
+
+     Lo storico viene tracciato in-session (array di risultati passati). In
+     futuro persistito via BE.
+
+     Tipi di Scommessa
+
+     ┌───────────────┬──────────────────────┬─────────────────────────────────┐
+     │     Tipo      │     Descrizione      │         Calcolo payout          │
+     ├───────────────┼──────────────────────┼─────────────────────────────────┤
+     │ Singola       │ "X vince ruolo Y"    │ quota di X × puntata            │
+     ├───────────────┼──────────────────────┼─────────────────────────────────┤
+     │ Qualsiasi     │ "X vince almeno un   │ quota ridotta (quota / N_ruoli) │
+     │ ruolo         │ ruolo"               │  × puntata                      │
+     ├───────────────┼──────────────────────┼─────────────────────────────────┤
+     │ Accoppiata    │ "X vince A e Y vince │ quota_X × quota_Y × puntata     │
+     │               │  B"                  │                                 │
+     ├───────────────┼──────────────────────┼─────────────────────────────────┤
+     │ Non esce      │ "X non viene         │ (1 / (1 - prob_X)) × puntata    │
+     │               │ estratto"            │                                 │
+     └───────────────┴──────────────────────┴─────────────────────────────────┘
+
+     Sistema Chip
+
+     - Ogni utente parte con 100 chip
+     - Puntata minima: 1 chip
+     - Puntata massima: tutte le chip disponibili
+     - Bancarotta (0 chip): visual "BANKRUPT!" + bet disabilitate
+       - Mock: badge rosso, impossibile scommettere
+       - Decisione BE futura: chi va in bancarotta si auto-assegna a un ruolo la
+      settimana successiva
+
+     UX Flow
+
+     1. Click icona nell'header → modale overlay
+     2. Scegli tipo di scommessa (tab: Singola | Combo | Inversa)
+     3. Seleziona partecipante(i) e ruolo(i)
+     4. Imposta puntata con slider o input
+     5. Conferma bet → chip scalate
+     6. Chiudi modale, fai spin
+     7. Riapri modale → risultati con P&L
+
+     Struttura Modale
+
+     +----------------------------------------------------+
+     |  $$ PLACE YOUR BETS $$                    100 chip X|
+     |  [Singola] [Combo] [Inversa]                        |
+     +----------------------------------------------------+
+     |                                                      |
+     |  ┌─ SINGOLA: Chi vince Moderator? ──────────────┐   |
+     |  │                                               │   |
+     |  │  Capra      3.3x  [====-------]  [ 10 chip ] │   |
+     |  │  Mapelli    5.0x  [===---------]  [        ] │   |
+     |  │  Yang      20.0x  [=-----------]  [        ] │   |
+     |  │  ...                                          │   |
+     |  └───────────────────────────────────────────────┘   |
+     |                                                      |
+     |  ┌─ SINGOLA: Chi vince Notary? ─────────────────┐   |
+     |  │  Capra      3.3x  [====-------]              │   |
+     |  │  ...                                          │   |
+     |  └───────────────────────────────────────────────┘   |
+     |                                                      |
+     +----------------------------------------------------+
+     |  Active bets: 1 × 10 chip  |  Potential: +23 chip   |
+     +----------------------------------------------------+
+
+     Stato SPINNING
+
+     - "BETS LOCKED" header, pulsante
+     - Bet disabilitate, puntate bloccate
+
+     Stato RESULT
+
+     |  Capra → Moderator    3.3x    ✓ WON +33 chip  |  (bordo verde)
+     |  Yang → Notary       20.0x    ✗ LOST -10 chip  |  (bordo rosso)
+
+     File da creare
+
+     ┌──────────────────────────────────┬───────────────────────────────────────
+     ┐
+     │               File               │                 Scopo
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │ src/types/index.ts               │ Aggiungere Bet, BetType, BetResult,
+     │
+     │                                  │ BettingStats, SpinHistory, PlayerOdds
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │                                  │ Logica completa: place/remove bet,
+     │
+     │ src/hooks/useBetting.ts          │ calcolo quote, valutazione risultati,
+     │
+     │                                  │  gestione chip
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │                                  │ Traccia storico spin per calcolo
+     │
+     │ src/hooks/useSpinHistory.ts      │ quote (frequenza uscita per
+     │
+     │                                  │ partecipante)
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │                                  │ Modale container: header con chip
+     │
+     │ src/components/BettingModal.tsx  │ count, tabs, body scrollabile, footer
+     │
+     │                                  │  riepilogo
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │ src/components/BetMarketCard.tsx │ Card mercato singolo ruolo: lista
+     │
+     │                                  │ partecipanti con quota, input puntata
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │ src/components/BetComboCard.tsx  │ Card per scommesse combo (accoppiata)
+     │
+     │                                  │  e inverse
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │ src/components/OddsBar.tsx       │ Barra probabilita'
+     │
+     ├──────────────────────────────────┼───────────────────────────────────────
+     ┤
+     │ src/components/BetSummary.tsx    │ Footer modale: bet attive, potenziale
+     │
+     │                                  │  vincita, stats W/L
+     │
+     └──────────────────────────────────┴───────────────────────────────────────
+     ┘
+
+     File da modificare
+
+     ┌─────────────────────────┬────────────────────────────────────────────────
+     ┐
+     │          File           │                    Modifica
+     │
+     ├─────────────────────────┼────────────────────────────────────────────────
+     ┤
+     │                         │ Stato modale, hook useBetting +
+     │
+     │ src/App.tsx             │ useSpinHistory, bottone header, tracking
+     │
+     │                         │ storico spin
+     │
+     ├─────────────────────────┼────────────────────────────────────────────────
+     ┤
+     │ src/components/index.ts │ Export BettingModal
+     │
+     ├─────────────────────────┼────────────────────────────────────────────────
+     ┤
+     │ src/styles/index.css    │ Stili bet-card, odds-bar, modal overlay
+     │
+     └─────────────────────────┴────────────────────────────────────────────────
+     ┘
+
+     Hook: useSpinHistory
+
+     - addResult(spinResult) — salva risultato dopo ogni spin
+     - getPlayerFrequency(participantId) → { times, total }
+     - getOdds(participantId) → number (moltiplicatore)
+     - history: SpinResult[]
+
+     Hook: useBetting
+
+     - chips: number (parte da 100)
+     - activeBets: Bet[]
+     - results: BetResult[]
+     - stats: BettingStats
+     - placeBet(type, participantIds, roleIds, amount)
+     - removeBet(betId)
+     - clearBets()
+     - evaluateBets(spinResult) — calcola vincite/perdite
+     - isBankrupt: boolean
+
+     CSS nuovi stili
+
+     - .bet-card / .bet-card.won / .bet-card.lost / .bet-card.locked
+     - .odds-bar-track / .odds-bar-fill
+     - .betting-modal-overlay — backdrop blur + fade-in
+     - .chip-badge — badge con conteggio chip
+
+     Ordine implementazione
+
+     1. Types (Bet, BetType, BetResult, BettingStats, SpinHistory, PlayerOdds)
+     2. useSpinHistory hook
+     3. useBetting hook
+     4. OddsBar componente
+     5. BetMarketCard + BetComboCard componenti
+     6. BetSummary componente
+     7. BettingModal container
+     8. CSS
+     9. Integrazione App.tsx
+     10. Export index.ts
+
+     Decisioni future (BE)
+
+     - Sessioni multi-utente (ogni persona ha il proprio wallet)
+     - Persistenza storico spin e bet su DynamoDB
+     - Meccanica bancarotta: auto-assegnazione ruolo settimana successiva
+     - Leaderboard con classifica P&L
+     - Possibile blocco self-betting (configurabile)
+
+     Verifica
+
+     - npx tsc --noEmit
+     - Test: apri modale, piazza singola + combo, spin, verifica payout corretto
+     - Test bancarotta: punta tutto, perdi, verifica badge + bet disabilitate
+     - Test quote: fai 5+ spin, verifica che le quote cambiano per chi esce
+     spesso
+     - Responsive: modale fullscreen su mobile
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Parto. Step 1: Types.
+
+⏺ Update(src/types/index.ts)
+  ⎿  User rejected update to src/types/index.ts
+
+❯ prima di procedere fammi committare le fix di prima                           
+
+⏺ Bash(git status && echo "---" && git diff --stat)
+  ⎿  On branch main
+     Your branch is up to date with 'origin/main'.
+     … +11 lines (ctrl+o to expand)
+⏺ Vedo che siamo su main (non su feat/betting-modal). Le modifiche sono gia'
+  staged. Vuoi che committi tutto su main?
+
+⏺ Bash(git log --oneline -5)
+  ⎿  62e1ac9 fix: fixed primary theme
+     8ff28a8 fix: Update text colors for improved contrast and readability
+     across components
+     … +5 lines (ctrl+o to expand)
+
+⏺ Bash(git diff --cached)
+  ⎿  diff --git a/README.md b/README.md
+     index 49ca1ed..8b3a67c 100644
+     --- a/README.md
+     … +302 lines (ctrl+o to expand)
+
+⏺ Le modifiche includono cose diverse — le separerei in 2 commit. Vedo che hai
+  anche rinominato "Vibe Slot Name" → "Vibe Slot" in README, index.html e
+  metadata.json. Procedo con 2 commit separati?
+
+  1. fix: compatta layout e rimuovi overflow (App.tsx, SlotReel.tsx)
+  2. feat: aggiungi easter eggs (Konami Code + Jackpot Mode) (useEasterEggs.ts,
+  index.css, App.tsx)
+
+  Oppure il rename "Vibe Slot" lo vuoi in un commit a parte?
+
+❯ a posto procedi                                                               
+
+⏺ Bash(git commit -m "$(cat <<'EOF'
+      feat: ✨ compact layout, remove overflow, add easter eggs…)
+  ⎿  Tool use rejected
+
+⏺ Bash(git log --oneline -3 && echo "---" && git branch)
+  ⎿  aadbd58 fix: update project name and enhance Easter egg features
+     62e1ac9 fix: fixed primary theme
+     8ff28a8 fix: Update text colors for improved contrast and readability
+     … +4 lines (ctrl+o to expand)
+
+⏺ Siamo su feat/betting-modal. Parto con l'implementazione.
+
+  Step 1: Types
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(src/types/index.ts)
+  ⎿  Added 37 lines
+      16    STOPPING = 'STOPPING',
+      17    RESULT = 'RESULT',
+      18  }
+      19 +                                                               
+      20 +/* ── Betting ─────────────────────────────── */               
+      21 +                                                               
+      22 +export enum BetType {                                          
+      23 +  SINGLE = 'SINGLE',                                           
+      24 +  ANY_ROLE = 'ANY_ROLE',                                       
+      25 +  COMBO = 'COMBO',                                             
+      26 +  NOT_SELECTED = 'NOT_SELECTED',                               
+      27 +}                                                              
+      28 +                                                               
+      29 +export interface Bet {                                         
+      30 +  id: string;                                                  
+      31 +  type: BetType;                                               
+      32 +  participantIds: string[];                                    
+      33 +  roleIds: string[];                                           
+      34 +  amount: number;                                              
+      35 +}                                                              
+      36 +                                                               
+      37 +export interface BetResult {                                   
+      38 +  bet: Bet;                                                    
+      39 +  won: boolean;                                                
+      40 +  payout: number;                                              
+      41 +}                                                              
+      42 +                                                               
+      43 +export interface BettingStats {                                
+      44 +  totalBets: number;                                           
+      45 +  totalWins: number;                                           
+      46 +  currentStreak: number;                                       
+      47 +  bestStreak: number;                                          
+      48 +}                                                              
+      49 +                                                               
+      50 +export interface PlayerOdds {                                  
+      51 +  participantId: string;                                       
+      52 +  timesSelected: number;                                       
+      53 +  totalSpins: number;                                          
+      54 +  odds: number;                                                
+      55 +}                                                              
+
+⏺ Step 2: useSpinHistory hook
+
+⏺ Write(src/hooks/useSpinHistory.ts)
+  ⎿  User rejected write to src/hooks/useSpinHistory.ts
+      1 import { useCallback, useState } from 'react';
+      2 
+      3 import { SpinResult, PlayerOdds } from '../types';
+      4 
+      5 const MIN_ODDS = 1.1;
+      6 const MAX_ODDS = 20;
+      7 
+      8 export const useSpinHistory = () => {
+      9   const [history, setHistory] = useState<SpinResult[]>([]);
+     … +59 lines
+
+❯ aspetta ho un dubbio, ho visto che hai impostato un massimo di 20 ma se esco  
+più di 20 volte?                                                                
+  ⎿  ⧉ Selected 1 lines from src/types/index.ts in Visual Studio Code
+
+⏺ Il cap a 20x è sulla quota (il moltiplicatore del payout), non sul numero di
+  uscite. Serve a evitare che chi non esce mai abbia quote assurdamente alte
+  (tipo 500x).
+
+  La formula è:
+
+  odds = (totalSpins + 1) / (timesSelected + 1)
+
+  Quindi:
+  - Chi esce spesso → quota bassa (es. 5 uscite su 20 spin = ~3.5x)
+  - Chi non esce mai → quota alta, ma cappata a 20x max
+  - Chi esce tutte le volte → quota ~1.1x (minimo)
+
+  Il cap a 20 si puo' cambiare tranquillamente. Vuoi alzarlo o toglierlo del
+  tutto?
+
+❯ come mai hai dedotto 20 ?                                                     
+
+⏺ Nessuna deduzione scientifica, è un numero arbitrario che ho scelto come
+  "tetto ragionevole" per evitare payout troppo sbilanciati. In pratica:
+
+  - Con 11 partecipanti e 0 spin storici, la quota iniziale sarebbe ~11x
+  - Senza cap, dopo 100 spin se uno non è mai uscito la quota sarebbe ~101x —
+  una singola vincita da 10 chip ne restituirebbe 1010
+
+  Il cap serve a tenere l'economia delle chip sotto controllo nel mock. Ma è
+  completamente arbitrario — potrebbe essere 10, 50, o non esserci.
+
+  Vuoi che lo gestiamo diversamente? Ad esempio:
+  - Nessun cap — quote libere, piu' realistico ma le chip si inflazionano
+  velocemente
+  - Cap dinamico — basato sul numero di partecipanti (es. participantCount * 3)
+  - Tieni 20 — semplice, funziona per il mock
+
+❯ ma dici che forse è meglio evitare di fare il mock e partire con anche la     
+parte di BE?                                                                    
+
+⏺ Dipende da cosa vuoi ottenere a breve termine:
+
+  Partire col BE subito ha senso se:
+  - Vuoi usare l'app in team presto (ognuno deve avere il suo wallet/sessione)
+  - L'economia chip deve essere "reale" — altrimenti nel mock ognuno può barare
+  - Vuoi persistere lo storico spin tra sessioni
+  - Il sistema di quote ha senso solo se condiviso tra tutti
+
+  Mock FE first ha senso se:
+  - Vuoi validare la UX prima di investire tempo sul BE
+  - Vuoi capire se il betting piace al team prima di costruire infrastruttura
+  - Vuoi iterare velocemente sul design della modale
+
+  Pero' onestamente, il betting senza multi-utente è poco utile — se tutti
+  vedono lo stesso schermo e possono modificare le chip a piacere, non c'è il
+  "gioco". Il bello di Polymarket è che ognuno scommette dal proprio punto di
+  vista.
+
+  Il mio consiglio: parti col BE. Hai gia' lo stack (FastAPI + Lambda +
+  DynamoDB) e le convenzioni chiare. Il lavoro in piu' rispetto al mock è:
+  - Un modello DynamoDB per utenti/chip/bet/storico
+  - 4-5 endpoint REST (place bet, get odds, get results, get leaderboard)
+  - Un sistema di sessione leggero (anche solo un nome/nickname scelto
+  all'apertura)
+
+  Vuoi che ricalibri il piano in questa direzione?
+
+❯ si ripartimao da zero con anche il BE                                         
+
+⏺ Entered plan mode
+  Claude is now exploring and designing an implementation approach.
+  ⎿  Tool use rejected
+
+⏺ Dimmi pure, cosa vuoi chiarire?
+
+❯ Per la parte di autenticazione attualmente farei con cognito                  
+
+⏺ User answered Claude's questions:
+  ⎿  · Hai gia' un Cognito User Pool configurato o ne creiamo uno da zero? → 
+     Esistente
+     · Dove hostiamo il BE? → Lambda + API Gateway
+     · Monorepo o repo separato per il BE? → Repo separato
+     · Terraform subito o deploy manuale per ora? → Manuale per ora
+
+⏺ User answered Claude's questions:
+  ⎿  · Puoi darmi i dettagli del Cognito User Pool esistente? → Li fornisco dopo
+
+⏺ Ora ho tutto per pianificare. Lancio il design.
+
+⏺ Explore(Explore FE for integration points)  ⎿  Done (16 tool uses · 68.9k tokens · 47s)
+  (ctrl+o to expand)
+
+⏺ Plan(Design full-stack betting system)
+  ⎿  Done (16 tool uses · 35.3k tokens · 2m 20s)
+  (ctrl+o to expand)
+
+⏺ Ottimo risultato. Ho alcune domande prima di finalizzare il piano.
+  ⎿  Tool use rejected
+
+⏺ Dimmi, cosa vuoi chiarire?
+
+✻ Cooked for 4m 47s
+
+❯ ho delle domande, così' facendo significa che ogni persona deve collegarsi    
+però non può partire lo spin perchè il rischio è che ci siano più spin          
+contemporaneamente. Volendo possiamo fare così...il primo che schiaccia fa      
+partire un timer di 1 min questo fa si che chiunque entri acceda direttamente   
+alla parte di betting. al termine del timer le bet si chiudono e parte lo spin  
+
+⏺ Mi piace molto, è un flusso molto più naturale. Quindi ricapitolando:
+
+  1. Qualcuno clicca "Spin" → BE crea lo spin pendente e fa partire un countdown
+   di 1 minuto
+  2. Tutti gli altri utenti collegati vedono automaticamente la finestra betting
+   con il timer
+  3. Durante il minuto, ognuno piazza le sue scommesse
+  4. A timer scaduto → bets locked, il BE esegue lo spin e manda il risultato a
+  tutti
+  5. Tutti vedono l'animazione + i risultati delle proprie bet
+
+  Questo implica un paio di cose tecniche:
+
+  - Serve comunicazione real-time (tutti devono vedere il countdown e il
+  risultato): WebSocket, SSE, o polling
+  - Serve uno stato condiviso della "sessione di gioco" (pending, betting,
+  spinning, result)
+  - Lo spin è unico e sincronizzato — nessuno può farne partire un altro durante
+   il countdown
+  ⎿  Tool use rejected
+
+⏺ Buona domanda. Ecco il confronto per il tuo caso d'uso:
+
+  WebSocket (API Gateway WebSocket API)
+
+  - Come funziona: connessione persistente. Il BE pusha eventi a tutti i client
+  connessi (timer start, tick, risultato spin)
+  - UX: istantanea, tutti vedono il countdown in sync perfetto
+  - Costi AWS: $1 per milione di messaggi + $0.25 per milione di minuti di
+  connessione. Per un team di ~11 persone che fa qualche spin al giorno →
+  praticamente gratis ($0.01/mese?)
+  - Complessita': media-alta. Serve gestire connection IDs in DynamoDB, Lambda
+  per connect/disconnect/message, e una logica di broadcast
+  - Lambda: richiede una Lambda separata per i WebSocket (non la stessa FastAPI)
+
+  Polling (ogni 2-3s)
+
+  - Come funziona: il FE chiama GET /game/status ogni 2-3 secondi. Il BE
+  risponde con lo stato corrente (idle, betting con countdown, result)
+  - UX: ritardo di 2-3s, il countdown potrebbe "saltellare" leggermente. Per uno
+   spin ogni tanto è accettabile
+  - Costi AWS: ogni poll = 1 invocazione Lambda + 1 API Gateway request. Con 11
+  persone × 1 poll/2s × 60s di betting window = ~330 request per spin. Quasi
+  zero costi
+  - Complessita': bassa. È un normale GET endpoint, stessa FastAPI Lambda. Il
+  countdown è calcolato dal FE basandosi su betting_ends_at timestamp dal BE
+  - Lambda: stessa Lambda FastAPI, nessuna infra aggiuntiva
+
+  Per il tuo progetto
+
+  Polling è la scelta giusta perché:
+  - Team piccolo (~11 persone), pochi spin al giorno
+  - Il countdown non ha bisogno di precisione al millisecondo — il FE calcola
+  localmente dal timestamp di scadenza
+  - Stessa Lambda FastAPI, zero infra aggiuntiva
+  - Costo identico (~zero in entrambi i casi)
+  - Se in futuro serve real-time preciso, puoi aggiungere WebSocket senza
+  riscrivere il BE
+
+  Il trucco per il countdown smooth: il BE ritorna betting_ends_at: 
+  "2026-04-24T15:30:00Z" e il FE fa il countdown localmente con setInterval.
+  Nessun polling per il timer stesso.
+  ⎿  Tool use rejected
+
+❯ meglio un webSocket o Polling quale delle due è più indicato per questo ✔     
+                                                                                
+     progetto e quali sono le differenze, anche in termini di costi             
+
+⏺ Uno spin a settimana — allora il polling è perfettamente adeguato, non ha
+  senso il WebSocket per 1 spin/settimana. Per il timer, con uno spin
+  settimanale ha più senso dare più tempo (tipo 2-3 minuti) così tutti hanno
+  tempo di entrare e scommettere con calma.
+
+⏺ User answered Claude's questions:
+  ⎿  · Timer di default per la finestra betting? → 2 minuti
+     · Repo e offline mode? → solo online e il BE è separato
+
+⏺ Perfetto, ora ho tutto. Scrivo il piano finale.
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ avevi altre domande o sbaglio?                                                
+
+⏺ Si, ho ancora un paio di cose da chiarire:
+
+⏺ User answered Claude's questions:
+  ⎿  · I partecipanti (Capra, Mapelli, Yang, ecc.) devono corrispondere agli 
+     utenti Cognito? O sono due cose separate (utente = chi scommette, 
+     partecipante = chi viene estratto)? → Stessa persona
+     · Chi puo' avviare lo spin (e far partire il timer betting)? → Chiunque 
+     autenticato
+     · Su quale region AWS lavoriamo? → eu-west-1 (Ireland)
+
+⏺ Ora ho tutto. Scrivo il piano finale.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+  ⎿  Tool use rejected
+
+⏺ Vuoi che salvi il piano come file .md nel repo (tipo docs/BETTING_SYSTEM.md)
+  invece che nel file di piano interno?
+
+✻ Cogitated for 1m 22s
+
+❯ si                                                                            
+
+  Listed 1 directory (ctrl+o to expand)
+
+⏺ Sono ancora in plan mode — devo prima uscire per poter creare file nel repo.
+  Esco e creo il file.
+  ⎿  Tool use rejected
+  ⎿  Tool use rejected
+
+⏺ Auto mode lets Claude handle permission prompts automatically — Claude
+   checks each tool call for risky actions and prompt injection before 
+  executing. Actions Claude identifies as safe are executed, while 
+  actions Claude identifies as risky are blocked and Claude may try a 
+  different approach. Ideal for long-running tasks. Sessions are 
+  slightly more expensive. Claude can make mistakes that allow harmful 
+  commands to run, it's recommended to only use in isolated 
+  environments. Shift+Tab to change mode.  ⎿  Error: You are not in plan mode. This tool is only for exiting plan mode 
+     after writing a plan. If your plan was already approved, continue with 
+     implementation.
+
+⏺ Bash(mkdir -p /Users/admintemp/Documents/GitHub/vibe-slot-name/docs)
+  ⎿  Done
+
+⏺ Write(docs/BETTING_SYSTEM.md)
+  ⎿  Wrote 276 lines to docs/BETTING_SYSTEM.md
+      1 # Vibe Slot — Betting System (Full Stack)
+      2 
+      3 ## Context
+      4 
+      5 Aggiungere un sistema di scommesse stile Polymarket alla slot mac
+        hine. Gli utenti (stesse persone nella lista partecipanti) si aut
+        enticano via Cognito, scommettono prima dello spin, e vedono i ri
+        sultati con chip reali. Uno spin a settimana. Il BE diventa sourc
+        e of truth per lo spin.
+      6 
+      7 ---
+      8 
+      9 ## Decisioni Architetturali
+     … +266 lines (ctrl+o to expand)
+
+⏺ Fatto. Il file e' in docs/BETTING_SYSTEM.md con tutto il piano completo:
+  architettura, game flow, DynamoDB schema, API endpoints, tipi di scommessa,
+  struttura FE e BE, ordine implementazione.
+
+  Vuoi procedere con l'implementazione partendo dalla Fase 1 (backend)?
+
+✻ Brewed for 1m 20s
+
+❯ spiegami un secondo la formula per il calcolo degli odds                      
+
+⏺ La formula è:
+
+  odds = (total_spins + 1) / (times_selected + 1)
+
+  Come funziona
+
+  - total_spins = quante volte la slot è stata girata in totale
+  - times_selected = quante volte quel partecipante è stato estratto
+  - I +1 servono a evitare divisioni per zero e a dare una quota iniziale
+  sensata
+
+  Esempi concreti (11 partecipanti)
+
+  ┌──────────────┬─────────────┬────────────────┬─────────┬────────────────┐
+  │   Scenario   │ total_spins │ times_selected │  Odds   │  Significato   │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Prima        │             │                │ 1.0x →  │ Nessuno        │
+  │ partita      │ 0           │ 0              │ 1.1x    │ storico, quota │
+  │ (tutti a 0)  │             │                │ (min)   │  minima        │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Dopo 10      │             │                │         │ Non esce mai,  │
+  │ spin, mai    │ 10          │ 0              │ 11.0x   │ quota alta     │
+  │ uscito       │             │                │         │                │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Dopo 10      │             │                │         │ Esce spesso,   │
+  │ spin, uscito │ 10          │ 5              │ 1.8x    │ quota bassa    │
+  │  5 volte     │             │                │         │                │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Dopo 20      │             │                │         │ Esce poco,     │
+  │ spin, uscito │ 20          │ 1              │ 10.5x   │ quota alta     │
+  │  1 volta     │             │                │         │                │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Dopo 20      │             │                │         │ Esce metà      │
+  │ spin, uscito │ 20          │ 10             │ 1.9x    │ delle volte    │
+  │  10 volte    │             │                │         │                │
+  ├──────────────┼─────────────┼────────────────┼─────────┼────────────────┤
+  │ Dopo 100     │             │                │ 20.0x   │ Cappato al     │
+  │ spin, mai    │ 100         │ 0              │ (cap)   │ massimo        │
+  │ uscito       │             │                │         │                │
+  └──────────────┴─────────────┴────────────────┴─────────┴────────────────┘
+
+  Il principio
+
+  Più esci → più la tua quota scende (sei "prevedibile", scommettere su di te
+  paga poco).
+  Meno esci → più la tua quota sale (sei una "sorpresa", scommettere su di te
+  paga tanto).
+
+  È tipo il concetto di Polymarket: se un evento è probabile (basato sullo
+  storico), il payout è basso. Se è improbabile, il payout è alto.
+
+  Il cap [1.1, 20.0]
+
+  - Min 1.1x: anche chi esce sempre non puo' avere quota < 1.1 (altrimenti
+  scommettere non conviene mai)
+  - Max 20x: evita che chi non esce mai abbia quote assurde (tipo 100x) che
+  rompono l'economia chip con una singola vincita
+
+  Il cap è arbitrario — possiamo aggiustarlo. Vuoi che lo cambiamo?
+
+❯ ok perfetto capito. Giusto per capire visto che adesso non siamo in assenza   
+della parte di pool di cognito e cc riusciamo a fare un mocke e a fare dei test 
+ con 2 utenti veri?                                                             
+
+⏺ Si, assolutamente. L'approccio classico: mock auth in dev mode.
+
+  Come funziona
+
+  Il BE ha due modalità di auth:
+
+  # config.py
+  AUTH_MODE = "mock"  # oppure "cognito"
+
+  Mock mode (per dev/test):
+  - Niente JWT, niente Cognito
+  - L'utente si identifica con un header custom: X-Mock-User: fabio
+  - Il BE crea il profilo al volo se non esiste (100 chip, stats a zero)
+  - Zero setup, zero infra
+
+  Cognito mode (produzione):
+  - JWT reale nel header Authorization: Bearer <token>
+  - Verifica firma, audience, issuer
+
+  Test con 2 utenti
+
+  Puoi testare aprendo 2 tab del browser (o browser diversi):
+
+  - Tab 1: header X-Mock-User: fabio → vede le sue chip, piazza le sue bet
+  - Tab 2: header X-Mock-User: capra → vede le sue chip, piazza le sue bet
+
+  Lato FE, in dev mode invece del login Cognito mostriamo un semplice campo
+  "Enter your name" che viene salvato in sessionStorage e mandato come header ad
+   ogni request.
+
+  In pratica
+
+  Il flusso di test sarebbe:
+  1. Avvii il BE locale (uvicorn)
+  2. Apri 2 tab → ognuna sceglie un nickname
+  3. Tab 1 clicca "Spin" → parte il timer 2 min
+  4. Tab 2 (polling) vede il timer → si apre la modale betting
+  5. Entrambi scommettono
+  6. Timer scade → spin → entrambi vedono i risultati
+
+  Quando avrai i dati Cognito, switchi AUTH_MODE = "cognito" e il resto non
+  cambia.
+
+  Procedo con l'implementazione partendo da questo approccio?
+
+❯ il fatto è che in questo modo gli utenti che venivano settati all'interno     
+della vip list non servono più. Dovremmo fare in modo che  quando un utente si  
+registra automaticamente viene assegnata alla lista                             
+
+⏺ Esatto, il flusso cambia:
+
+  Prima: lista partecipanti hardcodata/manuale nel FE
+  Ora: la lista partecipanti = gli utenti registrati. Chi si registra entra
+  automaticamente nella slot.
+
+  Questo semplifica parecchio:
+  - La VIP list diventa read-only — mostra chi è registrato, non è più un form
+  di input
+  - Il ControlPanel non ha più "Add Player" / "Clear All" — diventa una lista
+  degli utenti online/registrati
+  - La source of truth dei partecipanti è il BE (GET /users → lista utenti)
+
+  Cosa rimane da decidere
+
+⏺ User answered Claude's questions:
+  ⎿  · Tutti gli utenti registrati partecipano sempre allo spin, o serve un 
+     meccanismo di opt-in/out per la singola sessione? → Tutti sempre
+     · I ruoli (Moderator, Notary) rimangono configurabili da Settings o li 
+     fissiamo? → Fissi dal BE
+
+⏺ Perfetto, il modello si semplifica parecchio:
+
+  - Partecipanti = tutti gli utenti registrati, sempre
+  - Ruoli = fissi nel BE (configurati una volta)
+  - VIP list = read-only, mostra gli utenti registrati (dal BE)
+  - ControlPanel = niente più form, solo lista + chip di ognuno
+  - SettingsModal = si può snellire (toggle tema, poco altro)
+
+  Aggiorno il doc con queste decisioni.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 4 lines, removed 1 line
+      19  | Repo BE | Separato (`vibe-slot-api`) |
+      20  | Offline mode | No — app richiede sempre il BE |
+      21  | Deploy | Manuale per ora (no Terraform) |
+      22 -| Utenti = Partecipanti | Si, stessa persona |                 
+      22 +| Utenti = Partecipanti | Si, stessa persona (registrazione = e
+         +ntrata nella slot) |                                           
+      23 +| Partecipazione | Tutti i registrati, sempre (no opt-in/out) |
+      24 +| Ruoli | Fissi nel BE (configurati una volta) |               
+      25  | Chi avvia spin | Chiunque autenticato |
+      26 +| Dev auth | Mock mode con header `X-Mock-User` (no Cognito in 
+         +dev) |                                                         
+      27  
+      28  ---
+      29  
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 3 lines, removed 2 lines
+      31  
+      32  ```
+      33  1. Utente A clicca "Spin"
+      34 -   └─ FE chiama POST /game/start { participants, roles }       
+      34 +   └─ FE chiama POST /game/start (no body — partecipanti e ruol
+         +i vengono dal BE)                                              
+      35 +   └─ BE legge tutti gli utenti registrati + ruoli configurati 
+      36     └─ BE crea sessione BETTING, salva betting_ends_at = now + 2
+          min
+      36 -   └─ BE ritorna { game_id, betting_ends_at }                  
+      37 +   └─ BE ritorna { game_id, participants, roles, betting_ends_a
+         +t }                                                            
+      38  
+      39  2. Tutti gli utenti collegati (polling GET /game/status ogni 3s
+          )
+      40     └─ Vedono stato BETTING + countdown (calcolato localmente da
+           betting_ends_at)
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 3 lines, removed 2 lines
+      110  
+      111  | Method | Path | Descrizione | Auth |
+      112  |--------|------|-------------|------|
+      113 -| `POST` | `/game/start` | Avvia sessione betting (2min timer)
+          - | Si |                                                       
+      114 -| `GET` | `/game/status` | Stato corrente (IDLE/BETTING/RESULT
+          -) + dati | Si |                                               
+      113 +| `POST` | `/game/start` | Avvia sessione betting (2min timer)
+          +. BE legge utenti + ruoli. | Si |                             
+      114 +| `GET` | `/game/status` | Stato corrente (IDLE/BETTING/RESULT
+          +) + partecipanti + dati | Si |                                
+      115  | `POST` | `/game/{id}/execute` | Esegue spin + valuta bet | S
+           i |
+      116  | `POST` | `/bets` | Piazza scommessa | Si |
+      117  | `GET` | `/bets/me?game_id=` | Le mie bet per una sessione | 
+           Si |
+      118  | `GET` | `/users/me` | Profilo + chip + stats | Si |
+      119 +| `GET` | `/users` | Lista tutti gli utenti registrati (per VI
+          +P list) | Si |                                                
+      120  | `GET` | `/users/leaderboard` | Classifica per chip | Si |
+      121  
+      122  ### Tipi di Scommessa e Payout
+
+⏺ Ora aggiorno la sezione FE — il ControlPanel diventa read-only e il
+  SettingsModal si snellisce:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 3 lines, removed 1 line
+      179  
+      180  | File | Modifica |
+      181  |------|----------|
+      182 -| `src/App.tsx` | AuthProvider, useGameSync, bottone header, m
+          -odale betting, flusso spin via API |                          
+      182 +| `src/App.tsx` | AuthProvider, useGameSync, bottone header, m
+          +odale betting, flusso spin via API. Partecipanti vengono dal B
+          +E (non piu' stato locale). |                                  
+      183  | `src/hooks/useSlotMachine.ts` | Accettare risultato da serve
+           r (non piu' shuffle locale) |
+      184  | `src/types/index.ts` | Tipi API (GameStatus, BetCreate, BetR
+           esponse, ecc.) |
+      185 +| `src/components/ControlPanel.tsx` | Diventa **read-only**: r
+          +imuovere form input, "Add Player", "Clear All". Mostra lista u
+          +tenti registrati dal BE con chip e status online. |           
+      186 +| `src/components/SettingsModal.tsx` | Snellire: rimuovere ges
+          +tione ruoli (ora fissi nel BE). Rimane solo toggle tema. |    
+      187  | `src/components/index.ts` | Export nuovi componenti |
+      188  | `src/styles/index.css` | Stili betting (.bet-card, .odds-bar
+           , .countdown) |
+      189  
+
+⏺ Aggiungo la sezione auth mock per dev:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 10 lines, removed 1 line
+      149  
+      150  ### Auth Middleware
+      151  
+      152 -- Cognito JWT nel header `Authorization: Bearer <token>`      
+      152 +Due modalita' tramite `AUTH_MODE` in config:                  
+      153 +                                                              
+      154 +**Mock mode** (dev/test):                                     
+      155 +- Header `X-Mock-User: <nickname>`                            
+      156 +- Crea profilo utente al volo se non esiste (100 chip)        
+      157 +- Nessun JWT, nessun Cognito                                  
+      158 +- Per testare con 2+ utenti: 2 tab browser con nickname divers
+          +i                                                             
+      159 +                                                              
+      160 +**Cognito mode** (produzione):                                
+      161 +- JWT nel header `Authorization: Bearer <token>`              
+      162  - Verifica via `PyJWKClient` + `python-jose`
+      163  - Endpoint JWKS: `https://cognito-idp.eu-west-1.amazonaws.com/
+           {USER_POOL_ID}/.well-known/jwks.json`
+      164  - FastAPI `Depends(get_current_user)` su tutti i router
+
+⏺ Aggiorno anche la sezione DynamoDB — aggiungo entity per i ruoli configurati:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line
+      100  | Entity | PK | SK | Attributi principali |
+      101  |--------|----|----|----------------------|
+      102  | User | `USER#{sub}` | `PROFILE` | display_name, chips, total
+           _bets, total_wins, current_streak, best_streak |
+      103 +| Config | `CONFIG` | `ROLES` | roles: [{ id, name }] — ruoli 
+          +fissi configurati una volta |                                 
+      104  | Game | `GAME#{ulid}` | `META` | status, participants, roles,
+            result, betting_ends_at, created_by |
+      105  | Bet | `GAME#{game_id}` | `BET#{sub}#{ulid}` | bet_type, part
+           icipant_ids, role_ids, amount, odds, won, payout |
+      106  | Stat | `STAT#{participant_name}` | `GLOBAL` | times_selected
+           , total_spins |
+
+⏺ Aggiorno l'auth flow FE per il mock mode:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 7 lines
+      199  
+      200  ### Auth Flow FE
+      201  
+      202 +**Mock mode** (dev):                                          
+      203 +1. App monta → AuthContext controlla nickname in sessionStorag
+          +e                                                             
+      204 +2. Se non presente → mostra campo "Enter your name"           
+      205 +3. Nickname salvato in sessionStorage, mandato come header `X-
+          +Mock-User` ad ogni request                                    
+      206 +4. BE crea profilo al volo al primo uso                       
+      207 +                                                              
+      208 +**Cognito mode** (prod):                                      
+      209  1. App monta → AuthContext controlla token in sessionStorage
+      210  2. Se `?code=` nell'URL → exchange token via Cognito `/oauth2/
+           token`
+      211  3. Se non autenticato → LoginButton redirige a Cognito Hosted 
+           UI
+
+⏺ Doc aggiornato con tutte le nuove decisioni:
+
+  - Partecipanti = utenti registrati, lista dal BE, VIP list read-only
+  - Ruoli fissi nel BE (entity CONFIG/ROLES in DynamoDB), SettingsModal snellito
+  - Mock auth per dev/test: campo nickname, header X-Mock-User, profilo creato
+  al volo
+  - GET /users nuovo endpoint per popolare la VIP list
+  - POST /game/start senza body — BE legge utenti e ruoli automaticamente
+  - ControlPanel refactored a read-only
+
+  Vuoi procedere con l'implementazione o c'è altro da aggiustare nel piano?
+
+✻ Sautéed for 1m 35s
+
+❯ allora cambia alcuni stack lato BE, va bene Python e FastAPI ma per la parte  
+di AUTH e Database vorrei usare altro ( tieni conto che è un progetto           
+personale) posso evitare di uscire dagli standard di flusso. Per la parte di DB 
+ pensavo a Mongo che offre un free tier, per la parte di auth cosa mi consigli? 
+⏺ Per l'auth su progetto personale con free tier, le opzioni migliori sono:
+
+  Firebase Auth (Google)
+  - Free tier generoso: 50k MAU gratis
+  - SDK JS leggero, zero backend per il login
+  - Google/GitHub/email login in 5 minuti
+  - JWT verificabile lato BE con firebase-admin
+
+  Supabase Auth
+  - Free tier: 50k MAU
+  - Basato su GoTrue (open source)
+  - Include anche un DB Postgres free (potrebbe sostituire Mongo)
+  - JWT standard, facile da verificare
+
+  Auth0
+  - Free tier: 25k MAU
+  - Il più "enterprise" ma anche il più pesante da configurare per un side
+  project
+
+  La mia raccomandazione: Firebase Auth. Motivi:
+  - Setup più veloce in assoluto (10 minuti)
+  - SDK frontend minuscolo
+  - Il JWT si verifica lato FastAPI con una sola riga (firebase-admin)
+  - Non aggiungi un intero platform (come Supabase) solo per l'auth
+  - Perfetto per side project: zero costi, zero manutenzione
+
+  Per il DB: MongoDB Atlas free tier (512MB) è perfetto per questo caso d'uso —
+  uno spin a settimana, pochi utenti, dati leggeri.
+
+⏺ User answered Claude's questions:
+  ⎿  · Quale auth preferisci? → 50k MAU cosa intendi=
+
+⏺ MAU = Monthly Active Users — utenti unici che fanno login almeno una volta al
+  mese.
+
+  50k MAU gratis significa che puoi avere fino a 50.000 utenti attivi al mese
+  senza pagare nulla. Per il tuo caso (team di ~11 persone, uno spin a
+  settimana) sei a circa 11 MAU — praticamente allo 0.02% del limite free. Non
+  pagherai mai.
+
+  Quale preferisci tra Firebase Auth, Supabase Auth, o Auth0?
+
+❯ Firebase, per il db Mongo va bene?                                            
+
+⏺ Si, MongoDB Atlas free tier è perfetto per questo caso:
+  - 512MB storage — per ~11 utenti e uno spin a settimana ci vorrebbero anni per
+   riempirlo
+  - Shared cluster gratuito per sempre (M0)
+  - Driver Python ufficiale (motor per async, o pymongo)
+  - Schema flessibile — si adatta bene alle bet con strutture diverse per tipo
+
+  Aggiorno il doc con Firebase Auth + MongoDB.
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 3 lines, removed 3 lines
+      10  
+      11  | Decisione | Scelta |
+      12  |-----------|--------|
+      13 -| Auth | AWS Cognito (User Pool esistente) |                   
+      13 +| Auth | Firebase Auth (50k MAU free) |                        
+      14  | Real-time | Polling ogni 3s + countdown locale da timestamp |
+      15  | Timer betting | 2 minuti |
+      16  | BE runtime | FastAPI + Lambda + Mangum |
+      17 -| DB | DynamoDB (PynamoDB) |                                   
+      17 +| DB | MongoDB Atlas (M0 free tier, 512MB) |                   
+      18  | Region | eu-west-1 |
+      19  | Repo BE | Separato (`vibe-slot-api`) |
+      20  | Offline mode | No — app richiede sempre il BE |
+     ...
+      23  | Partecipazione | Tutti i registrati, sempre (no opt-in/out) |
+      24  | Ruoli | Fissi nel BE (configurati una volta) |
+      25  | Chi avvia spin | Chiunque autenticato |
+      26 -| Dev auth | Mock mode con header `X-Mock-User` (no Cognito in 
+         -dev) |                                                         
+      26 +| Dev auth | Mock mode con header `X-Mock-User` (no Firebase in
+         + dev) |                                                        
+      27  
+      28  ---
+      29  
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 69 lines, removed 11 lines
+       92  └── tests/
+       93  ```
+       94  
+       95 -### DynamoDB — Single Table `vibe-slot`                       
+       95 +### MongoDB Atlas — Database `vibe_slot`                      
+       96  
+       97 -**Keys:** `PK` (String), `SK` (String)                        
+       98 -**GSI1:** `GSI1PK` (String), `GSI1SK` (String)                
+       97 +**Collections:**                                              
+       98  
+      100 -| Entity | PK | SK | Attributi principali |                   
+      101 -|--------|----|----|----------------------|                   
+      102 -| User | `USER#{sub}` | `PROFILE` | display_name, chips, total
+          -_bets, total_wins, current_streak, best_streak |              
+      103 -| Config | `CONFIG` | `ROLES` | roles: [{ id, name }] — ruoli 
+          -fissi configurati una volta |                                 
+      104 -| Game | `GAME#{ulid}` | `META` | status, participants, roles,
+          - result, betting_ends_at, created_by |                        
+      105 -| Bet | `GAME#{game_id}` | `BET#{sub}#{ulid}` | bet_type, part
+          -icipant_ids, role_ids, amount, odds, won, payout |            
+      106 -| Stat | `STAT#{participant_name}` | `GLOBAL` | times_selected
+          -, total_spins |                                               
+       99 +#### `users`                                                  
+      100 +```json                                                       
+      101 +{                                                             
+      102 +  "_id": "firebase_uid",                                      
+      103 +  "display_name": "Capra",                                    
+      104 +  "email": "capra@example.com",                               
+      105 +  "chips": 100,                                               
+      106 +  "stats": {                                                  
+      107 +    "total_bets": 0,                                          
+      108 +    "total_wins": 0,                                          
+      109 +    "current_streak": 0,                                      
+      110 +    "best_streak": 0                                          
+      111 +  },                                                          
+      112 +  "created_at": "2026-04-24T10:00:00Z"                        
+      113 +}                                                             
+      114 +```                                                           
+      115  
+      108 -**GSI1** (leaderboard): `GSI1PK = "LEADERBOARD"`, `GSI1SK = "C
+          -HIPS#{inverted_chips}"`                                       
+      116 +#### `games`                                                  
+      117 +```json                                                       
+      118 +{                                                             
+      119 +  "_id": "ObjectId",                                          
+      120 +  "status": "BETTING | EXECUTING | RESULT | IDLE",            
+      121 +  "participants": [{ "id": "uid", "name": "Capra" }],         
+      122 +  "roles": [{ "id": "r1", "name": "Moderator" }],             
+      123 +  "result": { "r1": { "id": "uid", "name": "Capra" } },       
+      124 +  "betting_ends_at": "2026-04-24T10:02:00Z",                  
+      125 +  "created_by": "firebase_uid",                               
+      126 +  "created_at": "2026-04-24T10:00:00Z"                        
+      127 +}                                                             
+      128 +```                                                           
+      129  
+      130 +#### `bets`                                                   
+      131 +```json                                                       
+      132 +{                                                             
+      133 +  "_id": "ObjectId",                                          
+      134 +  "game_id": "ObjectId",                                      
+      135 +  "user_id": "firebase_uid",                                  
+      136 +  "bet_type": "SINGLE | ANY_ROLE | COMBO | NOT_SELECTED",     
+      137 +  "participant_ids": ["uid1"],                                
+      138 +  "role_ids": ["r1"],                                         
+      139 +  "amount": 10,                                               
+      140 +  "odds": 3.5,                                                
+      141 +  "won": null,                                                
+      142 +  "payout": 0,                                                
+      143 +  "created_at": "2026-04-24T10:00:30Z"                        
+      144 +}                                                             
+      145 +```                                                           
+      146 +Indici: `{ game_id: 1, user_id: 1 }`, `{ game_id: 1 }`        
+      147 +                                                              
+      148 +#### `config`                                                 
+      149 +```json                                                       
+      150 +{                                                             
+      151 +  "_id": "roles",                                             
+      152 +  "roles": [                                                  
+      153 +    { "id": "r1", "name": "Moderator" },                      
+      154 +    { "id": "r2", "name": "Notary" }                          
+      155 +  ]                                                           
+      156 +}                                                             
+      157 +```                                                           
+      158 +                                                              
+      159 +#### `stats`                                                  
+      160 +```json                                                       
+      161 +{                                                             
+      162 +  "_id": "participant_name",                                  
+      163 +  "times_selected": 5,                                        
+      164 +  "total_spins": 20                                           
+      165 +}                                                             
+      166 +```                                                           
+      167 +                                                              
+      168  ### API Endpoints
+      169  
+      170  | Method | Path | Descrizione | Auth |
+
+❯ lato FastAPI con Python come cambio la connessione a DB con Mongo? 
+
+⏺ Ora aggiorno l'auth middleware e la struttura progetto:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 3 lines, removed 4 lines
+      213  **Mock mode** (dev/test):
+      214  - Header `X-Mock-User: <nickname>`
+      215  - Crea profilo utente al volo se non esiste (100 chip)
+      216 -- Nessun JWT, nessun Cognito                                  
+      216 +- Nessun JWT, nessun Firebase                                 
+      217  - Per testare con 2+ utenti: 2 tab browser con nickname divers
+           i
+      218  
+      219 -**Cognito mode** (produzione):                                
+      219 +**Firebase mode** (produzione):                               
+      220  - JWT nel header `Authorization: Bearer <token>`
+      221 -- Verifica via `PyJWKClient` + `python-jose`                  
+      222 -- Endpoint JWKS: `https://cognito-idp.eu-west-1.amazonaws.com/
+          -{USER_POOL_ID}/.well-known/jwks.json`                         
+      221 +- Verifica via `firebase-admin` SDK (`auth.verify_id_token(tok
+          +en)`)                                                         
+      222  - FastAPI `Depends(get_current_user)` su tutti i router
+      223  
+      224  ---
+
+⏺ Ora aggiorno la struttura progetto BE e il FE auth:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 2 lines, removed 1 line
+      71  │   ├── main.py                 # FastAPI app + Mangum handler
+      72  │   ├── config.py               # pydantic-settings (region, ta
+          ble name, cognito)
+      73  │   ├── dependencies.py         # get_current_user dependency
+      74 +│   ├── database.py             # MongoDB connection (motor asy
+         +nc client)                                                     
+      75  │   ├── middleware/
+      75 -│   │   └── auth.py             # Cognito JWT verification via 
+         -PyJWKClient                                                    
+      76 +│   │   └── auth.py             # Firebase JWT verification via
+         + firebase-admin                                                
+      77  │   ├── routers/
+      78  │   │   ├── game.py             # POST /game/start, POST /game/
+          {id}/execute, GET /game/status
+      79  │   │   ├── bets.py             # POST /bets, GET /bets/me?game
+          _id=
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      88  │   │   ├── odds_service.py     # Historical odds calculation
+      89  │   │   └── user_service.py     # Chip management, stats, leade
+          rboard
+      90  │   └── models/
+      91 -│       └── tables.py           # PynamoDB single-table model  
+      91 +│       └── collections.py      # MongoDB collection references
+         + + indexes                                                     
+      92  ├── requirements.txt
+      93  └── tests/
+      94  ```
+
+⏺ Aggiorno la sezione FE auth:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      231  | File | Scopo |
+      232  |------|-------|
+      233  | `src/services/api.ts` | Fetch wrapper tipizzato con token |
+      234 -| `src/services/auth.ts` | Cognito Hosted UI redirect, token e
+          -xchange, storage |                                            
+      234 +| `src/services/auth.ts` | Firebase Auth init, login (Google/e
+          +mail), token management |                                     
+      235  | `src/contexts/AuthContext.tsx` | Provider auth: token, user,
+            isAuthenticated, login, logout |
+      236  | `src/hooks/useAuth.ts` | Shortcut per consumare AuthContext 
+           |
+      237  | `src/hooks/useBetting.ts` | Stato betting: chips, bets, resu
+           lts, odds. Chiama API |
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 5 lines, removed 5 lines
+      263  3. Nickname salvato in sessionStorage, mandato come header `X-
+           Mock-User` ad ogni request
+      264  4. BE crea profilo al volo al primo uso
+      265  
+      266 -**Cognito mode** (prod):                                      
+      267 -1. App monta → AuthContext controlla token in sessionStorage  
+      268 -2. Se `?code=` nell'URL → exchange token via Cognito `/oauth2/
+          -token`                                                        
+      269 -3. Se non autenticato → LoginButton redirige a Cognito Hosted 
+          -UI                                                            
+      270 -4. Token passato a tutti gli hook/API calls                   
+      266 +**Firebase mode** (prod):                                     
+      267 +1. App monta → Firebase SDK `onAuthStateChanged` listener     
+      268 +2. Se non autenticato → LoginButton apre popup Google Sign-In 
+          +(o email/password)                                            
+      269 +3. Firebase ritorna JWT → salvato automaticamente dal SDK     
+      270 +4. `getIdToken()` per ogni API call → header `Authorization: B
+          +earer <token>`                                                
+      271  
+      272  ### Env Vars (`.env`)
+      273  
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 4 lines, removed 4 lines
+      272  ### Env Vars (`.env`)
+      273  
+      274  ```
+      275 -VITE_API_URL=https://xxx.execute-api.eu-west-1.amazonaws.com  
+      276 -VITE_COGNITO_DOMAIN=https://xxx.auth.eu-west-1.amazoncognito.c
+          -om                                                            
+      277 -VITE_COGNITO_CLIENT_ID=xxx                                    
+      278 -VITE_COGNITO_REDIRECT_URI=https://xxx/vibe-slot-name/         
+      275 +VITE_API_URL=http://localhost:8000  # dev, poi URL Lambda in p
+          +rod                                                           
+      276 +VITE_FIREBASE_API_KEY=xxx                                     
+      277 +VITE_FIREBASE_AUTH_DOMAIN=xxx.firebaseapp.com                 
+      278 +VITE_FIREBASE_PROJECT_ID=xxx                                  
+      279  ```
+      280  
+      281  ### BettingModal — UI per GameState
+
+⏺ Aggiorno chip management (da DynamoDB conditional update a MongoDB):
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      203  
+      204  - Ogni utente parte con **100 chip**
+      205  - Puntata minima: **1 chip**
+      206 -- Chip scalate atomicamente su DynamoDB (`chips >= amount` con
+          -ditional update)                                              
+      206 +- Chip scalate atomicamente su MongoDB (`$inc` con filtro `chi
+          +ps >= amount` via `find_one_and_update`)                      
+      207  - **Bancarotta** (0 chip): badge "BANKRUPT!", bet disabilitate
+      208  - **Decisione futura BE**: chi va in bancarotta si auto-assegn
+           a a un ruolo la settimana successiva
+      209  
+
+⏺ Aggiorno le decisioni future:
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      342  
+      343  ## Decisioni Future
+      344  
+      345 -- **Terraform**: IaC per Lambda + API Gateway + DynamoDB + Cog
+          -nito                                                          
+      345 +- **Terraform**: IaC per Lambda + API Gateway                 
+      346  - **Bancarotta forzata**: auto-assegnazione ruolo settimana su
+           ccessiva
+      347  - **Leaderboard avanzata**: storico settimanale, monthly reset
+      348  - **Notifiche**: push notification quando parte il timer betti
+           ng
+
+⏺ Doc aggiornato. Per la tua domanda sulla connessione MongoDB in FastAPI:
+
+  Connessione MongoDB in FastAPI
+
+  Usi motor (driver async per MongoDB) + Pydantic per i modelli:
+
+  # app/database.py
+  from motor.motor_asyncio import AsyncIOMotorClient
+
+  client: AsyncIOMotorClient | None = None
+  db = None
+
+  async def connect():
+      global client, db
+      client = AsyncIOMotorClient("mongodb+srv://user:pass@cluster.mongodb.net")
+      db = client["vibe_slot"]
+
+  async def disconnect():
+      if client:
+          client.close()
+
+  # app/main.py
+  from contextlib import asynccontextmanager
+  from fastapi import FastAPI
+
+  @asynccontextmanager
+  async def lifespan(app: FastAPI):
+      await connect()    # startup
+      yield
+      await disconnect() # shutdown
+
+  app = FastAPI(lifespan=lifespan)
+
+  # nei service, esempio:
+  from app.database import db
+
+  async def get_user(uid: str):
+      return await db["users"].find_one({"_id": uid})
+
+  async def deduct_chips(uid: str, amount: int) -> bool:
+      result = await db["users"].find_one_and_update(
+          {"_id": uid, "chips": {"$gte": amount}},
+          {"$inc": {"chips": -amount}},
+      )
+      return result is not None  # False = chip insufficienti
+
+  Dipendenze: motor, pymongo (installato automaticamente con motor). Niente ORM
+  pesante — Pydantic per validazione, motor per le query. Pulito e leggero.
+
+  Vuoi procedere con l'implementazione o hai altre domande?
+
+✻ Crunched for 1m 46s
+
+❯ sisi al posto delle Lambda cosa possiamo fare?                                
+
+⏺ Per un side project con ~11 utenti e uno spin a settimana, le alternative
+  migliori:
+
+  Railway (consigliato)
+
+  - Deploy da GitHub in 1 click, FastAPI gira come container
+  - Free tier: $5/mese di crediti gratis (piu' che sufficiente)
+  - Zero config: rileva FastAPI automaticamente, fa deploy
+  - Supporta env vars, custom domain, logs
+  - Nessun cold start (a differenza di Lambda)
+
+  Render
+
+  - Simile a Railway, free tier con 750h/mese
+  - Il piano free va in sleep dopo 15 min di inattivita' (cold start ~30s)
+  - Buono ma il sleep puo' essere fastidioso col polling
+
+  Fly.io
+
+  - Free tier: 3 shared VMs
+  - Piu' DevOps-oriented (serve fly.toml)
+  - Ottime performance, zero sleep
+
+  Il proprio VPS (Hetzner/DigitalOcean)
+
+  - ~$4/mese per un server dedicato
+  - Controllo totale, nessun limite
+  - Piu' setup iniziale (Docker, nginx, SSL)
+
+  La mia raccomandazione
+
+  Railway. Motivi:
+  - Deploy: git push → live in 30 secondi
+  - Niente Mangum, niente Lambda handler — FastAPI puro con uvicorn
+  - Niente cold start
+  - Il free tier copre ampiamente il tuo caso d'uso
+  - Se sfori i crediti, costa ~$1/mese per questo carico
+
+  Questo semplifica anche il BE: togli Mangum, togli il Lambda handler, è solo
+  FastAPI standard.
+
+  Vuoi che aggiorni il doc con Railway?
+
+❯ per la questione del polling non rischia di andare fuori il free-tier         
+
+⏺ No, il polling non è un problema. Ecco perché:
+
+  Railway addebita per compute time (server acceso), non per singola request. Il
+   server FastAPI gira 24/7 e costa ~$2-3/mese per un container piccolo — ben
+  dentro i $5 di crediti.
+
+  Il polling aggiunge carico trascurabile perché:
+  - 11 utenti × 1 request ogni 3s = ~220 req/min — niente per un server
+  - Ma soprattutto non serve pollare sempre a 3s
+
+  Polling intelligente
+
+  ┌─────────┬──────────────────┬────────────────────────────────────────────┐
+  │  Stato  │    Frequenza     │                   Motivo                   │
+  ├─────────┼──────────────────┼────────────────────────────────────────────┤
+  │ IDLE    │ Ogni 30s (o      │ Serve solo per capire se qualcuno ha       │
+  │         │ niente)          │ avviato uno spin                           │
+  ├─────────┼──────────────────┼────────────────────────────────────────────┤
+  │ BETTING │ Ogni 3s          │ Timer attivo, serve reattivita'            │
+  ├─────────┼──────────────────┼────────────────────────────────────────────┤
+  │ RESULT  │ Ogni 5s          │ Mostra risultati, poi torna IDLE           │
+  └─────────┴──────────────────┴────────────────────────────────────────────┘
+
+  In pratica il polling "pesante" (3s) dura solo 2 minuti a settimana — durante
+  la finestra betting. Il resto del tempo o non polli o polli ogni 30s.
+
+  Alternative ancora piu' leggere
+
+  Se vuoi eliminare il polling in IDLE del tutto:
+  - Chi clicca "Spin" manda una notifica push (Firebase Cloud Messaging,
+  gratuito) a tutti gli altri: "Betting aperto!"
+  - Gli altri aprono l'app e iniziano a pollare solo da quel momento
+
+  Ma onestamente, anche pollando ogni 30s 24/7, il costo su Railway non cambia —
+   il server è gia' acceso.
+
+  Aggiorno il doc con Railway?
+
+✻ Churned for 32s
+❯ la lambda con AWS ha un free tier?                                            
+
+⏺ Si. AWS Lambda free tier:
+
+  - 1 milione di richieste/mese gratis
+  - 400.000 GB-secondi di compute gratis
+  - Permanente (non solo i primi 12 mesi)
+
+  Per il tuo caso d'uso:
+  - 11 utenti, 1 spin/settimana
+  - Polling 3s durante 2 min di betting = ~440 request per spin
+  - Polling 30s in IDLE (se vuoi) = ~32k request/mese (11 utenti × 2880
+  poll/giorno × 30 giorni)
+  - Totale: ~34k request/mese → 3.4% del free tier
+
+  Costo: zero, per sempre.
+
+  Il contro è il cold start (~2-3s alla prima richiesta dopo inattivita'). Ma
+  con il polling anche lento (ogni 30s), la Lambda resta "calda" e il cold start
+   non si sente.
+
+  Quindi Lambda è effettivamente la scelta migliore per il tuo caso — gratis per
+   sempre, zero manutenzione. Railway ha senso per chi vuole semplicita' di
+  deploy, ma per costi Lambda vince nettamente.
+
+  Vuoi tornare a Lambda + Mangum nel piano?
+
+❯ se supero il free tier mi blocca o passa direttamente ad un piano a           
+pagamento?                                                                      
+
+⏺ Passa direttamente a pagamento — AWS non blocca mai, addebita l'eccesso. Ma i
+  costi sono ridicoli:
+
+  - $0.20 per milione di request oltre il free tier
+  - $0.0000166667 per GB-secondo di compute
+
+  Nel peggiore dei casi, se per qualche motivo fai 10x il traffico previsto
+  (~340k request), paghi circa $0.07 — sette centesimi.
+
+  Per proteggerti puoi:
+  - Impostare un billing alarm su AWS (ti avvisa se superi X dollari)
+  - Mettere un budget con limite a $1/mese — ricevi alert prima di spendere
+
+  Ma realisticamente, con 11 utenti e uno spin a settimana, non uscirai mai dal
+  free tier.
+
+  Restiamo con Lambda + Mangum?
+
+❯ si va bene lambda                                                             
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      13  | Auth | Firebase Auth (50k MAU free) |
+      14  | Real-time | Polling ogni 3s + countdown locale da timestamp |
+      15  | Timer betting | 2 minuti |
+      16 -| BE runtime | FastAPI + Lambda + Mangum |                     
+      16 +| BE runtime | FastAPI + AWS Lambda + Mangum (free tier: 1M req
+         +/mese) |                                                       
+      17  | DB | MongoDB Atlas (M0 free tier, 512MB) |
+      18  | Region | eu-west-1 |
+      19  | Repo BE | Separato (`vibe-slot-api`) |
+
+⏺ Aggiornato. Tutto il piano ora riflette lo stack finale:
+
+  ┌────────────┬────────────────────────────┬────────────────────┐
+  │ Componente │          Servizio          │       Costo        │
+  ├────────────┼────────────────────────────┼────────────────────┤
+  │ Auth       │ Firebase Auth              │ Free (50k MAU)     │
+  ├────────────┼────────────────────────────┼────────────────────┤
+  │ BE         │ Lambda + Mangum            │ Free (1M req/mese) │
+  ├────────────┼────────────────────────────┼────────────────────┤
+  │ DB         │ MongoDB Atlas M0           │ Free (512MB)       │
+  ├────────────┼────────────────────────────┼────────────────────┤
+  │ FE hosting │ GitHub Pages (gia' attivo) │ Free               │
+  └────────────┴────────────────────────────┴────────────────────┘
+
+  Costo totale: zero.
+
+  Vuoi procedere con l'implementazione o hai altre domande?
+
+❯ se ci butto dentro cognito ha un free tier?                                   
+
+⏺ Si. AWS Cognito free tier:
+
+  - 50.000 MAU gratis (stessi numeri di Firebase)
+  - Permanente (non scade dopo 12 mesi)
+  - Include: sign-up, sign-in, token refresh, password reset
+
+  Per 11 utenti sei allo 0.02% del limite — gratis per sempre, come Firebase.
+
+  Cognito vs Firebase per il tuo caso
+
+  ┌──────────────┬──────────────────────────────┬───────────────────────────┐
+  │              │           Cognito            │         Firebase          │
+  ├──────────────┼──────────────────────────────┼───────────────────────────┤
+  │ Free tier    │ 50k MAU                      │ 50k MAU                   │
+  ├──────────────┼──────────────────────────────┼───────────────────────────┤
+  │ Vantaggio    │ Tutto dentro AWS (Lambda,    │ SDK FE piu' semplice      │
+  │              │ API Gateway)                 │                           │
+  ├──────────────┼──────────────────────────────┼───────────────────────────┤
+  │ JWT verifica │ python-jose + JWKS endpoint  │ firebase-admin SDK        │
+  │  BE          │                              │                           │
+  ├──────────────┼──────────────────────────────┼───────────────────────────┤
+  │ Login UI     │ Hosted UI (bruttina) o       │ Popup Google (bella)      │
+  │              │ custom                       │                           │
+  ├──────────────┼──────────────────────────────┼───────────────────────────┤
+  │ Setup        │ Piu' config (User Pool, App  │ Console Firebase + 3      │
+  │              │ Client, domain)              │ righe di codice           │
+  └──────────────┴──────────────────────────────┴───────────────────────────┘
+
+  Visto che sei gia' su AWS con Lambda e hai detto che hai un Cognito User Pool 
+  esistente, ha senso usare Cognito — tieni tutto nello stesso ecosistema e non
+  aggiungi Firebase come dipendenza extra.
+
+  Vuoi tornare a Cognito nel piano?
+
+❯ attualmente non ho un userPool esistente, dovrei crearne uno                  
+
+⏺ Allora il setup è equivalente — sia Cognito che Firebase partono da zero. La
+  differenza pratica:
+
+  Cognito: ~15 min di setup (User Pool, App Client, domain per Hosted UI), ma
+  poi è tutto AWS — un ecosistema unico con Lambda e API Gateway.
+
+  Firebase: ~5 min di setup (crea progetto, abilita auth, copia config), ma
+  aggiungi un servizio Google nel mix AWS.
+
+  Visto che il BE è su AWS, io andrei con Cognito — eviti di mescolare due cloud
+   provider per un progetto piccolo. Il setup in più è una tantum.
+
+  Vuoi che aggiorno il doc con Cognito (nuovo User Pool da creare) e procediamo?
+
+❯ però effettivamente con cognito e lambda ho praticamente già tutto  fatto in  
+casa, come gli altri porgetti, o sbaglio?                                       
+
+⏺ Esatto. Con Cognito + Lambda hai lo stack completamente AWS, identico ai tuoi
+  altri progetti:
+
+  - Cognito → auth (JWT)
+  - Lambda + Mangum → FastAPI
+  - API Gateway → routing HTTP
+  - MongoDB Atlas → unico servizio esterno (ma il free tier è troppo comodo per
+  rinunciarci)
+
+  Se un domani vuoi anche il DB in casa AWS, DynamoDB ha 25GB + 25 WCU/RCU
+  gratis per sempre — ma per ora MongoDB va benissimo.
+
+  Aggiorno il doc riportando Cognito.
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      10  
+      11  | Decisione | Scelta |
+      12  |-----------|--------|
+      13 -| Auth | Firebase Auth (50k MAU free) |                        
+      13 +| Auth | AWS Cognito (50k MAU free, User Pool da creare) |     
+      14  | Real-time | Polling ogni 3s + countdown locale da timestamp |
+      15  | Timer betting | 2 minuti |
+      16  | BE runtime | FastAPI + AWS Lambda + Mangum (free tier: 1M req
+          /mese) |
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 4 lines, removed 3 lines
+      214  **Mock mode** (dev/test):
+      215  - Header `X-Mock-User: <nickname>`
+      216  - Crea profilo utente al volo se non esiste (100 chip)
+      217 -- Nessun JWT, nessun Firebase                                 
+      217 +- Nessun JWT, nessun Cognito                                  
+      218  - Per testare con 2+ utenti: 2 tab browser con nickname divers
+           i
+      219  
+      220 -**Firebase mode** (produzione):                               
+      220 +**Cognito mode** (produzione):                                
+      221  - JWT nel header `Authorization: Bearer <token>`
+      222 -- Verifica via `firebase-admin` SDK (`auth.verify_id_token(tok
+          -en)`)                                                         
+      222 +- Verifica via `PyJWKClient` + `python-jose`                  
+      223 +- JWKS: `https://cognito-idp.eu-west-1.amazonaws.com/{USER_POO
+          +L_ID}/.well-known/jwks.json`                                  
+      224  - FastAPI `Depends(get_current_user)` su tutti i router
+      225  
+      226  ---
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      73  │   ├── dependencies.py         # get_current_user dependency
+      74  │   ├── database.py             # MongoDB connection (motor asy
+          nc client)
+      75  │   ├── middleware/
+      76 -│   │   └── auth.py             # Firebase JWT verification via
+         - firebase-admin                                                
+      76 +│   │   └── auth.py             # Cognito JWT verification via 
+         +PyJWKClient                                                    
+      77  │   ├── routers/
+      78  │   │   ├── game.py             # POST /game/start, POST /game/
+          {id}/execute, GET /game/status
+      79  │   │   ├── bets.py             # POST /bets, GET /bets/me?game
+          _id=
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      232  | File | Scopo |
+      233  |------|-------|
+      234  | `src/services/api.ts` | Fetch wrapper tipizzato con token |
+      235 -| `src/services/auth.ts` | Firebase Auth init, login (Google/e
+          -mail), token management |                                     
+      235 +| `src/services/auth.ts` | Cognito Hosted UI redirect, token e
+          +xchange (PKCE), storage |                                     
+      236  | `src/contexts/AuthContext.tsx` | Provider auth: token, user,
+            isAuthenticated, login, logout |
+      237  | `src/hooks/useAuth.ts` | Shortcut per consumare AuthContext 
+           |
+      238  | `src/hooks/useBetting.ts` | Stato betting: chips, bets, resu
+           lts, odds. Chiama API |
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 5 lines, removed 5 lines
+      264  3. Nickname salvato in sessionStorage, mandato come header `X-
+           Mock-User` ad ogni request
+      265  4. BE crea profilo al volo al primo uso
+      266  
+      267 -**Firebase mode** (prod):                                     
+      268 -1. App monta → Firebase SDK `onAuthStateChanged` listener     
+      269 -2. Se non autenticato → LoginButton apre popup Google Sign-In 
+          -(o email/password)                                            
+      270 -3. Firebase ritorna JWT → salvato automaticamente dal SDK     
+      271 -4. `getIdToken()` per ogni API call → header `Authorization: B
+          -earer <token>`                                                
+      267 +**Cognito mode** (prod):                                      
+      268 +1. App monta → AuthContext controlla token in sessionStorage  
+      269 +2. Se `?code=` nell'URL → exchange token via Cognito `/oauth2/
+          +token` (PKCE flow)                                            
+      270 +3. Se non autenticato → LoginButton redirige a Cognito Hosted 
+          +UI                                                            
+      271 +4. JWT passato come `Authorization: Bearer <token>` ad ogni AP
+          +I call                                                        
+      272  
+      273  ### Env Vars (`.env`)
+      274  
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 4 lines, removed 4 lines
+      273  ### Env Vars (`.env`)
+      274  
+      275  ```
+      276 -VITE_API_URL=http://localhost:8000  # dev, poi URL Lambda in p
+          -rod                                                           
+      277 -VITE_FIREBASE_API_KEY=xxx                                     
+      278 -VITE_FIREBASE_AUTH_DOMAIN=xxx.firebaseapp.com                 
+      279 -VITE_FIREBASE_PROJECT_ID=xxx                                  
+      276 +VITE_API_URL=http://localhost:8000            # dev, poi URL A
+          +PI Gateway in prod                                            
+      277 +VITE_COGNITO_DOMAIN=https://xxx.auth.eu-west-1.amazoncognito.c
+          +om                                                            
+      278 +VITE_COGNITO_CLIENT_ID=xxx                                    
+      279 +VITE_COGNITO_REDIRECT_URI=http://localhost:3000/vibe-slot-name
+          +/                                                             
+      280  ```
+      281  
+      282  ### BettingModal — UI per GameState
+
+⏺ Fatto. Stack finale tutto AWS + MongoDB:
+
+  ┌──────────┬─────────────────────┬─────────────────────────────┐
+  │ Servizio │      Provider       │            Costo            │
+  ├──────────┼─────────────────────┼─────────────────────────────┤
+  │ Auth     │ AWS Cognito         │ Free (50k MAU)              │
+  ├──────────┼─────────────────────┼─────────────────────────────┤
+  │ Compute  │ AWS Lambda + Mangum │ Free (1M req/mese)          │
+  ├──────────┼─────────────────────┼─────────────────────────────┤
+  │ API      │ AWS API Gateway     │ Free (1M req/mese, 12 mesi) │
+  ├──────────┼─────────────────────┼─────────────────────────────┤
+  │ DB       │ MongoDB Atlas M0    │ Free (512MB)                │
+  ├──────────┼─────────────────────┼─────────────────────────────┤
+  │ FE       │ GitHub Pages        │ Free                        │
+  └──────────┴─────────────────────┴─────────────────────────────┘
+
+  Unico servizio fuori AWS è MongoDB. Tutto il resto è in casa. Procediamo con
+  l'implementazione?
+
+✻ Cooked for 49s
+
+❯ Miha detto che il free tier di dynamo è di 25 MAU?                            
+
+⏺ No no, DynamoDB non ha MAU — i 25 sono:
+
+  - 25 GB di storage gratuito
+  - 25 WCU (Write Capacity Units) — ~25 scritture/secondo
+  - 25 RCU (Read Capacity Units) — ~25 letture/secondo
+  - Permanente (non scade)
+
+  Per il tuo caso (11 utenti, 1 spin/settimana) useresti probabilmente < 1MB di
+  storage e picchi di ~5 request/secondo durante il betting. Sei ampiamente
+  dentro il free tier.
+
+  MongoDB Atlas vs DynamoDB
+
+  ┌─────────────────┬───────────────────┬────────────────────────┐
+  │                 │ MongoDB Atlas M0  │     DynamoDB Free      │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Storage         │ 512MB             │ 25GB                   │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Costo           │ Free              │ Free                   │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Provider        │ Esterno           │ AWS (in casa)          │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Driver Python   │ motor (async)     │ boto3 / PynamoDB       │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Schema          │ Flessibile (JSON) │ Key-value + GSI        │
+  ├─────────────────┼───────────────────┼────────────────────────┤
+  │ Gia' lo conosci │ ?                 │ Si (dai tuoi progetti) │
+  └─────────────────┴───────────────────┴────────────────────────┘
+
+  Visto che usi gia' DynamoDB + PynamoDB nei tuoi altri progetti e con DynamoDB
+  resti 100% AWS, vuoi tornare a DynamoDB e togliere MongoDB dal piano?
+
+❯ ma quindi è stra abbondante o sbaglio?                                        
+
+⏺ Si, è assurdamente abbondante per il tuo caso. Per darti un'idea:
+
+  - 25GB di storage: i tuoi dati (11 utenti, 1 spin/settimana, qualche bet)
+  occuperebbero forse 50KB dopo un anno. Sei allo 0.0002% del limite.
+  - 25 RCU/RCU: reggi 25 letture/secondo costanti. Il tuo picco massimo (11
+  utenti che pollano ogni 3s durante il betting) è ~4 request/secondo.
+
+  Praticamente non riuscirai mai a riempirlo neanche se il progetto dura 100
+  anni.
+
+  Vuoi tornare a DynamoDB e tenere tutto in casa AWS?
+
+❯ se iniziano ad essere tipo 20?                                                
+
+⏺ Ancora zero problemi. Anche con 20 utenti:
+
+  - Storage: ~100KB dopo un anno. Su 25GB.
+  - Polling picco: 20 utenti × 1 req/3s = ~7 request/secondo. Su 25 RCU
+  disponibili.
+  - Lambda: ~70k request/mese. Su 1M gratis.
+
+  Per sforare il free tier DynamoDB dovresti avere circa 200+ utenti che pollano
+   contemporaneamente. Con 20 persone non ti avvicini neanche.
+
+  Torniamo a DynamoDB + PynamoDB? Cosi' togli MongoDB e resti 100% AWS, stesso
+  stack dei tuoi altri progetti.
+
+❯ si                                                                            
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      14  | Real-time | Polling ogni 3s + countdown locale da timestamp |
+      15  | Timer betting | 2 minuti |
+      16  | BE runtime | FastAPI + AWS Lambda + Mangum (free tier: 1M req
+          /mese) |
+      17 -| DB | MongoDB Atlas (M0 free tier, 512MB) |                   
+      17 +| DB | AWS DynamoDB (free tier: 25GB, 25 RCU/WCU) + PynamoDB OR
+         +M |                                                            
+      18  | Region | eu-west-1 |
+      19  | Repo BE | Separato (`vibe-slot-api`) |
+      20  | Offline mode | No — app richiede sempre il BE |
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 13 lines, removed 68 lines
+       93  └── tests/
+       94  ```
+       95  
+       96 -### MongoDB Atlas — Database `vibe_slot`                      
+       96 +### DynamoDB — Single Table `vibe-slot`                       
+       97  
+       98 -**Collections:**                                              
+       98 +**Keys:** `PK` (String), `SK` (String)                        
+       99 +**GSI1:** `GSI1PK` (String), `GSI1SK` (String)                
+      100  
+      100 -#### `users`                                                  
+      101 -```json                                                       
+      102 -{                                                             
+      103 -  "_id": "firebase_uid",                                      
+      104 -  "display_name": "Capra",                                    
+      105 -  "email": "capra@example.com",                               
+      106 -  "chips": 100,                                               
+      107 -  "stats": {                                                  
+      108 -    "total_bets": 0,                                          
+      109 -    "total_wins": 0,                                          
+      110 -    "current_streak": 0,                                      
+      111 -    "best_streak": 0                                          
+      112 -  },                                                          
+      113 -  "created_at": "2026-04-24T10:00:00Z"                        
+      114 -}                                                             
+      115 -```                                                           
+      101 +| Entity | PK | SK | Attributi principali |                   
+      102 +|--------|----|----|----------------------|                   
+      103 +| User | `USER#{sub}` | `PROFILE` | display_name, chips, total
+          +_bets, total_wins, current_streak, best_streak |              
+      104 +| Config | `CONFIG` | `ROLES` | roles: [{ id, name }] — ruoli 
+          +fissi configurati una volta |                                 
+      105 +| Game | `GAME#{ulid}` | `META` | status, participants, roles,
+          + result, betting_ends_at, created_by |                        
+      106 +| Bet | `GAME#{game_id}` | `BET#{sub}#{ulid}` | bet_type, part
+          +icipant_ids, role_ids, amount, odds, won, payout |            
+      107 +| Stat | `STAT#{participant_name}` | `GLOBAL` | times_selected
+          +, total_spins |                                               
+      108  
+      117 -#### `games`                                                  
+      118 -```json                                                       
+      119 -{                                                             
+      120 -  "_id": "ObjectId",                                          
+      121 -  "status": "BETTING | EXECUTING | RESULT | IDLE",            
+      122 -  "participants": [{ "id": "uid", "name": "Capra" }],         
+      123 -  "roles": [{ "id": "r1", "name": "Moderator" }],             
+      124 -  "result": { "r1": { "id": "uid", "name": "Capra" } },       
+      125 -  "betting_ends_at": "2026-04-24T10:02:00Z",                  
+      126 -  "created_by": "firebase_uid",                               
+      127 -  "created_at": "2026-04-24T10:00:00Z"                        
+      128 -}                                                             
+      129 -```                                                           
+      109 +**GSI1** (leaderboard): `GSI1PK = "LEADERBOARD"`, `GSI1SK = "C
+          +HIPS#{inverted_chips}"`                                       
+      110 +**GSI1** (bets per spin): `GSI1PK = "GAME#{game_id}"`, `GSI1SK
+          + = "BET#{sub}"`                                               
+      111  
+      131 -#### `bets`                                                   
+      132 -```json                                                       
+      133 -{                                                             
+      134 -  "_id": "ObjectId",                                          
+      135 -  "game_id": "ObjectId",                                      
+      136 -  "user_id": "firebase_uid",                                  
+      137 -  "bet_type": "SINGLE | ANY_ROLE | COMBO | NOT_SELECTED",     
+      138 -  "participant_ids": ["uid1"],                                
+      139 -  "role_ids": ["r1"],                                         
+      140 -  "amount": 10,                                               
+      141 -  "odds": 3.5,                                                
+      142 -  "won": null,                                                
+      143 -  "payout": 0,                                                
+      144 -  "created_at": "2026-04-24T10:00:30Z"                        
+      145 -}                                                             
+      146 -```                                                           
+      147 -Indici: `{ game_id: 1, user_id: 1 }`, `{ game_id: 1 }`        
+      112 +Chip scalate atomicamente con DynamoDB conditional update (`ch
+          +ips >= amount`).                                              
+      113  
+      149 -#### `config`                                                 
+      150 -```json                                                       
+      151 -{                                                             
+      152 -  "_id": "roles",                                             
+      153 -  "roles": [                                                  
+      154 -    { "id": "r1", "name": "Moderator" },                      
+      155 -    { "id": "r2", "name": "Notary" }                          
+      156 -  ]                                                           
+      157 -}                                                             
+      158 -```                                                           
+      159 -                                                              
+      160 -#### `stats`                                                  
+      161 -```json                                                       
+      162 -{                                                             
+      163 -  "_id": "participant_name",                                  
+      164 -  "times_selected": 5,                                        
+      165 -  "total_spins": 20                                           
+      166 -}                                                             
+      167 -```                                                           
+      168 -                                                              
+      114  ### API Endpoints
+      115  
+      116  | Method | Path | Descrizione | Auth |
+
+⏺ Update(docs/BETTING_SYSTEM.md)  ⎿  Added 1 line, removed 1 line
+      148  
+      149  - Ogni utente parte con **100 chip**
+      150  - Puntata minima: **1 chip**
+      151 -- Chip scalate atomicamente su MongoDB (`$inc` con filtro `chi
+          -ps >= amount` via `find_one_and_update`)                      
+      151 +- Chip scalate atomicamente su DynamoDB (conditional update `c
+          +hips >= amount`)                                              
+      152  - **Bancarotta** (0 chip): badge "BANKRUPT!", bet disabilitate
+      153  - **Decisione futura BE**: chi va in bancarotta si auto-assegn
+           a a un ruolo la settimana successiva
+      154  
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      71  │   ├── main.py                 # FastAPI app + Mangum handler
+      72  │   ├── config.py               # pydantic-settings (region, ta
+          ble name, cognito)
+      73  │   ├── dependencies.py         # get_current_user dependency
+      74 -│   ├── database.py             # MongoDB connection (motor asy
+         -nc client)                                                     
+      74 +│   ├── database.py             # DynamoDB table references (Py
+         +namoDB)                                                        
+      75  │   ├── middleware/
+      76  │   │   └── auth.py             # Cognito JWT verification via 
+          PyJWKClient
+      77  │   ├── routers/
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 1 line, removed 1 line
+      88  │   │   ├── odds_service.py     # Historical odds calculation
+      89  │   │   └── user_service.py     # Chip management, stats, leade
+          rboard
+      90  │   └── models/
+      91 -│       └── collections.py      # MongoDB collection references
+         - + indexes                                                     
+      91 +│       └── tables.py           # PynamoDB single-table model +
+         + GSI                                                           
+      92  ├── requirements.txt
+      93  └── tests/
+      94  ```
+
+⏺ Fatto. Stack finale 100% AWS:
+
+  ┌─────────────┬───────────────────────┐
+  │  Servizio   │       Free tier       │
+  ├─────────────┼───────────────────────┤
+  │ Cognito     │ 50k MAU               │
+  ├─────────────┼───────────────────────┤
+  │ Lambda      │ 1M req/mese           │
+  ├─────────────┼───────────────────────┤
+  │ API Gateway │ 1M req/mese (12 mesi) │
+  ├─────────────┼───────────────────────┤
+  │ DynamoDB    │ 25GB + 25 RCU/WCU     │
+  └─────────────┴───────────────────────┘
+
+  Zero servizi esterni, stesso stack dei tuoi altri progetti. Procediamo con
+  l'implementazione?
+
+✻ Worked for 39s
+
+❯ API Gateway │ 1M req/mese (12 mesi) invece?                                   
+
+⏺ Hai ragione a notarlo. API Gateway REST ha il free tier solo per i primi 12 
+  mesi di AWS. Dopo costa $3.50 per milione di request.
+
+  Per il tuo caso (~34k req/mese) sarebbero circa $0.12/mese dopo il primo anno
+  — niente di preoccupante.
+
+  Ma c'e' un'alternativa: API Gateway HTTP API (non REST API). Costa $1.00 per 
+  milione invece di $3.50, e per il tuo volume sarebbe ~$0.03/mese. Fa tutto
+  quello che ti serve.
+
+  Oppure puoi usare un Function URL di Lambda — endpoint HTTP diretto senza API
+  Gateway, completamente gratis per sempre. Il limite è che hai meno controlli
+  (no rate limiting, no custom domain nativo), ma per un side project con 11-20
+  utenti va benissimo.
+
+  Quale preferisci?
+
+  ┌───────────────────┬──────────────────┬─────────────────────────────────┐
+  │      Opzione      │  Costo dopo 12   │              Note               │
+  │                   │       mesi       │                                 │
+  ├───────────────────┼──────────────────┼─────────────────────────────────┤
+  │ API Gateway HTTP  │ ~$0.03/mese      │ Standard, tutte le feature      │
+  │ API               │                  │                                 │
+  ├───────────────────┼──────────────────┼─────────────────────────────────┤
+  │ Lambda Function   │ Free per sempre  │ Nessun API Gateway, URL         │
+  │ URL               │                  │ autogenerato                    │
+  ├───────────────────┼──────────────────┼─────────────────────────────────┤
+  │ API Gateway REST  │ ~$0.12/mese      │ Overkill per questo caso        │
+  │ API               │                  │                                 │
+  └───────────────────┴──────────────────┴─────────────────────────────────┘
+
+❯ Lambda function url non le conosco cosa sono?                                 
+
+⏺ È una feature di Lambda che ti dà un endpoint HTTPS diretto sulla Lambda,
+  senza passare da API Gateway. In pratica:
+
+  Con API Gateway (classico)
+
+  Client → API Gateway → Lambda
+  Paghi API Gateway + Lambda.
+
+  Con Function URL
+
+  Client → Lambda (direttamente)
+  Paghi solo Lambda. L'URL è tipo:
+  https://abc123xyz.lambda-url.eu-west-1.on.aws/
+
+  Cosa supporta
+
+  - HTTPS automatico (SSL incluso)
+  - CORS configurabile
+  - Auth via IAM o nessuna (pubblica) — nel tuo caso l'auth la gestisci tu con
+  Cognito JWT dentro FastAPI
+  - Supporta Mangum normalmente — FastAPI funziona identico
+
+  Cosa NON ha rispetto ad API Gateway
+
+  ┌────────────────────────────────┬──────────────────────────┬────────────┐
+  │            Feature             │       Function URL       │    API     │
+  │                                │                          │  Gateway   │
+  ├────────────────────────────────┼──────────────────────────┼────────────┤
+  │ Custom domain                  │ No (serve CloudFront     │ Si         │
+  │ (api.tuodominio.com)           │ davanti)                 │            │
+  ├────────────────────────────────┼──────────────────────────┼────────────┤
+  │ Rate limiting                  │ No                       │ Si         │
+  ├────────────────────────────────┼──────────────────────────┼────────────┤
+  │ API keys                       │ No                       │ Si         │
+  ├────────────────────────────────┼──────────────────────────┼────────────┤
+  │ WAF (firewall)                 │ No                       │ Si         │
+  ├────────────────────────────────┼──────────────────────────┼────────────┤
+  │ Caching                        │ No                       │ Si         │
+  └────────────────────────────────┴──────────────────────────┴────────────┘
+
+  Per il tuo caso
+
+  Con 11-20 utenti fidati, non ti servono rate limiting, API keys, o WAF. L'URL
+  autogenerato da AWS è brutto ma funziona. Se un domani vuoi un dominio custom,
+   aggiungi CloudFront davanti (ha anche lui un free tier generoso).
+
+  In sintesi: stessa roba, gratis per sempre, zero config in più. L'unico
+  trade-off è l'URL brutto.
+
+  Vuoi usare Function URL?
+
+❯ e con cloudfront?                                                             
+
+⏺ CloudFront free tier:
+
+  - 1TB di trasferimento dati/mese (per sempre)
+  - 10 milioni di request HTTP/mese (per sempre)
+
+  Per il tuo caso (~34k req/mese, pochi KB per request) sei allo 0.0003% del
+  limite. Gratis per sempre.
+
+  Come funziona lo stack completo
+
+  Client → CloudFront (tuodominio.com/api) → Lambda Function URL
+
+  CloudFront ti dà:
+  - Custom domain con SSL gratuito (ACM certificate)
+  - Caching (opzionale, utile per GET /users/leaderboard)
+  - HTTPS ovunque
+  - Un unico dominio per FE + BE (es. tuodominio.com per il FE,
+  tuodominio.com/api per il BE)
+
+  Stack finale tutto free per sempre
+
+  ┌──────────────┬────────────────────────────┬────────┐
+  │   Servizio   │         Free tier          │ Scade? │
+  ├──────────────┼────────────────────────────┼────────┤
+  │ Cognito      │ 50k MAU                    │ Mai    │
+  ├──────────────┼────────────────────────────┼────────┤
+  │ Lambda       │ 1M req/mese                │ Mai    │
+  ├──────────────┼────────────────────────────┼────────┤
+  │ Function URL │ Gratis (incluso in Lambda) │ Mai    │
+  ├──────────────┼────────────────────────────┼────────┤
+  │ CloudFront   │ 1TB + 10M req/mese         │ Mai    │
+  ├──────────────┼────────────────────────────┼────────┤
+  │ DynamoDB     │ 25GB + 25 RCU/WCU          │ Mai    │
+  └──────────────┴────────────────────────────┴────────┘
+
+  Costo totale: zero, per sempre. Nessun servizio con scadenza 12 mesi.
+
+  Vuoi che aggiorno il doc con Function URL + CloudFront al posto di API
+  Gateway?
+
+❯ per la parte di FE stavo pensando o S3 + cluodfront o Cloudflare              
+
+⏺ Entrambe ottime opzioni:
+
+  S3 + CloudFront
+
+  - Tutto AWS, stesso ecosistema
+  - S3 free tier: 5GB + 20k GET/mese (12 mesi), poi ~$0.02/mese
+  - CloudFront: 1TB + 10M req/mese (per sempre)
+  - Custom domain + SSL via ACM (gratis)
+  - Puoi usare lo stesso CloudFront sia per FE (S3) che per BE (Lambda Function
+  URL) — unico dominio
+
+  Cloudflare Pages
+
+  - Gratis per sempre, senza limiti pratici
+  - Build + deploy da GitHub automatico (come GitHub Pages ma meglio)
+  - CDN globale inclusa
+  - Custom domain + SSL gratis
+  - Velocissimo, zero config
+
+  Il confronto
+
+  ┌──────────────────────┬────────────────────────────┬────────────────────┐
+  │                      │      S3 + CloudFront       │  Cloudflare Pages  │
+  ├──────────────────────┼────────────────────────────┼────────────────────┤
+  │ Costo                │ ~zero                      │ Zero               │
+  ├──────────────────────┼────────────────────────────┼────────────────────┤
+  │ Deploy               │ Manuale (S3 sync) o CI/CD  │ Git push → live    │
+  ├──────────────────────┼────────────────────────────┼────────────────────┤
+  │ Ecosistema           │ Tutto AWS                  │ Servizio esterno   │
+  ├──────────────────────┼────────────────────────────┼────────────────────┤
+  │ Custom domain        │ Si (ACM)                   │ Si (piu' semplice) │
+  ├──────────────────────┼────────────────────────────┼────────────────────┤
+  │ FE + BE stesso       │ Si (un CloudFront, 2       │ No (BE resta su    │
+  │ dominio              │ origins)                   │ AWS)               │
+  └──────────────────────┴────────────────────────────┴────────────────────┘
+
+  La mia raccomandazione
+
+  S3 + CloudFront — perché puoi mettere FE e BE sotto lo stesso dominio con un
+  unico CloudFront:
+
+  tuodominio.com          → S3 (React app)
+  tuodominio.com/api/*    → Lambda Function URL (FastAPI)
+
+  Niente problemi di CORS, tutto pulito, tutto AWS. Cloudflare Pages è ottimo ma
+   poi hai FE su Cloudflare e BE su AWS con domini diversi — devi gestire CORS.
+
+  Cosa preferisci?
+
+❯ farei FE su cloudfare                                                         
+
+⏺ Ok, Cloudflare Pages per il FE. Per il CORS non è un grosso problema — basta
+  configurare i domini consentiti nel FastAPI middleware. Una riga.
+
+  Aggiorno il doc.
+
+⏺ Update(docs/BETTING_SYSTEM.md)
+  ⎿  Added 2 lines
+      18  | Region | eu-west-1 |
+      19  | Repo BE | Separato (`vibe-slot-api`) |
+      20  | Offline mode | No — app richiede sempre il BE |
+      21 +| FE hosting | Cloudflare Pages (free, deploy da GitHub) |     
+      22 +| BE hosting | Lambda Function URL + CloudFront (custom domain,
+         + free) |                                                       
+      23  | Deploy | Manuale per ora (no Terraform) |
+      24  | Utenti = Partecipanti | Si, stessa persona (registrazione = e
+          ntrata nella slot) |
+      25  | Partecipazione | Tutti i registrati, sempre (no opt-in/out) |
+
+⏺ Stack finale:
+
+  ┌──────────┬──────────────────────────────────┬────────────────────┐
+  │ Servizio │             Provider             │       Costo        │
+  ├──────────┼──────────────────────────────────┼────────────────────┤
+  │ FE       │ Cloudflare Pages                 │ Free per sempre    │
+  ├──────────┼──────────────────────────────────┼────────────────────┤
+  │ Auth     │ AWS Cognito                      │ Free (50k MAU)     │
+  ├──────────┼──────────────────────────────────┼────────────────────┤
+  │ Compute  │ AWS Lambda                       │ Free (1M req/mese) │
+  ├──────────┼──────────────────────────────────┼────────────────────┤
+  │ API      │ Lambda Function URL + CloudFront │ Free per sempre    │
+  ├──────────┼──────────────────────────────────┼────────────────────┤
+  │ DB       │ AWS DynamoDB                     │ Free (25GB)        │
+  └──────────┴──────────────────────────────────┴────────────────────┘
+
+  Costo totale: zero, per sempre. Procediamo con l'implementazione?

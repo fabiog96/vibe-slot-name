@@ -1,60 +1,89 @@
 @import "tailwindcss";
 
-/* ── Theme tokens ─────────────────────────────── */
+/* ── Cyberpunk Token System ──────────────────────── */
 
-/* ── Light (default) ── */
 :root {
-  --paper:        oklch(0.965 0.012 80);
-  --paper-2:      oklch(0.945 0.014 80);
-  --paper-3:      oklch(0.92  0.016 80);
-  --ink:          oklch(0.22  0.012 60);
-  --ink-2:        oklch(0.36  0.012 60);
-  --ink-3:        oklch(0.55  0.014 60);
-  --ink-4:        oklch(0.72  0.012 70);
-  --rule:         oklch(0.87  0.014 70);
-  --rule-strong:  oklch(0.78  0.016 65);
-  --accent:       oklch(0.62  0.17  50);
-  --accent-ink:   oklch(0.32  0.14  50);
-  --accent-wash:  oklch(0.92  0.05  60);
-  --teal:         oklch(0.58  0.08  210);
-  --teal-wash:    oklch(0.92  0.03  200);
-  --ok:           oklch(0.60  0.11  135);
-  --warn:         oklch(0.72  0.13  80);
-  --err:          oklch(0.55  0.18  28);
-}
+  /* Surfaces */
+  --void:         oklch(0.05 0.02 290);
+  --void-2:       oklch(0.08 0.03 290);
+  --void-3:       oklch(0.12 0.04 290);
+  --surface:      oklch(0.16 0.05 285);
+  --surface-2:    oklch(0.20 0.08 280);
 
-/* ── Dark ── */
-:root.dark {
-  --paper:        oklch(0.18  0.012 70);
-  --paper-2:      oklch(0.22  0.012 70);
-  --paper-3:      oklch(0.26  0.014 70);
-  --accent-ink:     oklch(0.62  0.17  50);
-  --ink:          oklch(0.95  0.005 80);
-  --ink-2:        oklch(0.85  0.008 80);
-  --ink-3:        oklch(0.68  0.010 80);
-  --ink-4:        oklch(0.50  0.008 70);
-  --rule:         oklch(0.32  0.014 70);
-  --rule-strong:  oklch(0.42  0.014 70);
-  --accent-wash:  oklch(0.32  0.07  55);
-  --teal-wash:    oklch(0.30  0.04  210);
-  --err:          oklch(0.65  0.18  28);
-  /* accent, accent-ink, teal, ok, warn keep from :root */
+  /* Text */
+  --ink:          oklch(0.93 0.01 280);
+  --ink-2:        oklch(0.78 0.02 280);
+  --ink-3:        oklch(0.55 0.03 280);
+  --ink-4:        oklch(0.38 0.03 280);
+
+  /* Borders */
+  --rule:         oklch(0.22 0.08 295);
+  --rule-strong:  oklch(0.32 0.10 295);
+  --frame:        oklch(0.30 0.14 310);
+  --frame-strong: oklch(0.38 0.18 310);
+
+  /* Neon accents */
+  --neon-magenta:      oklch(0.62 0.26 12);
+  --neon-magenta-soft: oklch(0.72 0.20 12);
+  --neon-magenta-deep: oklch(0.48 0.20 12);
+  --neon-cyan:         oklch(0.80 0.14 195);
+  --neon-cyan-soft:    oklch(0.88 0.10 195);
+  --neon-cyan-deep:    oklch(0.55 0.12 195);
+  --neon-violet:       oklch(0.60 0.24 295);
+  --neon-violet-deep:  oklch(0.42 0.20 295);
+  --neon-acid:         oklch(0.92 0.24 115);
+  --neon-acid-soft:    oklch(0.95 0.18 115);
+  --neon-amber:        oklch(0.82 0.18 80);
+
+  /* Semantic */
+  --ok:           oklch(0.75 0.22 150);
+  --ok-soft:      oklch(0.82 0.16 150);
+  --warn:         oklch(0.82 0.18 80);
+  --err:          oklch(0.62 0.26 12);
+  --bet-win:      oklch(0.75 0.22 150);
+  --bet-loss:     oklch(0.62 0.26 12);
+
+  /* Chips */
+  --chip-gold:    oklch(0.82 0.18 80);
+  --chip-bg:      oklch(0.14 0.05 80);
+
+  /* Overlays */
+  --modal-overlay: oklch(0.03 0.02 290 / 0.85);
+
+  /* Aliases for existing component classes */
+  --accent:       var(--neon-cyan);
+  --accent-ink:   var(--neon-cyan-deep);
+  --accent-wash:  oklch(0.15 0.06 195);
+  --teal:         var(--neon-cyan);
+  --teal-wash:    oklch(0.15 0.05 195);
+  --paper:        var(--void);
+  --paper-2:      var(--void-2);
+  --paper-3:      var(--void-3);
 }
 
 @theme {
-  --font-display: 'Playfair Display', 'Georgia', serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', 'Menlo', monospace;
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --font-body: 'Chakra Petch', system-ui, sans-serif;
+  --font-mono: 'Chakra Petch', system-ui, sans-serif;
 
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-paper-3: var(--paper-3);
+  --color-void: var(--void);
+  --color-void-2: var(--void-2);
+  --color-void-3: var(--void-3);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
   --color-ink-4: var(--ink-4);
   --color-rule: var(--rule);
   --color-rule-strong: var(--rule-strong);
+  --color-frame: var(--frame);
+  --color-frame-strong: var(--frame-strong);
+  --color-neon-magenta: var(--neon-magenta);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-violet: var(--neon-violet);
+  --color-neon-acid: var(--neon-acid);
+  --color-neon-amber: var(--neon-amber);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-wash: var(--accent-wash);
@@ -63,19 +92,20 @@
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-err: var(--err);
+  --color-bet-win: var(--bet-win);
+  --color-bet-loss: var(--bet-loss);
+  --color-chip-gold: var(--chip-gold);
+  --color-chip-bg: var(--chip-bg);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
 }
 
 /* ── Animations ───────────────────────────────── */
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes reel-tick {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-1px); }
-  100% { transform: translateY(0); }
 }
 
 @keyframes pulse-dot {
@@ -83,307 +113,30 @@
   50%      { opacity: 1; }
 }
 
-@keyframes spin-border {
-  0%   { border-color: var(--accent); }
-  50%  { border-color: var(--teal); }
-  100% { border-color: var(--accent); }
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+  50%      { opacity: 0.6; box-shadow: 0 0 12px currentColor; }
 }
 
-@utility animate-fade-in-up {
-  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+@keyframes countdown-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
 }
 
-@utility animate-pulse-dot {
-  animation: pulse-dot 1.4s ease-in-out infinite;
+@keyframes chip-change {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
 }
 
-@utility animate-spin-border {
-  animation: spin-border 2s ease-in-out infinite;
+@keyframes modal-enter {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Base ─────────────────────────────────────── */
-
-body {
-  background-color: var(--paper);
-  color: var(--ink);
-  font-feature-settings: 'cv11', 'ss01';
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── Scrollbar ────────────────────────────────── */
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--rule);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--rule-strong);
-}
-
-/* ── Utilities ────────────────────────────────── */
-
-.rule {
-  height: 1px;
-  background: var(--rule);
-}
-
-.rule-strong {
-  height: 1px;
-  background: var(--rule-strong);
-}
-
-.rule-accent {
-  height: 2px;
-  background: var(--accent);
-  opacity: 0.4;
-}
-
-/* Reel card — recessed paper look */
-.reel-card {
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-:root.dark .reel-card {
-  box-shadow:
-    inset 0 1px 4px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.02);
-}
-
-.reel-card.active {
-  border-color: var(--accent);
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 0 0 3px var(--accent-wash);
-}
-
-.reel-card.result {
-  border-color: var(--teal);
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.04),
-    0 0 0 3px var(--teal-wash);
-}
-
-/* Transition for theme switch */
-body, .reel-card {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* ── Slot Machine Parts ──────────────────────── */
-
-.slot-crown {
-  background: var(--accent-ink);
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.15),
-    0 -4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.slot-body {
-  box-shadow: 4px 0 12px -4px rgba(0, 0, 0, 0.08), -4px 0 12px -4px rgba(0, 0, 0, 0.08);
-}
-
-.slot-base {
-  box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.06),
-    0 4px 16px -4px rgba(0, 0, 0, 0.12);
-}
-
-:root.dark .slot-crown {
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.4),
-    0 -4px 16px rgba(0, 0, 0, 0.3);
-}
-
-:root.dark .slot-body {
-  box-shadow: 4px 0 16px -4px rgba(0, 0, 0, 0.3), -4px 0 16px -4px rgba(0, 0, 0, 0.3);
-}
-
-:root.dark .slot-base {
-  box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.2),
-    0 4px 20px -4px rgba(0, 0, 0, 0.4);
-}
-
-/* ── Rivets ──────────────────────────────────── */
-
-.rivet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--rule-strong) 0%, var(--rule) 60%, var(--rule-strong) 100%);
-  border: 1px solid var(--rule);
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.3),
-    inset 0 -1px 1px rgba(0,0,0,0.15);
-}
-
-:root.dark .rivet {
-  background: linear-gradient(135deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 60%, oklch(0.35 0.01 70) 100%);
-  border-color: oklch(0.25 0.01 70);
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.05),
-    inset 0 -1px 1px rgba(0,0,0,0.3);
-}
-
-/* ── Reel viewport frame ─────────────────────── */
-
-.reel-viewport {
-  background: var(--paper-3);
-  border: 2px solid var(--rule-strong);
-  border-radius: 12px;
-  box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.08),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.04);
-  position: relative;
-}
-
-:root.dark .reel-viewport {
-  box-shadow:
-    inset 0 3px 10px rgba(0, 0, 0, 0.35),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* Glass reflection overlay */
-.reel-viewport::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 35%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-  border-radius: 10px 10px 0 0;
-  pointer-events: none;
-  z-index: 20;
-}
-
-:root.dark .reel-viewport::after {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-}
-
-/* ── Side light strip ────────────────────────── */
-
-.side-light {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--rule);
-  transition: all 0.3s;
-}
-
-.side-light.active {
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
-}
-
-/* ── Credit display (7-segment style) ────────── */
-
-.credit-display {
-  background: oklch(0.14 0.01 70);
-  border: 1px solid oklch(0.20 0.01 70);
-  border-radius: 4px;
-  padding: 4px 10px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Lever arm ───────────────────────────────── */
-
-.lever-mount {
-  background: linear-gradient(180deg, var(--rule-strong) 0%, var(--rule) 100%);
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.1);
-}
-
-:root.dark .lever-mount {
-  background: linear-gradient(180deg, oklch(0.35 0.01 70) 0%, oklch(0.28 0.01 70) 100%);
-  border-color: oklch(0.22 0.01 70);
-}
-
-.lever-track {
-  width: 6px;
-  background: linear-gradient(90deg, var(--rule) 0%, var(--rule-strong) 50%, var(--rule) 100%);
-  border-radius: 3px;
-  box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
-}
-
-:root.dark .lever-track {
-  background: linear-gradient(90deg, oklch(0.25 0.01 70) 0%, oklch(0.30 0.01 70) 50%, oklch(0.25 0.01 70) 100%);
-}
-
-.lever-ball {
-  background: radial-gradient(circle at 35% 35%, var(--accent), var(--accent-ink));
-  border: 2px solid var(--accent-ink);
-  box-shadow:
-    0 2px 8px rgba(0,0,0,0.3),
-    inset 0 2px 4px rgba(255,255,255,0.2);
-}
-
-/* ── Pay line arrows ─────────────────────────── */
-
-.payline-arrow {
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-}
-
-.payline-arrow.left {
-  border-left: 6px solid var(--accent);
-}
-
-.payline-arrow.right {
-  border-right: 6px solid var(--accent);
-}
-
-/* ── Winner flash ────────────────────────────── */
-
-@keyframes winner-flash {
-  0%, 100% { border-color: var(--accent); }
-  25%      { border-color: var(--teal); }
-  50%      { border-color: var(--accent); }
-  75%      { border-color: var(--warn); }
-}
-
-.slot-winner .slot-crown,
-.slot-winner .slot-base {
-  animation: winner-flash 1.5s ease-in-out infinite;
-}
-
-/* ── Easter Eggs ────────────────────────────────── */
-
-/* Jackpot Mode — rainbow cycling glow */
-@keyframes jackpot-glow {
-  0%   { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  16%  { box-shadow: 0 0 15px #ff7700, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  33%  { box-shadow: 0 0 15px #ffff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  50%  { box-shadow: 0 0 15px #00ff00, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  66%  { box-shadow: 0 0 15px #0077ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  83%  { box-shadow: 0 0 15px #8800ff, inset 0 -2px 8px rgba(0,0,0,0.15); }
-  100% { box-shadow: 0 0 15px #ff0000, inset 0 -2px 8px rgba(0,0,0,0.15); }
-}
-
-@keyframes jackpot-border {
-  0%   { border-color: #ff0000; }
-  16%  { border-color: #ff7700; }
-  33%  { border-color: #ffff00; }
-  50%  { border-color: #00ff00; }
-  66%  { border-color: #0077ff; }
-  83%  { border-color: #8800ff; }
-  100% { border-color: #ff0000; }
+@keyframes odds-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 @keyframes spin-slow {
@@ -391,38 +144,376 @@ body, .reel-card {
   to   { transform: rotate(360deg); }
 }
 
+@keyframes winner-glow {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.80 0.14 195 / 0); }
+  50%      { box-shadow: 0 0 24px 4px oklch(0.80 0.14 195 / 0.15); }
+}
+
+@keyframes glitch {
+  0%, 92%, 100% { transform: translate(0); }
+  93% { transform: translate(-1px, 1px); }
+  94% { transform: translate(1px, -1px); }
+  95% { transform: translate(-1px, 0); }
+  96% { transform: translate(1px, 0); }
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@utility animate-ticker {
+  animation: ticker-scroll 35s linear infinite;
+}
+
+@keyframes jackpot-glow {
+  0%   { box-shadow: 0 0 16px oklch(0.62 0.26 12 / 0.2); }
+  33%  { box-shadow: 0 0 16px oklch(0.80 0.14 195 / 0.2); }
+  66%  { box-shadow: 0 0 16px oklch(0.60 0.24 295 / 0.2); }
+  100% { box-shadow: 0 0 16px oklch(0.62 0.26 12 / 0.2); }
+}
+
+@keyframes konami-flash {
+  0%   { background: transparent; }
+  5%   { background: oklch(1 0 0 / 0.08); }
+  10%  { background: transparent; }
+  15%  { background: oklch(0.92 0.24 115 / 0.06); }
+  25%  { background: transparent; }
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@utility animate-neon-pulse {
+  animation: neon-pulse 1.4s ease-in-out infinite;
+}
+
 @utility animate-spin-slow {
   animation: spin-slow 3s linear infinite;
 }
 
-.jackpot-mode .slot-crown {
-  animation: jackpot-glow 2s linear infinite;
+@utility animate-modal-enter {
+  animation: modal-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.jackpot-mode .slot-base {
-  animation: jackpot-border 2s linear infinite;
+@utility animate-chip-change {
+  animation: chip-change 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.jackpot-mode .side-light {
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-wash);
-  animation: pulse-dot 0.4s ease-in-out infinite;
+@utility animate-countdown-pulse {
+  animation: countdown-pulse 1s ease-in-out infinite;
 }
 
-.jackpot-mode .reel-viewport {
-  border-color: var(--accent);
+@utility animate-glitch {
+  animation: glitch 4s infinite;
+}
+
+/* ── Base ─────────────────────────────────────── */
+
+body {
+  background: var(--void);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ────────────────────────────────── */
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+/* ── Cyberpunk Utilities ─────────────────────── */
+
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(1 0 0 / 0.03) 2px,
+    oklch(1 0 0 / 0.03) 4px
+  );
+  z-index: 1;
+}
+
+.neon-frame {
+  border: 1px solid var(--neon-cyan);
   box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.08),
-    0 0 12px var(--accent-wash);
+    0 0 8px oklch(0.80 0.14 195 / 0.15),
+    inset 0 0 8px oklch(0.80 0.14 195 / 0.05);
 }
 
-/* Konami — screen flash */
-@keyframes konami-flash {
-  0%   { background: transparent; }
-  5%   { background: rgba(255, 255, 255, 0.3); }
-  10%  { background: transparent; }
-  15%  { background: rgba(255, 215, 0, 0.15); }
-  25%  { background: transparent; }
+.neon-frame-magenta {
+  border: 1px solid var(--neon-magenta);
+  box-shadow:
+    0 0 8px oklch(0.62 0.26 12 / 0.15),
+    inset 0 0 8px oklch(0.62 0.26 12 / 0.05);
+}
+
+.glow-cyan {
+  text-shadow: 0 0 6px oklch(0.80 0.14 195 / 0.6), 0 0 14px oklch(0.80 0.14 195 / 0.35);
+}
+
+.glow-magenta {
+  text-shadow: 0 0 6px oklch(0.62 0.26 12 / 0.6), 0 0 14px oklch(0.62 0.26 12 / 0.35);
+}
+
+.glow-acid {
+  text-shadow: 0 0 6px oklch(0.92 0.24 115 / 0.5), 0 0 12px oklch(0.92 0.24 115 / 0.3);
+}
+
+.glow-win {
+  text-shadow: 0 0 6px oklch(0.75 0.22 150 / 0.6), 0 0 14px oklch(0.75 0.22 150 / 0.35);
+}
+
+.glow-loss {
+  text-shadow: 0 0 6px oklch(0.62 0.26 12 / 0.6), 0 0 14px oklch(0.62 0.26 12 / 0.35);
+}
+
+.notch {
+  clip-path: polygon(
+    8px 0, calc(100% - 8px) 0, 100% 8px,
+    100% calc(100% - 8px), calc(100% - 8px) 100%,
+    8px 100%, 0 calc(100% - 8px), 0 8px
+  );
+}
+
+.notch-lg {
+  clip-path: polygon(
+    12px 0, calc(100% - 12px) 0, 100% 12px,
+    100% calc(100% - 12px), calc(100% - 12px) 100%,
+    12px 100%, 0 calc(100% - 12px), 0 12px
+  );
+}
+
+/* ── Utilities ────────────────────────────────── */
+
+.rule { height: 1px; background: var(--rule); }
+
+/* ── Panel card ──────────────────────────────── */
+
+.panel-card {
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.2);
+}
+
+/* ── Machine card ────────────────────────────── */
+
+.machine-card {
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  box-shadow:
+    0 4px 24px oklch(0 0 0 / 0.3),
+    0 0 0 1px var(--rule);
+  transition: all 0.3s ease;
+}
+
+.machine-winner {
+  animation: winner-glow 2s ease-in-out infinite;
+}
+
+/* ── Machine LED labels ──────────────────────── */
+
+.machine-led {
+  background: var(--void-3);
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.3);
+}
+
+/* ── Spin button ─────────────────────────────── */
+
+.machine-spin-btn {
+  background: var(--neon-magenta);
+  box-shadow: 0 0 12px oklch(0.62 0.26 12 / 0.25);
+}
+
+.machine-spin-btn:hover {
+  background: var(--neon-magenta-soft);
+  box-shadow: 0 0 20px oklch(0.62 0.26 12 / 0.35);
+}
+
+/* ── Reel card ───────────────────────────────── */
+
+.reel-card {
+  background: var(--void);
+  border: 1px solid var(--rule);
+  box-shadow: inset 0 1px 3px oklch(0 0 0 / 0.25);
+  transition: all 0.3s ease;
+}
+
+.reel-card.active {
+  border-color: var(--neon-cyan);
+  box-shadow:
+    0 0 0 1px var(--neon-cyan),
+    0 0 12px oklch(0.80 0.14 195 / 0.12),
+    inset 0 0 12px oklch(0.80 0.14 195 / 0.06);
+}
+
+.reel-card.result {
+  border-color: var(--neon-magenta);
+  box-shadow:
+    0 0 0 1px var(--neon-magenta),
+    0 0 12px oklch(0.62 0.26 12 / 0.12),
+    inset 0 0 12px oklch(0.62 0.26 12 / 0.06);
+}
+
+/* Reel gradient fades */
+.reel-fade-top {
+  background: linear-gradient(to bottom, var(--void), transparent);
+}
+.reel-fade-bottom {
+  background: linear-gradient(to top, var(--void), transparent);
+}
+
+/* ── Betting cards ────────────────────────────── */
+
+.bet-card {
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  transition: all 0.2s ease;
+}
+
+.bet-card:hover { border-color: var(--rule-strong); }
+
+.bet-card.selected {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 8px oklch(0.80 0.14 195 / 0.15);
+}
+
+.bet-card.won {
+  border-color: var(--bet-win);
+  box-shadow: 0 0 8px oklch(0.75 0.22 150 / 0.15);
+}
+
+.bet-card.lost {
+  border-color: var(--bet-loss);
+  box-shadow: 0 0 8px oklch(0.62 0.26 12 / 0.15);
+}
+
+/* ── Odds bar ─────────────────────────────────── */
+
+.odds-bar {
+  height: 3px;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.odds-bar-fill {
+  height: 100%;
+  background: var(--neon-cyan);
+  border-radius: 2px;
+  transform-origin: left;
+  animation: odds-fill 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Chip badge ───────────────────────────────── */
+
+.chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--chip-bg);
+  color: var(--chip-gold);
+  font-variant-numeric: tabular-nums;
+  padding: 3px 10px 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--chip-gold);
+}
+
+.chip-badge.bankrupt {
+  border-color: var(--err);
+  color: var(--err);
+  background: oklch(0.12 0.06 12);
+}
+
+/* ── Modal ────────────────────────────────────── */
+
+.modal-overlay {
+  background: var(--modal-overlay);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  background: var(--void-2);
+  border: 1px solid var(--rule);
+  box-shadow:
+    0 16px 48px oklch(0 0 0 / 0.5),
+    0 0 1px var(--neon-cyan);
+}
+
+/* ── Tabs ─────────────────────────────────────── */
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--rule);
+  padding: 0;
+}
+
+.tab {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  color: var(--ink-3);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab:hover { color: var(--ink); }
+
+.tab.active {
+  color: var(--neon-cyan);
+  border-bottom-color: var(--neon-cyan);
+  text-shadow: 0 0 6px oklch(0.80 0.14 195 / 0.4);
+}
+
+/* ── Countdown bar ────────────────────────────── */
+
+.countdown-bar {
+  height: 3px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.countdown-bar-fill {
+  height: 100%;
+  background: var(--neon-cyan);
+  transition: width 1s linear;
+}
+
+.countdown-bar-fill.urgent {
+  background: var(--neon-magenta);
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+/* ── Easter Eggs ──────────────────────────────── */
+
+.jackpot-mode .machine-card {
+  animation: jackpot-glow 2s linear infinite;
 }
 
 .konami-active::before {
@@ -433,4 +524,3 @@ body, .reel-card {
   pointer-events: none;
   animation: konami-flash 1s ease-out;
 }
-

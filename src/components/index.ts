@@ -1,3 +1,9 @@
 export { SlotReel } from './SlotReel';
-export { ControlPanel } from './ControlPanel';
-export { SettingsModal } from './SettingsModal';
+export { SlotMachine } from './SlotMachine';
+export { Header } from './Header';
+export { Footer } from './Footer';
+export { Announcement } from './Announcement';
+export { ParticipantsPanel } from './ParticipantsPanel';
+export { LiveTicker } from './LiveTicker';
+export { ResultOverlay } from './ResultOverlay';
+export { BetMarketLogo } from './BetMarketLogo';
