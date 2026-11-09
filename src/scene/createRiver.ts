@@ -2,6 +2,8 @@ import * as THREE from 'three';
 
 import { canvasTexture } from './canvasTexture';
 import { createWater, Quality } from './createWater';
+import { disposeTree } from './disposeTree';
+import { themeColor } from './themeColor';
 
 const RIVER_LENGTH = 17;
 const MIN_RIVER_WIDTH = 10.2;
@@ -104,7 +106,7 @@ const dock = (layout: RiverLayout) => {
   const planks = new THREE.MeshStandardMaterial({
     roughness: 0.75,
     map: canvasTexture(512, Math.round((512 * depth) / layout.dockWidth), (ctx, w, h) => {
-      ctx.fillStyle = '#a86b3c';
+      ctx.fillStyle = themeColor('dock');
       ctx.fillRect(0, 0, w, h);
       for (let x = 0; x < w; x += 44) {
         ctx.fillStyle = `rgba(0,0,0,${0.06 + Math.random() * 0.08})`;
@@ -134,10 +136,11 @@ const dock = (layout: RiverLayout) => {
 };
 
 const finishLine = (layout: RiverLayout) => {
+  const ink = themeColor('ink');
   const checks = canvasTexture(2, 30, (ctx, w, h) => {
     for (let y = 0; y < h; y++)
       for (let x = 0; x < w; x++) {
-        ctx.fillStyle = (x + y) % 2 ? '#0b2b3d' : '#ffffff';
+        ctx.fillStyle = (x + y) % 2 ? ink : '#ffffff';
         ctx.fillRect(x, y, 1, 1);
       }
   });
@@ -167,7 +170,7 @@ const laneRopes = (layout: RiverLayout, lanes: number) => {
   buoys.count = perRope * ropes;
   buoys.castShadow = true;
 
-  const red = new THREE.Color('#ff5a5f');
+  const red = new THREE.Color(themeColor('coral'));
   const white = new THREE.Color('#ffffff');
   const ropeZ = (k: number) => -layout.width / 2 + layout.lane * k;
 
@@ -211,6 +214,7 @@ export const createRiver = (
 
   const setQuality = (next: Quality) => {
     group.remove(water.mesh);
+    disposeTree(water.mesh);
     water = createWater(layout.length + 1, layout.width + 0.4, next, isReducedMotion);
     group.add(water.mesh);
   };

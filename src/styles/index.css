@@ -10,7 +10,7 @@
   }
 }
 
-@theme {
+@theme static {
   --font-display: "Lilita One", sans-serif;
   --font-body: "Nunito", sans-serif;
 
@@ -21,6 +21,7 @@
   --color-paper: #f4fbff;
   --color-duck: #ffd43b;
   --color-beak: #ff8a00;
+  --color-dock: #a86b3c;
   --color-dock-ink: #fff6e5;
   --color-silver: #e9eef2;
   --color-bronze: #e3a96b;

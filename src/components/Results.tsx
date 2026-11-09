@@ -20,7 +20,7 @@ export const Results: React.FC<ResultsProps> = ({
   onToggleAvailability,
 }) => {
   const roleByParticipant = new Map(
-    placements.map((p) => [p.participant.id, p.role.name]),
+    placements.map((p) => [p.arrival.id, p.role.name]),
   );
 
   return (
@@ -42,7 +42,7 @@ export const Results: React.FC<ResultsProps> = ({
                 {placement ? (
                   <>
                     <p className="truncate font-display text-xl leading-tight sm:text-3xl">
-                      {placement.participant.name}
+                      {placement.arrival.name}
                     </p>
                     <p className="text-xs font-bold opacity-75">
                       {placement.arrival.place}° · {formatSeconds(placement.arrival.seconds)}

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import { DuckView } from '../types';
 import { netHeight, netLift, splashProgress } from '../utils/netMotion';
+import { themeColor } from './themeColor';
 
 const MAX_DUCK_SCALE = 1.45;
 const BOB_HEIGHT = 0.035;
@@ -10,16 +11,17 @@ const NET_LIFT_HEIGHT = 0.7;
 const NET_DROP_HEIGHT = 3;
 const WHIRL_TURNS = 2;
 const STREAKS = 3;
+const MAX_WAKE_STRENGTH = 1.3;
 
-const ink = new THREE.MeshBasicMaterial({ color: '#0b2b3d', side: THREE.BackSide });
-const yellow = new THREE.MeshStandardMaterial({ color: '#ffd43b', roughness: 0.35 });
-const orange = new THREE.MeshStandardMaterial({ color: '#ff8a00', roughness: 0.4 });
-const black = new THREE.MeshBasicMaterial({ color: '#0b2b3d' });
+const inkOutline = new THREE.MeshBasicMaterial({ color: themeColor('ink'), side: THREE.BackSide });
+const yellow = new THREE.MeshStandardMaterial({ color: themeColor('duck'), roughness: 0.35 });
+const orange = new THREE.MeshStandardMaterial({ color: themeColor('beak'), roughness: 0.4 });
+const inkFront = new THREE.MeshBasicMaterial({ color: themeColor('ink') });
 const foam = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.7, depthWrite: false });
 const lily = new THREE.MeshStandardMaterial({ color: '#5bb450', roughness: 0.6 });
-const coral = new THREE.MeshStandardMaterial({ color: '#ff5a5f', roughness: 0.5 });
-const netMesh = new THREE.MeshBasicMaterial({ color: '#0b2b3d', wireframe: true, transparent: true, opacity: 0.55 });
-const handle = new THREE.MeshStandardMaterial({ color: '#a86b3c', roughness: 0.7 });
+const coral = new THREE.MeshStandardMaterial({ color: themeColor('coral'), roughness: 0.5 });
+const netting = new THREE.MeshBasicMaterial({ color: themeColor('ink'), wireframe: true, transparent: true, opacity: 0.55 });
+const handle = new THREE.MeshStandardMaterial({ color: themeColor('dock'), roughness: 0.7 });
 
 const WAKE_VERTEX = 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
 const WAKE_FRAGMENT = `
@@ -37,7 +39,7 @@ const WAKE_FRAGMENT = `
   }`;
 
 const withOutline = (mesh: THREE.Mesh) => {
-  const outline = new THREE.Mesh(mesh.geometry, ink);
+  const outline = new THREE.Mesh(mesh.geometry, inkOutline);
   outline.scale.setScalar(1.08);
   mesh.add(outline);
   mesh.castShadow = true;
@@ -66,7 +68,7 @@ const duckModel = (bandana: string) => {
   scarf.position.set(0.18, 0.28, 0);
   duck.add(body, tail, head, beak, scarf);
   for (const z of [-0.1, 0.1]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), black);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), inkFront);
     eye.position.set(0.33, 0.5, z);
     duck.add(eye);
   }
@@ -82,7 +84,7 @@ const flatRing = (radius: number, tube: number, material: THREE.Material) => {
 const fairgroundNet = () => {
   const net = new THREE.Group();
   const hoop = flatRing(0.55, 0.04, coral);
-  const bag = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.55, 16, 3, true), netMesh);
+  const bag = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.55, 16, 3, true), netting);
   bag.rotation.x = Math.PI;
   bag.position.y = -0.27;
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.6), handle);
@@ -160,26 +162,27 @@ export const poseDuckRig = (
   const lift = effect === 'net' ? netLift(elapsed) * NET_LIFT_HEIGHT : 0;
   const bob = isMoving && !isReducedMotion ? Math.sin(time * 6 + rig.phase) * BOB_HEIGHT : 0;
   const surge = duck?.surge ?? 0;
+  const motionTime = isReducedMotion ? 0 : time;
 
   rig.group.position.x = x;
   rig.body.position.y = bob + lift;
   rig.body.rotation.z = isMoving && !effect
-    ? -Math.max(-MAX_PITCH, Math.min(MAX_PITCH, (surge - 1) * 0.2))
+    ? -THREE.MathUtils.clamp((surge - 1) * 0.2, -MAX_PITCH, MAX_PITCH)
     : 0;
   rig.body.rotation.x = isMoving && !isReducedMotion ? Math.sin(time * 4.3 + rig.phase) * 0.05 : 0;
   rig.body.rotation.y = effect === 'whirlpool' ? elapsed * Math.PI * 2 * WHIRL_TURNS : 0;
 
-  rig.wakeMaterial.uniforms.uTime.value = time;
+  rig.wakeMaterial.uniforms.uTime.value = motionTime;
   rig.wakeMaterial.uniforms.uStrength.value =
-    isMoving && effect !== 'whirlpool' && effect !== 'net' ? Math.min(1.3, Math.max(0, surge)) : 0;
+    isMoving && effect !== 'whirlpool' && effect !== 'net' ? THREE.MathUtils.clamp(surge, 0, MAX_WAKE_STRENGTH) : 0;
 
   rig.whirl.visible = effect === 'whirlpool';
-  rig.whirl.rotation.z = time * 6;
+  rig.whirl.rotation.z = motionTime * 6;
   rig.lilies.visible = effect === 'lilypad';
 
   rig.streaks.forEach((streak, k) => {
     streak.visible = effect === 'current';
-    streak.position.x = -0.5 * rig.scale - ((time * 3 + k * 0.33) % 1) * 0.6 * rig.scale;
+    streak.position.x = -0.5 * rig.scale - ((motionTime * 3 + k * 0.33) % 1) * 0.6 * rig.scale;
   });
 
   rig.net.visible = effect === 'net';

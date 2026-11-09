@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { canvasTexture } from './canvasTexture';
+import { themeColor } from './themeColor';
 
 const CLOUDS = 26;
 
@@ -31,7 +32,7 @@ const skyTexture = () => {
 
 export const createLighting = () => {
   const sky = skyTexture();
-  const hemisphere = new THREE.HemisphereLight('#d6f0ff', '#a86b3c', 1.4);
+  const hemisphere = new THREE.HemisphereLight('#d6f0ff', themeColor('dock'), 1.4);
   const sun = new THREE.DirectionalLight('#fff3d6', 2.2);
   sun.position.set(-6, 12, 7);
   sun.castShadow = true;

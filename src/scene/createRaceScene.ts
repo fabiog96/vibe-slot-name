@@ -2,20 +2,14 @@ import * as THREE from 'three';
 import { CSS2DObject, CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import { Arrival, DuckView, RacePhase } from '../types';
-import { formatSeconds } from '../utils/formatSeconds';
+import { createCamera, fitCamera } from './camera';
 import { createLighting } from './createLighting';
-import { createRiver, riverLayout, RiverLayout } from './createRiver';
+import { createRiver, riverLayout } from './createRiver';
 import { Quality } from './createWater';
+import { disposeTree } from './disposeTree';
 import { createDuckRig, DuckRig, poseDuckRig } from './duckRig';
+import { arrivalChip, nameLabel, showArrival } from './laneLabels';
 
-const CAMERA_FOV = 38;
-const CAMERA_TILT_DEG = 48;
-const CAMERA_TILT_SQUARE_DEG = 58;
-const SQUARE_ASPECT = 1.3;
-const CAMERA_MARGIN = 1.06;
-const CAMERA_MIN_DISTANCE = 2;
-const CAMERA_MAX_DISTANCE = 200;
-const CAMERA_FIT_STEPS = 24;
 const MAX_PIXEL_RATIO = 2;
 const LOW_QUALITY_MAX_WIDTH = 768;
 const FPS_WINDOW_MS = 2000;
@@ -25,16 +19,14 @@ const SLOW_WINDOWS_BEFORE_DOWNGRADE = 2;
 const RELAYOUT_ASPECT_CHANGE = 0.25;
 const DUCK_START_OFFSET = 0.7;
 const CHIP_OFFSET = 1.4;
-const PLACE_CHIP = ['bg-duck', 'bg-silver', 'bg-bronze'];
-const PLACE_CHIP_DEFAULT = 'bg-paper';
 
-export interface Runner {
+interface Runner {
   id: string;
   name: string;
   color: string;
 }
 
-export interface RaceFrame {
+interface RaceFrame {
   ducks: DuckView[];
   arrivals: Arrival[];
   phase: RacePhase;
@@ -53,85 +45,6 @@ const initialQuality = (): Quality =>
     ? 'low'
     : 'high';
 
-const nameLabel = (runner: Runner) => {
-  const element = document.createElement('div');
-  element.className =
-    'flex items-center gap-1.5 rounded-md bg-ink/60 px-2 py-0.5 text-xs font-black text-dock-ink sm:text-sm';
-  const dot = document.createElement('span');
-  dot.className = 'size-2.5 shrink-0 rounded-full border-[1.5px] border-ink';
-  dot.style.backgroundColor = runner.color;
-  element.append(dot, runner.name);
-  return new CSS2DObject(element);
-};
-
-const arrivalChip = () => {
-  const element = document.createElement('span');
-  element.className = 'hidden';
-  return element;
-};
-
-const showArrival = (chip: HTMLSpanElement, arrival: Arrival) => {
-  chip.className = `flex animate-pop items-baseline gap-1.5 rounded-lg border-2 border-ink px-2 text-ink ${
-    PLACE_CHIP[arrival.place - 1] ?? PLACE_CHIP_DEFAULT
-  }`;
-  chip.innerHTML = '';
-  const place = document.createElement('span');
-  place.className = 'font-display text-lg leading-6';
-  place.textContent = String(arrival.place);
-  const time = document.createElement('span');
-  time.className = 'text-xs font-black tabular-nums';
-  time.textContent = formatSeconds(arrival.seconds);
-  chip.append(place, time);
-};
-
-const disposeTree = (root: THREE.Object3D) => {
-  root.traverse((node) => {
-    if (node instanceof THREE.Mesh) {
-      node.geometry.dispose();
-      const materials = Array.isArray(node.material) ? node.material : [node.material];
-      materials.forEach((m: THREE.Material) => m.dispose());
-    }
-    if (node instanceof CSS2DObject) node.element.remove();
-  });
-};
-
-const fitCamera = (camera: THREE.PerspectiveCamera, layout: RiverLayout, aspect: number) => {
-  camera.aspect = aspect;
-  camera.updateProjectionMatrix();
-  const tilt = THREE.MathUtils.degToRad(
-    aspect < SQUARE_ASPECT ? CAMERA_TILT_SQUARE_DEG : CAMERA_TILT_DEG,
-  );
-  const minX = layout.startX - layout.dockWidth - 0.1;
-  const maxX = layout.length / 2 + 0.6;
-  const centerX = (minX + maxX) / 2;
-  const halfDepth = layout.width / 2 + 0.3;
-  const corners = [minX, maxX].flatMap((x) =>
-    [-halfDepth, halfDepth].map((z) => new THREE.Vector3(x, 0, z)),
-  );
-
-  const place = (distance: number) => {
-    camera.position.set(centerX, Math.sin(tilt) * distance, Math.cos(tilt) * distance);
-    camera.lookAt(centerX, 0, 0);
-    camera.updateMatrixWorld();
-  };
-  const fits = (distance: number) => {
-    place(distance);
-    return corners.every((corner) => {
-      const p = corner.clone().project(camera);
-      return Math.abs(p.x) <= 1 / CAMERA_MARGIN && Math.abs(p.y) <= 1 / CAMERA_MARGIN;
-    });
-  };
-
-  let near = CAMERA_MIN_DISTANCE;
-  let far = CAMERA_MAX_DISTANCE;
-  for (let i = 0; i < CAMERA_FIT_STEPS; i++) {
-    const mid = (near + far) / 2;
-    if (fits(mid)) far = mid;
-    else near = mid;
-  }
-  place(far);
-};
-
 export const createRaceScene = (container: HTMLElement) => {
   const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let quality = initialQuality();
@@ -148,7 +61,7 @@ export const createRaceScene = (container: HTMLElement) => {
   container.appendChild(labelRenderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.1, 200);
+  const camera = createCamera();
   const lighting = createLighting();
   lighting.sun.castShadow = quality === 'high';
   scene.background = lighting.sky;
@@ -158,11 +71,9 @@ export const createRaceScene = (container: HTMLElement) => {
   let layout = riverLayout(0, 1);
   let runners: Runner[] = [];
   let layoutAspect = 1;
-  let river = createRiver(layout, 0, quality, isReducedMotion);
+  let river: ReturnType<typeof createRiver> | undefined;
   let lanes: Lane[] = [];
   let world = new THREE.Group();
-  world.add(river.group);
-  scene.add(world);
 
   let frame: RaceFrame = { ducks: [], arrivals: [], phase: 'idle' };
 
@@ -198,7 +109,7 @@ export const createRaceScene = (container: HTMLElement) => {
       const rig = createDuckRig(runner.color, layout.lane);
       rig.group.position.set(layout.startX + DUCK_START_OFFSET, 0, z);
 
-      const name = nameLabel(runner);
+      const name = nameLabel(runner.name, runner.color);
       name.position.set(layout.startX - layout.dockWidth / 2 + 0.2, 0.35, z);
 
       const chip = arrivalChip();
@@ -218,11 +129,13 @@ export const createRaceScene = (container: HTMLElement) => {
     renderer.setPixelRatio(1);
     renderer.shadowMap.enabled = false;
     lighting.sun.castShadow = false;
-    river.setQuality('low');
+    river?.setQuality('low');
     scene.traverse((node) => {
       if (node instanceof THREE.Mesh) {
-        const materials = Array.isArray(node.material) ? node.material : [node.material];
-        materials.forEach((m: THREE.Material) => (m.needsUpdate = true));
+        const materials: THREE.Material[] = Array.isArray(node.material)
+          ? node.material
+          : [node.material];
+        materials.forEach((m) => (m.needsUpdate = true));
       }
     });
     resize();
@@ -254,7 +167,7 @@ export const createRaceScene = (container: HTMLElement) => {
     const arrivalById = new Map(frame.arrivals.map((a) => [a.id, a]));
     const travel = layout.finishX - 0.3 - (layout.startX + DUCK_START_OFFSET);
 
-    river.tick(time, dt);
+    river?.tick(time, dt);
 
     lanes.forEach((lane) => {
       const duck = duckById.get(lane.runner.id);
@@ -269,8 +182,7 @@ export const createRaceScene = (container: HTMLElement) => {
       const place = arrival?.place ?? 0;
       if (place === lane.shownPlace) return;
       lane.shownPlace = place;
-      if (arrival) showArrival(lane.chip, arrival);
-      else lane.chip.className = 'hidden';
+      showArrival(lane.chip, arrival);
     });
 
     renderer.render(scene, camera);

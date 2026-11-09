@@ -29,7 +29,6 @@ export interface Arrival {
 
 export interface Placement {
   role: Role;
-  participant: Participant;
   arrival: Arrival;
 }
 

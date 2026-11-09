@@ -291,8 +291,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
   );
   const placements = roles.flatMap((role, i): Placement[] => {
     const arrival = availableArrivals[i];
-    const participant = participants.find((p) => p.id === arrival?.id);
-    return arrival && participant ? [{ role, participant, arrival }] : [];
+    return arrival ? [{ role, arrival }] : [];
   });
 
   return {
