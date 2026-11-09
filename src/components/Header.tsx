@@ -25,9 +25,9 @@ export const Header: React.FC<HeaderProps> = ({
   onStart,
   onOpenSettings,
 }) => (
-  <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-6 max-w-7xl mx-auto w-full">
+  <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-6 max-w-[100rem] mx-auto w-full">
     <div className="flex items-center gap-3.5 min-w-0">
-      <Duck bandana="var(--color-coral)" size={54} isBobbing={false} />
+      <Duck bandana="var(--color-coral)" size={54} />
       <div className="min-w-0">
         <h1 className="font-display text-3xl md:text-4xl leading-none text-white">
           Gran Premio delle Paperelle

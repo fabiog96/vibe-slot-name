@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  Arrival,
+  CommentaryLine,
   DuckEffect,
   DuckView,
   Participant,
@@ -24,6 +26,7 @@ const SPEED_EASING = 2.5;
 const TARGET_SPEED_RANGE = [0.6, 1.4] as const;
 const RETARGET_SECONDS = [0.4, 1.2] as const;
 const MAX_FRAME_SECONDS = 0.05;
+const MAX_COMMENTARY_LINES = 40;
 
 const EVENT_CUTOFF_PROGRESS = 0.92;
 const LEAD_CALL_MIN_PROGRESS = 0.1;
@@ -141,10 +144,14 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
   const [phase, setPhase] = useState<RacePhase>('idle');
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM);
   const [racers, setRacers] = useState<Racer[]>([]);
-  const [finishers, setFinishers] = useState<string[]>([]);
-  const [commentary, setCommentary] = useState(IDLE_LINE);
+  const [arrivals, setArrivals] = useState<Arrival[]>([]);
+  const [unavailableIds, setUnavailableIds] = useState<string[]>([]);
+  const [commentary, setCommentary] = useState<CommentaryLine[]>([
+    { id: 0, text: IDLE_LINE, seconds: 0 },
+  ]);
   const frame = useRef(0);
   const timer = useRef(0);
+  const lineId = useRef(0);
 
   useEffect(
     () => () => {
@@ -158,9 +165,15 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
   const hasEnoughRunners =
     roles.length > 0 && participants.length >= roles.length;
 
-  const race = (grid: Racer[], podiumSize: number) => {
+  const pushLine = (text: string, seconds: number) => {
+    lineId.current += 1;
+    const line = { id: lineId.current, text, seconds };
+    setCommentary((prev) => [line, ...prev].slice(0, MAX_COMMENTARY_LINES));
+  };
+
+  const race = (grid: Racer[]) => {
     const netTriggerAt = randomBetween(NET_TRIGGER_WINDOW);
-    const order: string[] = [];
+    const order: Arrival[] = [];
     let current = grid;
     let isNetUsed = false;
     let announcedLeaderId = '';
@@ -169,7 +182,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
     let last = performance.now();
 
     const announce = (text: string) => {
-      setCommentary(text);
+      pushLine(text, clock);
       lastCallAt = clock;
     };
 
@@ -202,9 +215,14 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
       }
 
       current.forEach((r) => {
-        if (r.progress < 1 || order.includes(r.id)) return;
-        order.push(r.id);
-        announce(finishLine(r.name, order.length));
+        if (r.progress < 1 || order.some((a) => a.id === r.id)) return;
+        order.push({
+          id: r.id,
+          name: r.name,
+          place: order.length + 1,
+          seconds: clock,
+        });
+        announce(finishLine(r.name, order.length, current.length));
       });
 
       const canCallLead =
@@ -218,9 +236,9 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
       }
 
       setRacers(current);
-      setFinishers([...order]);
+      setArrivals([...order]);
 
-      if (order.length >= podiumSize) {
+      if (order.length === current.length) {
         setPhase('finished');
         return;
       }
@@ -234,24 +252,30 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
     if (isRunning || !hasEnoughRunners) return;
 
     const grid = startingGrid(participants);
-    const podiumSize = roles.length;
 
     setRacers(grid);
-    setFinishers([]);
+    setArrivals([]);
+    setUnavailableIds([]);
     setPhase('countdown');
-    setCommentary(COUNTDOWN_LINE);
+    pushLine(COUNTDOWN_LINE, 0);
 
     const count = (n: number) => {
       if (n === 0) {
         setPhase('racing');
-        setCommentary(START_LINE);
-        race(grid, podiumSize);
+        pushLine(START_LINE, 0);
+        race(grid);
         return;
       }
       setCountdown(n);
       timer.current = window.setTimeout(() => count(n - 1), COUNTDOWN_STEP_MS);
     };
     count(COUNTDOWN_FROM);
+  };
+
+  const toggleAvailability = (id: string) => {
+    setUnavailableIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   };
 
   const ducks: DuckView[] = racers.map((r) => ({
@@ -262,20 +286,25 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
     effectElapsed: effectElapsed(r),
   }));
 
-  const podium = roles.flatMap((role, i): Placement[] => {
-    const participant = participants.find((p) => p.id === finishers[i]);
-    return participant ? [{ role, participant }] : [];
+  const availableArrivals = arrivals.filter(
+    (a) => !unavailableIds.includes(a.id),
+  );
+  const placements = roles.flatMap((role, i): Placement[] => {
+    const arrival = availableArrivals[i];
+    return arrival ? [{ role, arrival }] : [];
   });
 
   return {
     phase,
     countdown,
     ducks,
-    finishers,
-    podium,
+    arrivals,
+    placements,
+    unavailableIds,
     commentary,
     isRunning,
     hasEnoughRunners,
     startRace,
+    toggleAvailability,
   };
 };

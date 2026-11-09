@@ -1,13 +1,22 @@
 @import "tailwindcss";
 
-@theme {
+@layer base {
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@theme static {
   --font-display: "Lilita One", sans-serif;
   --font-body: "Nunito", sans-serif;
 
   --color-river: #0e5e8c;
   --color-ink: #0b2b3d;
   --color-water: #33a0d6;
-  --color-water-alt: #2a8fc7;
   --color-foam: #bfe6ff;
   --color-paper: #f4fbff;
   --color-duck: #ffd43b;
@@ -21,68 +30,9 @@
   --shadow-sticker: 0 4px 0 var(--color-ink);
   --shadow-sticker-lg: 0 8px 0 var(--color-ink);
 
-  --animate-flow: flow 0.9s linear infinite;
-  --animate-bob: bob 0.45s ease-in-out infinite alternate;
   --animate-pop: pop 0.7s ease-out;
   --animate-rise: rise 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
-  --animate-whirl: whirl 0.6s linear infinite;
-  --animate-streak: streak 0.45s ease-out infinite;
-  --animate-splash: splash 0.5s ease-out forwards;
   --animate-slide-in: slide-in 0.3s ease-out;
-
-  @keyframes whirl {
-    to {
-      rotate: 360deg;
-    }
-  }
-
-  @keyframes streak {
-    from {
-      transform: translateX(10px);
-      opacity: 0.9;
-    }
-    to {
-      transform: translateX(-12px);
-      opacity: 0;
-    }
-  }
-
-  @keyframes splash {
-    from {
-      scale: 0.3;
-      opacity: 1;
-    }
-    to {
-      scale: 1.6;
-      opacity: 0;
-    }
-  }
-
-  @keyframes slide-in {
-    from {
-      transform: translateY(8px);
-      opacity: 0;
-    }
-    to {
-      transform: none;
-      opacity: 1;
-    }
-  }
-
-  @keyframes flow {
-    to {
-      background-position: -46px 0;
-    }
-  }
-
-  @keyframes bob {
-    from {
-      transform: translateY(1px) rotate(-4deg);
-    }
-    to {
-      transform: translateY(-2px) rotate(4deg);
-    }
-  }
 
   @keyframes pop {
     from {
@@ -105,37 +55,15 @@
       opacity: 1;
     }
   }
-}
 
-@utility water-ripples {
-  background-image: repeating-linear-gradient(
-    100deg,
-    rgb(255 255 255 / 0.16) 0 10px,
-    transparent 10px 46px
-  );
-}
-
-@utility dock-planks {
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgb(0 0 0 / 0.12) 0 2px,
-    transparent 2px 24px
-  );
-}
-
-@utility finish-line {
-  background: repeating-linear-gradient(
-    0deg,
-    #ffffff 0 10px,
-    var(--color-ink) 10px 20px
-  );
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-flow,
-  .animate-bob,
-  .animate-whirl,
-  .animate-streak {
-    animation: none;
+  @keyframes slide-in {
+    from {
+      transform: translateY(8px);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
   }
 }

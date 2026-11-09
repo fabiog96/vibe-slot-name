@@ -20,7 +20,20 @@ export interface DuckView {
   effectElapsed: number;
 }
 
+export interface Arrival {
+  id: string;
+  name: string;
+  place: number;
+  seconds: number;
+}
+
 export interface Placement {
   role: Role;
-  participant: Participant;
+  arrival: Arrival;
+}
+
+export interface CommentaryLine {
+  id: number;
+  text: string;
+  seconds: number;
 }
