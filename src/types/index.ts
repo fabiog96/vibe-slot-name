@@ -8,11 +8,19 @@ export interface Role {
   name: string;
 }
 
-export type SpinResult = Record<string, Participant | null>;
+export type RacePhase = 'idle' | 'countdown' | 'racing' | 'finished';
 
-export enum GameState {
-  IDLE = 'IDLE',
-  SPINNING = 'SPINNING',
-  STOPPING = 'STOPPING',
-  RESULT = 'RESULT',
+export type DuckEffect = 'current' | 'whirlpool' | 'lilypad' | 'net';
+
+export interface DuckView {
+  id: string;
+  progress: number;
+  surge: number;
+  effect: DuckEffect | null;
+  effectElapsed: number;
+}
+
+export interface Placement {
+  role: Role;
+  participant: Participant;
 }

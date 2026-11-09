@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Role } from '../types';
+import { DismissButton } from './DismissButton';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -32,99 +33,94 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setRoles((prev) => prev.filter((r) => r.id !== id));
   };
 
+  const handleRename = (id: string, name: string) => {
+    setRoles((prev) => prev.map((r) => (r.id === id ? { ...r, name } : r)));
+  };
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-void/70 backdrop-blur-sm cb-slide-up"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4"
       onClick={onClose}
     >
       <div
-        className="cb-panel cb-frame notch-all w-full max-w-md flex flex-col max-h-[85vh]"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="roles-title"
+        className="animate-rise flex max-h-[85vh] w-full max-w-md flex-col rounded-2xl border-3 border-ink bg-paper text-ink shadow-sticker-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-5 py-3.5 border-b border-line flex justify-between items-center">
-          <div className="flex items-center gap-2.5">
-            <span className="cb-section-bar magenta" />
-            <h2 className="font-display text-[13px] font-bold tracking-[0.18em] uppercase cb-glow-magenta">
-              Config
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-text-3 hover:text-loss transition-colors text-sm px-1"
-          >
-            ✕
-          </button>
+        <div className="flex items-center justify-between border-b-2 border-ink/10 px-5 py-3.5">
+          <h2 id="roles-title" className="font-display text-2xl">
+            Ruoli
+          </h2>
+          <DismissButton label="Chiudi" onClick={onClose} />
         </div>
 
-        {/* Content */}
-        <div className="p-5 overflow-y-auto flex-1">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-text-3 mb-3">
-            // Roles
-          </h3>
-          <div className="space-y-2 mb-4">
+        <div className="flex-1 overflow-y-auto p-5">
+          <p className="mb-3 text-sm font-semibold text-ink/70">
+            L'ordine dei ruoli segue l'ordine d'arrivo: il primo ruolo va alla
+            prima paperella al traguardo.
+          </p>
+
+          <ol className="mb-4 space-y-2">
             {roles.map((role, i) => (
-              <div
+              <li
                 key={role.id}
-                className="flex items-center gap-3 bg-void px-3 py-2.5 border border-line"
+                className="flex items-center gap-3 rounded-xl border-2 border-ink/15 bg-white px-3 py-2"
               >
-                <span className="font-mono text-[10px] text-text-3 w-5 text-right tabular-nums shrink-0">
-                  {String(i + 1).padStart(2, '0')}
+                <span className="w-6 text-right font-display text-lg">
+                  {i + 1}ª
                 </span>
                 <input
                   type="text"
                   value={role.name}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setRoles((prev) =>
-                      prev.map((r) =>
-                        r.id === role.id ? { ...r, name: val } : r,
-                      ),
-                    );
-                  }}
-                  className="bg-transparent focus:outline-none flex-1 text-text-0 text-sm font-mono"
+                  aria-label={`Nome del ruolo ${i + 1}`}
+                  onChange={(e) => handleRename(role.id, e.target.value)}
+                  className="flex-1 bg-transparent text-sm font-bold focus:outline-none"
                 />
-                <button
+                <DismissButton
+                  label={`Rimuovi ${role.name}`}
                   onClick={() => handleRemoveRole(role.id)}
-                  className="text-text-3 hover:text-loss transition-colors text-sm px-1"
-                  title="Remove"
-                >
-                  ✕
-                </button>
-              </div>
+                />
+              </li>
             ))}
 
             {roles.length === 0 && (
-              <p className="text-center text-text-3 text-[11px] py-6 font-mono uppercase tracking-widest">
-                // no roles defined //
-              </p>
+              <li className="py-6 text-center text-sm font-bold text-ink/50">
+                Nessun ruolo: aggiungine almeno uno
+              </li>
             )}
-          </div>
+          </ol>
 
-          {/* Add */}
           <div className="flex gap-2">
+            <label htmlFor="new-role" className="sr-only">
+              Nuovo ruolo
+            </label>
             <input
+              id="new-role"
               type="text"
               value={newRoleName}
               onChange={(e) => setNewRoleName(e.target.value)}
-              placeholder="// new role //"
-              className="flex-1 bg-void border border-line hover:border-line-2 focus:border-cyan px-3 py-2 text-sm font-mono text-text-0 focus:outline-none placeholder:text-text-3"
               onKeyDown={(e) => e.key === 'Enter' && handleAddRole()}
+              placeholder="Nuovo ruolo"
+              className="flex-1 rounded-xl border-2 border-ink/20 bg-white px-3 py-2 text-sm font-semibold placeholder:text-ink/45 focus:border-water focus:outline-none"
             />
             <button
               onClick={handleAddRole}
               disabled={!newRoleName.trim()}
-              className="cb-btn cyan"
+              className="min-h-11 rounded-full border-3 border-ink bg-water px-5 font-display text-white disabled:opacity-50"
             >
-              + Add
+              Aggiungi
             </button>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="px-5 py-3 border-t border-line text-right">
-          <button onClick={onClose} className="cb-btn">
-            Done
+        <div className="border-t-2 border-ink/10 px-5 py-3 text-right">
+          <button
+            onClick={onClose}
+            className="min-h-11 rounded-full border-3 border-ink bg-duck px-6 font-display text-lg shadow-sticker transition-transform active:translate-y-0.5"
+          >
+            Fatto
           </button>
         </div>
       </div>
