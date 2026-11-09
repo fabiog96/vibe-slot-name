@@ -17,7 +17,8 @@ export const lineFor = (event: DuckEffect | 'lead', name: string) => {
   return options[Math.floor(Math.random() * options.length)].replace('{n}', name);
 };
 
-export const finishLine = (name: string, rank: number) =>
-  rank === 1
-    ? `${name} taglia il traguardo per prima!`
-    : `${name} chiude in ${rank}ª posizione!`;
+export const finishLine = (name: string, place: number, total: number) => {
+  if (place === 1) return `${name} taglia il traguardo per prima!`;
+  if (place === total) return `${name} chiude la gara, ultima ma con stile.`;
+  return `${name} chiude in ${place}ª posizione.`;
+};

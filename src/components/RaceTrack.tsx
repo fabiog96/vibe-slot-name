@@ -1,25 +1,29 @@
-import { DuckView, Participant, RacePhase } from '../types';
+import { Arrival, DuckView, Participant, RacePhase } from '../types';
 import { duckColor } from '../utils/duckColor';
+import { formatSeconds } from '../utils/formatSeconds';
 import { RacingDuck } from './RacingDuck';
 
 const DUCK_SIZE = 44;
 const FINISH_GAP = 24;
 const TRAVEL = `(100cqw - ${DUCK_SIZE + FINISH_GAP}px)`;
+const PLACE_CHIP = ['bg-duck', 'bg-silver', 'bg-bronze'];
+const PLACE_CHIP_DEFAULT = 'bg-paper';
 
 interface RaceTrackProps {
   participants: Participant[];
   ducks: DuckView[];
-  finishers: string[];
+  arrivals: Arrival[];
   phase: RacePhase;
 }
 
 export const RaceTrack: React.FC<RaceTrackProps> = ({
   participants,
   ducks,
-  finishers,
+  arrivals,
   phase,
 }) => {
   const duckById = new Map(ducks.map((d) => [d.id, d]));
+  const arrivalById = new Map(arrivals.map((a) => [a.id, a]));
   const isRacing = phase === 'racing';
 
   return (
@@ -27,7 +31,7 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({
       <div className="min-h-full flex flex-col">
         {participants.map((p, i) => {
           const duck = duckById.get(p.id);
-          const rank = finishers.indexOf(p.id);
+          const arrival = arrivalById.get(p.id);
 
           return (
             <div key={p.id} className="flex-1 min-h-11 flex">
@@ -62,14 +66,17 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({
                   isRacing={isRacing}
                 />
 
-                {rank >= 0 && (
+                {arrival && (
                   <span
                     style={{ right: DUCK_SIZE + FINISH_GAP + 6 }}
-                    className={`absolute top-1/2 -translate-y-1/2 animate-pop rounded-lg border-2 border-ink px-2 font-display text-sm text-ink ${
-                      rank === 0 ? 'bg-duck' : 'bg-silver'
+                    className={`absolute top-1/2 flex -translate-y-1/2 animate-pop items-baseline gap-1.5 rounded-lg border-2 border-ink px-2 text-ink ${
+                      PLACE_CHIP[arrival.place - 1] ?? PLACE_CHIP_DEFAULT
                     }`}
                   >
-                    {rank + 1}°
+                    <span className="font-display text-lg leading-6">{arrival.place}</span>
+                    <span className="text-xs font-black tabular-nums">
+                      {formatSeconds(arrival.seconds)}
+                    </span>
                   </span>
                 )}
 

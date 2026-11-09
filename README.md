@@ -10,8 +10,10 @@ A rubber-duck race that randomly assigns meeting roles. Every participant is a d
   - *whirlpool*: the duck spins in place for a moment
   - *lily pads*: slowdown
   - *the net*: once per race, a fairground net scoops one random duck and drops it back about 18% of the track
-- **Live commentary**: a bar narrating events, lead changes and arrivals
-- **Countdown and podium**: 3-2-1 start, podium with confetti at the end
+- **Live commentary**: a feed column narrating events, lead changes and arrivals, with race time
+- **Swim-style arrivals**: every duck races to the end; each lane shows its place and time as it touches the line
+- **Final standings with reserves**: roles go to the first available finishers; mark someone "Non c’è" (absent, or had the role last week) and everyone below slides up one place
+- **Countdown and confetti**: 3-2-1 start, confetti at the end
 - **Participants**: add names (comma or newline separated), remove them, clear the list
 - **Roles**: configurable list; role order follows arrival order
 - **Fair draw**: every duck runs the same speed distribution
