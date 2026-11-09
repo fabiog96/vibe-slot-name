@@ -4,7 +4,8 @@ A rubber-duck race that randomly assigns meeting roles. Every participant is a d
 
 ## Features
 
-- **Duck race**: smooth 60fps race driven by `requestAnimationFrame`, each duck easing towards a randomly changing speed
+- **3D duck race** (three.js): a tilted view over a river with reflective, flowing water (`Water2`), lane ropes with buoys, a wooden dock and 3D ducks; each duck eases towards a randomly changing speed
+- **Adaptive quality**: phones and slow GPUs drop reflections, shadows and resolution automatically; the 3D scene loads as a separate chunk
 - **Random events**, same odds for every duck:
   - *current*: short speed boost
   - *whirlpool*: the duck spins in place for a moment
@@ -17,11 +18,11 @@ A rubber-duck race that randomly assigns meeting roles. Every participant is a d
 - **Participants**: add names (comma or newline separated), remove them, clear the list
 - **Roles**: configurable list; role order follows arrival order
 - **Fair draw**: every duck runs the same speed distribution
-- **Reduced motion**: water and bobbing animations stop when the OS asks for it
+- **Reduced motion**: water flow, bobbing and buoys stop when the OS asks for it
 
 ## Tech Stack
 
-React 19 · TypeScript · Vite · Tailwind CSS v4 · `react-confetti`
+React 19 · TypeScript · Vite · Tailwind CSS v4 · three.js · `react-confetti`
 
 ## Development
 
@@ -50,6 +51,7 @@ Pushing to `main` deploys `dist/` to GitHub Pages (`.github/workflows/deploy.yml
 src/
 ├── components/   # one component per file
 ├── hooks/        # useDuckRace: the race engine
+├── scene/        # three.js scene: river, water, duck rigs, camera
 ├── styles/       # Tailwind theme: palette, fonts, keyframes
 ├── types/        # domain types
 └── utils/        # pure helpers

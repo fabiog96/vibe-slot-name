@@ -5,7 +5,7 @@ import { CommentaryFeed } from './components/CommentaryFeed';
 import { Countdown } from './components/Countdown';
 import { Header } from './components/Header';
 import { ParticipantPanel } from './components/ParticipantPanel';
-import { RaceTrack } from './components/RaceTrack';
+import { RaceTrack3D } from './components/RaceTrack3D';
 import { Results } from './components/Results';
 import { SettingsModal } from './components/SettingsModal';
 import { useDuckRace } from './hooks/useDuckRace';
@@ -88,7 +88,7 @@ export const App: React.FC = () => {
         </aside>
 
         <section className="relative order-2 flex-1 min-h-80 lg:min-h-0">
-          <RaceTrack
+          <RaceTrack3D
             participants={participants}
             ducks={ducks}
             arrivals={arrivals}

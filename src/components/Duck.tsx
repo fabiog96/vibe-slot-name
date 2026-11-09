@@ -1,16 +1,14 @@
 interface DuckProps {
   bandana: string;
   size: number;
-  isBobbing: boolean;
 }
 
-export const Duck: React.FC<DuckProps> = ({ bandana, size, isBobbing }) => (
+export const Duck: React.FC<DuckProps> = ({ bandana, size }) => (
   <svg
     width={size}
     height={size * 0.8}
     viewBox="0 0 40 32"
     aria-hidden="true"
-    className={isBobbing ? 'animate-bob' : undefined}
   >
     <path
       d="M4 18 Q4 28 18 28 L30 28 Q38 26 36 18 Q30 20 24 16 L8 16 Q4 16 4 18Z"
