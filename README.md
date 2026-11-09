@@ -1,90 +1,54 @@
-#  🎰 Vibe Slot 🎰
+# Gran Premio delle Paperelle
 
-A fun and interactive slot machine-style web application for randomly assigning roles to participants. Perfect for meetings, games, or any scenario where you need to fairly distribute roles among a group.
+A rubber-duck race that randomly assigns meeting roles. Every participant is a duck; the first duck across the finish line takes the first role, the second takes the second, and so on.
 
 ## Features
 
-- **Slot Machine Interface**: Engaging visual slot machine with spinning reels
-- **Dynamic Role Assignment**: Configure any number of roles and participants
-- **Full Spin**: Assign all roles at once with a dramatic spin sequence
-- **Individual Respin**: Respin specific roles if needed
-- **Participant Management**: Easily add, edit, or remove participants
-- **Role Configuration**: Customize roles through the settings modal
-- **Animated Results**: Celebratory announcements after each spin
-- **Responsive Design**: Works on desktop and mobile devices
+- **Duck race**: smooth 60fps race driven by `requestAnimationFrame`, each duck easing towards a randomly changing speed
+- **Random events**, same odds for every duck:
+  - *current*: short speed boost
+  - *whirlpool*: the duck spins in place for a moment
+  - *lily pads*: slowdown
+  - *the net*: once per race, a fairground net scoops one random duck and drops it back about 18% of the track
+- **Live commentary**: a bar narrating events, lead changes and arrivals
+- **Countdown and podium**: 3-2-1 start, podium with confetti at the end
+- **Participants**: add names (comma or newline separated), remove them, clear the list
+- **Roles**: configurable list; role order follows arrival order
+- **Fair draw**: every duck runs the same speed distribution
+- **Reduced motion**: water and bobbing animations stop when the OS asks for it
 
 ## Tech Stack
 
-- **Frontend**: React 19 with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Icons**: Custom SVG icons
+React 19 · TypeScript · Vite · Tailwind CSS v4 · `react-confetti`
 
-## Prerequisites
+## Development
 
-- Node.js (version 16 or higher)
-- npm or yarn package manager
+```bash
+git clone https://github.com/fabiog96/vibe-slot-name.git
+cd vibe-slot-name
+npm install
+npm run dev
+```
 
-## Installation
+The dev server runs on `http://localhost:3000/vibe-slot-name/`.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/vibe-slot.git
-   cd vibe-slot
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open your browser and navigate to `http://localhost:5173`
-
-## Usage
-
-### Basic Setup
-
-1. **Add Participants**: Use the control panel on the left to add names of participants
-2. **Configure Roles**: Click the settings icon (⚙️) in the top-right to add or modify roles
-3. **Spin**: Click the "SPIN ALL" button to randomly assign roles to participants
-
-### Features
-
-- **Full Spin**: Assigns all configured roles at once
-- **Respin**: After results are shown, click the respin button on individual reels to reassign that specific role
-- **Settings**: Access settings to add/remove roles or modify participant lists
-
-### Example Use Cases
-
-- Meeting facilitators assigning moderator and note-taker roles
-- Game masters distributing character roles
-- Teachers assigning group project responsibilities
-- Event organizers selecting volunteers for tasks
-
-## Building for Production
-
-To build the app for production:
+## Build
 
 ```bash
 npm run build
 ```
 
-The built files will be in the `dist` directory. You can preview the production build with:
+`build` typechecks first (`npm run typecheck`), so a type error also stops the Pages deploy.
 
-```bash
-npm run preview
+Pushing to `main` deploys `dist/` to GitHub Pages (`.github/workflows/deploy.yml`).
+
+## Project Structure
+
+```text
+src/
+├── components/   # one component per file
+├── hooks/        # useDuckRace: the race engine
+├── styles/       # Tailwind theme: palette, fonts, keyframes
+├── types/        # domain types
+└── utils/        # pure helpers
 ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).</content>
-<parameter name="path">README.md
