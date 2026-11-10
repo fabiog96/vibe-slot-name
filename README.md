@@ -15,8 +15,8 @@ A rubber-duck race that randomly assigns meeting roles. Every participant is a d
 - **Swim-style arrivals**: every duck races to the end; each lane shows its place and time as it touches the line
 - **Final standings with reserves**: roles go to the first available finishers; mark someone "Non c’è" (absent, or had the role last week) and everyone below slides up one place
 - **Countdown and confetti**: 3-2-1 start, confetti at the end
-- **Participants**: add names (comma or newline separated), remove them, clear the list
-- **Roles**: configurable list; role order follows arrival order
+- **Settings**: one modal (gear button) for participants (add comma or newline separated names, remove, clear) and roles, so the race canvas keeps the full width
+- **Roles**: role order follows arrival order
 - **Fair draw**: every duck runs the same speed distribution
 - **Reduced motion**: water flow, bobbing and buoys stop when the OS asks for it
 
