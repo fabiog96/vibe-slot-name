@@ -4,7 +4,6 @@ import Confetti from 'react-confetti';
 import { CommentaryFeed } from './components/CommentaryFeed';
 import { Countdown } from './components/Countdown';
 import { Header } from './components/Header';
-import { ParticipantPanel } from './components/ParticipantPanel';
 import { RaceTrack3D } from './components/RaceTrack3D';
 import { Results } from './components/Results';
 import { SettingsModal } from './components/SettingsModal';
@@ -79,14 +78,6 @@ export const App: React.FC = () => {
       />
 
       <main className="flex-1 min-h-0 w-full max-w-[100rem] mx-auto flex flex-col lg:flex-row gap-4 px-4 pb-4 md:px-6 md:pb-6">
-        <aside className="order-3 lg:order-1 shrink-0 h-64 lg:h-full lg:w-64 xl:w-72">
-          <ParticipantPanel
-            participants={participants}
-            setParticipants={setParticipants}
-            isLocked={isRunning}
-          />
-        </aside>
-
         <section className="relative order-2 flex-1 min-h-80 lg:min-h-0">
           <RaceTrack3D
             participants={participants}
@@ -114,6 +105,8 @@ export const App: React.FC = () => {
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+        participants={participants}
+        setParticipants={setParticipants}
         roles={roles}
         setRoles={setRoles}
       />

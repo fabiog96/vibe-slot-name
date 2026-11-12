@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
       <button
         onClick={onOpenSettings}
         disabled={phase === 'countdown' || phase === 'racing'}
-        aria-label="Configura i ruoli"
+        aria-label="Impostazioni: concorrenti e ruoli"
         className="size-12 flex items-center justify-center rounded-full border-3 border-ink bg-paper text-ink shadow-sticker transition-transform active:translate-y-0.5 disabled:opacity-60"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
