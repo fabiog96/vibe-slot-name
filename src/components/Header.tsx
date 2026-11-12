@@ -8,6 +8,8 @@ const START_LABEL: Record<RacePhase, string> = {
   finished: 'Rivincita',
 };
 
+const FROM_LAST = ['Ultima', 'Penultima', 'Terzultima', 'Quartultima'];
+
 interface HeaderProps {
   roles: Role[];
   phase: RacePhase;
@@ -36,7 +38,9 @@ export const Header: React.FC<HeaderProps> = ({
           <p className="mt-1 text-sm font-extrabold text-coral">{warning}</p>
         ) : (
           <p className="mt-1 text-sm font-extrabold text-foam">
-            {roles.map((r, i) => `${i + 1}ª ${r.name}`).join(' · ')}
+            {roles
+              .map((r, i) => `${FROM_LAST[i] ?? `${i + 1}ª dal fondo`}: ${r.name}`)
+              .join(' · ')}
           </p>
         )}
       </div>

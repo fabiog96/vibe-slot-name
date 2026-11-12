@@ -20,7 +20,7 @@ import {
 
 const COUNTDOWN_FROM = 3;
 const COUNTDOWN_STEP_MS = 800;
-const RACE_SECONDS = 20;
+const RACE_SECONDS = 12;
 const BASE_SPEED = 1 / RACE_SECONDS;
 const SPEED_EASING = 2.5;
 const TARGET_SPEED_RANGE = [0.6, 1.4] as const;
@@ -286,11 +286,11 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
     effectElapsed: effectElapsed(r),
   }));
 
-  const availableArrivals = arrivals.filter(
-    (a) => !unavailableIds.includes(a.id),
-  );
+  const availableFromLast = arrivals
+    .filter((a) => !unavailableIds.includes(a.id))
+    .reverse();
   const placements = roles.flatMap((role, i): Placement[] => {
-    const arrival = availableArrivals[i];
+    const arrival = availableFromLast[i];
     return arrival ? [{ role, arrival }] : [];
   });
 

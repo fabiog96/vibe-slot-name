@@ -1,6 +1,6 @@
 # Gran Premio delle Paperelle
 
-A rubber-duck race that randomly assigns meeting roles. Every participant is a duck; the first duck across the finish line takes the first role, the second takes the second, and so on.
+A rubber-duck race that randomly assigns meeting roles. Every participant is a duck; the last duck across the finish line takes the first role, the second-to-last takes the second, and so on: whoever loses, pays.
 
 ## Features
 
@@ -13,7 +13,7 @@ A rubber-duck race that randomly assigns meeting roles. Every participant is a d
   - *the net*: once per race, a fairground net scoops one random duck and drops it back about 18% of the track
 - **Live commentary**: a feed column narrating events, lead changes and arrivals, with race time
 - **Swim-style arrivals**: every duck races to the end; each lane shows its place and time as it touches the line
-- **Final standings with reserves**: roles go to the first available finishers; mark someone "Non c’è" (absent, or had the role last week) and everyone below slides up one place
+- **Final standings with reserves**: roles go to the last available finishers; mark someone "Non c’è" (absent, or had the role last week) and the role moves to the next duck up
 - **Countdown and confetti**: 3-2-1 start, confetti at the end
 - **Participants**: add names (comma or newline separated), remove them, clear the list
 - **Roles**: configurable list; role order follows arrival order
