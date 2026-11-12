@@ -36,6 +36,14 @@ export const ParticipantEditor: React.FC<ParticipantEditorProps> = ({
     setParticipants((prev) => prev.filter((p) => p.id !== id));
   };
 
+  const handleToggleAbsent = (id: string) => {
+    setParticipants((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, isAbsent: !p.isAbsent } : p)),
+    );
+  };
+
+  const presentCount = participants.filter((p) => !p.isAbsent).length;
+
   const handleClearClick = () => {
     if (isConfirmingClear) {
       setParticipants([]);
@@ -53,7 +61,9 @@ export const ParticipantEditor: React.FC<ParticipantEditorProps> = ({
           Concorrenti
         </h3>
         <span className="rounded-full bg-ink px-2.5 py-0.5 text-xs font-black text-white">
-          {participants.length}
+          {presentCount === participants.length
+            ? participants.length
+            : `${presentCount} su ${participants.length}`}
         </span>
       </div>
 
@@ -93,7 +103,22 @@ export const ParticipantEditor: React.FC<ParticipantEditorProps> = ({
               className="size-3 shrink-0 rounded-full border-2 border-ink"
               style={{ backgroundColor: duckColor(i) }}
             />
-            <span className="flex-1 truncate text-sm font-bold">{p.name}</span>
+            <span
+              className={`flex-1 truncate text-sm font-bold ${p.isAbsent ? 'text-ink/40 line-through' : ''}`}
+            >
+              {p.name}
+            </span>
+            <button
+              onClick={() => handleToggleAbsent(p.id)}
+              aria-pressed={Boolean(p.isAbsent)}
+              className={`min-h-8 w-24 shrink-0 rounded-full border-2 text-xs font-black transition-colors ${
+                p.isAbsent
+                  ? 'border-coral bg-coral text-white'
+                  : 'border-ink/20 text-ink/60 hover:border-coral hover:text-coral'
+              }`}
+            >
+              {p.isAbsent ? 'Assente' : 'Oggi c’è'}
+            </button>
             <DismissButton
               label={`Rimuovi ${p.name}`}
               onClick={() => handleRemove(p.id)}

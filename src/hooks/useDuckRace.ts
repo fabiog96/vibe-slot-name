@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { play } from '../audio/sounds';
 import {
   Arrival,
   CommentaryLine,
   DuckEffect,
   DuckView,
-  Participant,
   Placement,
   RacePhase,
   Role,
+  Runner,
 } from '../types';
 import {
   COUNTDOWN_LINE,
@@ -37,16 +38,16 @@ const NET_DROPBACK = 0.18;
 export const NET_CARRY_PHASE = [0.3, 0.85] as const;
 
 const EFFECTS: Record<DuckEffect, { seconds: number; speedFactor: number }> = {
-  current: { seconds: 1.2, speedFactor: 1.9 },
-  whirlpool: { seconds: 1.1, speedFactor: 0 },
-  lilypad: { seconds: 1.6, speedFactor: 0.35 },
+  jet: { seconds: 1.2, speedFactor: 1.9 },
+  rope: { seconds: 1.1, speedFactor: 0 },
+  capsize: { seconds: 1.6, speedFactor: 0.35 },
   net: { seconds: 1.8, speedFactor: 0 },
 };
 
 const RANDOM_EVENT_RATES: [DuckEffect, number][] = [
-  ['current', 0.035],
-  ['whirlpool', 0.025],
-  ['lilypad', 0.03],
+  ['jet', 0.035],
+  ['rope', 0.025],
+  ['capsize', 0.03],
 ];
 
 interface Racer {
@@ -91,7 +92,7 @@ const advance = (racer: Racer, dt: number): Racer => {
   const isRetargetDue = racer.retargetIn <= dt;
   const target = isRetargetDue ? randomTarget() : racer.target;
   const speedFactor = effect ? EFFECTS[effect].speedFactor : 1;
-  const easing = effect === 'current' ? SPEED_EASING * 2 : SPEED_EASING;
+  const easing = effect === 'jet' ? SPEED_EASING * 2 : SPEED_EASING;
   const velocity =
     speedFactor === 0
       ? 0
@@ -128,8 +129,8 @@ const withEffect = (racer: Racer, effect: DuckEffect): Racer => ({
 const leaderOf = (racers: Racer[]) =>
   racers.reduce((best, r) => (r.progress > best.progress ? r : best));
 
-const startingGrid = (participants: Participant[]): Racer[] =>
-  participants.map((p) => ({
+const startingGrid = (runners: Runner[]): Racer[] =>
+  runners.map((p) => ({
     id: p.id,
     name: p.name,
     progress: 0,
@@ -140,12 +141,17 @@ const startingGrid = (participants: Participant[]): Racer[] =>
     effectLeft: 0,
   }));
 
-export const useDuckRace = (participants: Participant[], roles: Role[]) => {
+export const useDuckRace = (
+  runners: Runner[],
+  roles: Role[],
+  lastHolderIds: string[],
+) => {
   const [phase, setPhase] = useState<RacePhase>('idle');
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM);
   const [racers, setRacers] = useState<Racer[]>([]);
   const [arrivals, setArrivals] = useState<Arrival[]>([]);
   const [unavailableIds, setUnavailableIds] = useState<string[]>([]);
+  const [restingIds, setRestingIds] = useState<string[]>([]);
   const [commentary, setCommentary] = useState<CommentaryLine[]>([
     { id: 0, text: IDLE_LINE, seconds: 0 },
   ]);
@@ -163,7 +169,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
 
   const isRunning = phase === 'countdown' || phase === 'racing';
   const hasEnoughRunners =
-    roles.length > 0 && participants.length >= roles.length;
+    roles.length > 0 && runners.length >= roles.length;
 
   const pushLine = (text: string, seconds: number) => {
     lineId.current += 1;
@@ -211,6 +217,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
             r.id === caught.id ? withEffect(r, 'net') : r,
           );
           announce(lineFor('net', caught.name));
+          play('net');
         }
       }
 
@@ -223,6 +230,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
           seconds: clock,
         });
         announce(finishLine(r.name, order.length, current.length));
+        play(order.length === current.length ? 'finish' : 'arrival');
       });
 
       const canCallLead =
@@ -251,11 +259,12 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
   const startRace = () => {
     if (isRunning || !hasEnoughRunners) return;
 
-    const grid = startingGrid(participants);
+    const grid = startingGrid(runners);
 
     setRacers(grid);
     setArrivals([]);
-    setUnavailableIds([]);
+    setUnavailableIds(lastHolderIds);
+    setRestingIds(lastHolderIds);
     setPhase('countdown');
     pushLine(COUNTDOWN_LINE, 0);
 
@@ -263,10 +272,12 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
       if (n === 0) {
         setPhase('racing');
         pushLine(START_LINE, 0);
+        play('start');
         race(grid);
         return;
       }
       setCountdown(n);
+      play('countdown');
       timer.current = window.setTimeout(() => count(n - 1), COUNTDOWN_STEP_MS);
     };
     count(COUNTDOWN_FROM);
@@ -301,6 +312,7 @@ export const useDuckRace = (participants: Participant[], roles: Role[]) => {
     arrivals,
     placements,
     unavailableIds,
+    restingIds,
     commentary,
     isRunning,
     hasEnoughRunners,

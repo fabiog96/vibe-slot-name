@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { canvasTexture } from './canvasTexture';
-import { themeColor } from './themeColor';
+import { themeColor } from '../utils/themeColor';
 
 const CLOUDS = 26;
 

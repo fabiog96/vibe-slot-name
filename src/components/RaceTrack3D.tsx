@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
 import type { RaceScene } from '../scene/createRaceScene';
-import { Arrival, DuckView, Participant, RacePhase } from '../types';
-import { duckColor } from '../utils/duckColor';
+import { Arrival, DuckView, RacePhase, Runner } from '../types';
 
 interface RaceTrack3DProps {
-  participants: Participant[];
+  runners: Runner[];
   ducks: DuckView[];
   arrivals: Arrival[];
   phase: RacePhase;
 }
 
 export const RaceTrack3D: React.FC<RaceTrack3DProps> = ({
-  participants,
+  runners,
   ducks,
   arrivals,
   phase,
@@ -40,10 +39,8 @@ export const RaceTrack3D: React.FC<RaceTrack3DProps> = ({
   }, []);
 
   useEffect(() => {
-    scene?.setRunners(
-      participants.map((p, i) => ({ id: p.id, name: p.name, color: duckColor(i) })),
-    );
-  }, [scene, participants]);
+    scene?.setRunners(runners);
+  }, [scene, runners]);
 
   useEffect(() => {
     scene?.update({ ducks, arrivals, phase });

@@ -1,13 +1,13 @@
 import { DuckEffect } from '../types';
 
-export const IDLE_LINE = 'Paperelle sui blocchi di partenza. Pronti?';
+export const IDLE_LINE = 'Finale dei 50 metri: paperelle sui blocchi. Pronti?';
 export const COUNTDOWN_LINE = 'Silenzio in vasca…';
 export const START_LINE = 'VIA! Si parte!';
 
 const LINES: Record<DuckEffect | 'lead', string[]> = {
-  current: ['{n} prende la corrente!', '{n} cavalca un’onda!'],
-  whirlpool: ['{n} finisce nel mulinello!', '{n} gira su se stessa, confusa.'],
-  lilypad: ['{n} si incastra tra le ninfee!', '{n} rallenta tra le ninfee.'],
+  jet: ['{n} prende il getto della bocchetta!', '{n} schizza via sul getto!'],
+  rope: ['{n} si impiglia nella corsia!', '{n} resta agganciata ai galleggianti!'],
+  capsize: ['{n} si cappotta, pancia all’aria!', '{n} si ribalta e galleggia storta.'],
   net: ['Arriva il retino! {n} viene ripescata e rimessa indietro!'],
   lead: ['{n} passa in testa!', 'Sorpasso! Ora comanda {n}!'],
 };
