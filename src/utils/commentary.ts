@@ -1,7 +1,7 @@
 import { DuckEffect } from '../types';
 
-export const IDLE_LINE = 'Paperelle allineate al pontile. Pronti?';
-export const COUNTDOWN_LINE = 'Silenzio sul fiume…';
+export const IDLE_LINE = 'Paperelle sui blocchi di partenza. Pronti?';
+export const COUNTDOWN_LINE = 'Silenzio in vasca…';
 export const START_LINE = 'VIA! Si parte!';
 
 const LINES: Record<DuckEffect | 'lead', string[]> = {

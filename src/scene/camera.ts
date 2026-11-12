@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { RiverLayout } from './createRiver';
+import { PoolLayout } from './createPool';
 
 const CAMERA_FOV = 38;
 const CAMERA_TILT_DEG = 48;
@@ -15,7 +15,7 @@ export const createCamera = () => new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.1
 
 export const fitCamera = (
   camera: THREE.PerspectiveCamera,
-  layout: RiverLayout,
+  layout: PoolLayout,
   aspect: number,
 ) => {
   camera.aspect = aspect;
@@ -23,7 +23,7 @@ export const fitCamera = (
   const tilt = THREE.MathUtils.degToRad(
     aspect < SQUARE_ASPECT ? CAMERA_TILT_SQUARE_DEG : CAMERA_TILT_DEG,
   );
-  const minX = layout.startX - layout.dockWidth - 0.1;
+  const minX = layout.startX - layout.deckWidth - 0.1;
   const maxX = layout.length / 2 + 0.6;
   const centerX = (minX + maxX) / 2;
   const halfDepth = layout.width / 2 + 0.3;

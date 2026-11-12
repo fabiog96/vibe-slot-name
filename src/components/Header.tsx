@@ -8,6 +8,8 @@ const START_LABEL: Record<RacePhase, string> = {
   finished: 'Rivincita',
 };
 
+const FROM_LAST = ['Ultima', 'Penultima', 'Terzultima', 'Quartultima'];
+
 interface HeaderProps {
   roles: Role[];
   phase: RacePhase;
@@ -36,7 +38,9 @@ export const Header: React.FC<HeaderProps> = ({
           <p className="mt-1 text-sm font-extrabold text-coral">{warning}</p>
         ) : (
           <p className="mt-1 text-sm font-extrabold text-foam">
-            {roles.map((r, i) => `${i + 1}ª ${r.name}`).join(' · ')}
+            {roles
+              .map((r, i) => `${FROM_LAST[i] ?? `${i + 1}ª dal fondo`}: ${r.name}`)
+              .join(' · ')}
           </p>
         )}
       </div>
@@ -46,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
       <button
         onClick={onOpenSettings}
         disabled={phase === 'countdown' || phase === 'racing'}
-        aria-label="Configura i ruoli"
+        aria-label="Impostazioni: concorrenti e ruoli"
         className="size-12 flex items-center justify-center rounded-full border-3 border-ink bg-paper text-ink shadow-sticker transition-transform active:translate-y-0.5 disabled:opacity-60"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
