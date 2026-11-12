@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { CSS2DObject, CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 
-import { Arrival, DuckView, RacePhase } from '../types';
+import { Arrival, DuckView, RacePhase, Runner } from '../types';
 import { createCamera, fitCamera } from './camera';
 import { createLighting } from './createLighting';
 import { createPool, poolLayout } from './createPool';
@@ -19,12 +19,6 @@ const SLOW_WINDOWS_BEFORE_DOWNGRADE = 2;
 const RELAYOUT_ASPECT_CHANGE = 0.25;
 const DUCK_START_OFFSET = 0.7;
 const CHIP_OFFSET = 1.4;
-
-interface Runner {
-  id: string;
-  name: string;
-  color: string;
-}
 
 interface RaceFrame {
   ducks: DuckView[];

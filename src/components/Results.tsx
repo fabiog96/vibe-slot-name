@@ -1,14 +1,24 @@
+import { useState } from 'react';
+
 import { Arrival, Placement, Role } from '../types';
+import { drawStandings } from '../utils/drawStandings';
 import { formatSeconds } from '../utils/formatSeconds';
+import { shareCanvas, ShareOutcome } from '../utils/shareCanvas';
 
 const ROLE_CARD = ['bg-duck', 'bg-silver', 'bg-bronze'];
 const ROLE_CARD_DEFAULT = 'bg-white';
+const SHARE_NOTE_MS = 2500;
+const SHARE_LABEL: Record<ShareOutcome, string> = {
+  copied: 'Copiata negli appunti',
+  downloaded: 'Scaricata',
+};
 
 interface ResultsProps {
   roles: Role[];
   arrivals: Arrival[];
   placements: Placement[];
   unavailableIds: string[];
+  restingIds: string[];
   onToggleAvailability: (id: string) => void;
 }
 
@@ -17,8 +27,17 @@ export const Results: React.FC<ResultsProps> = ({
   arrivals,
   placements,
   unavailableIds,
+  restingIds,
   onToggleAvailability,
 }) => {
+  const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
+
+  const handleScreenshot = async () => {
+    const canvas = drawStandings({ roles, placements, arrivals, unavailableIds });
+    setShareOutcome(await shareCanvas(canvas, 'classifica-paperelle.png'));
+    setTimeout(() => setShareOutcome(null), SHARE_NOTE_MS);
+  };
+
   const roleByParticipant = new Map(
     placements.map((p) => [p.arrival.id, p.role.name]),
   );
@@ -73,6 +92,11 @@ export const Results: React.FC<ResultsProps> = ({
                 >
                   {arrival.name}
                 </span>
+                {restingIds.includes(arrival.id) && (
+                  <span className="hidden shrink-0 text-[10px] font-black uppercase tracking-wider text-ink/50 sm:inline">
+                    turno scorso
+                  </span>
+                )}
                 {role && (
                   <span className="hidden rounded-full bg-ink px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white sm:inline">
                     {role}
@@ -95,6 +119,15 @@ export const Results: React.FC<ResultsProps> = ({
             );
           })}
         </ol>
+
+        <div className="border-t-2 border-ink/10 px-4 py-2.5 text-right">
+          <button
+            onClick={handleScreenshot}
+            className="min-h-10 rounded-full border-3 border-ink bg-water px-5 font-display text-base text-white shadow-sticker transition-transform active:translate-y-0.5"
+          >
+            {shareOutcome ? SHARE_LABEL[shareOutcome] : 'Screenshot classifica'}
+          </button>
+        </div>
       </div>
     </div>
   );

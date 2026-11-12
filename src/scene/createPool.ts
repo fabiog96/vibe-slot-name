@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { canvasTexture } from './canvasTexture';
 import { createWater, Quality } from './createWater';
 import { disposeTree } from './disposeTree';
-import { themeColor } from './themeColor';
+import { themeColor } from '../utils/themeColor';
 
 const POOL_LENGTH = 17;
 const MIN_POOL_WIDTH = 10.2;

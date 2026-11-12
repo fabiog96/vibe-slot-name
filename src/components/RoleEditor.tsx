@@ -34,8 +34,8 @@ export const RoleEditor: React.FC<RoleEditorProps> = ({ roles, setRoles }) => {
         Ruoli
       </h3>
       <p className="mb-3 text-sm font-semibold text-ink/70">
-        L'ordine dei ruoli segue l'ordine d'arrivo: il primo ruolo va alla
-        prima paperella al traguardo.
+        I ruoli si assegnano dal fondo: il primo ruolo va all'ultima paperella
+        che tocca, il secondo alla penultima.
       </p>
 
       <ol className="mb-4 space-y-2">

@@ -1,4 +1,5 @@
 import { RacePhase, Role } from '../types';
+import { RACE_TITLE } from '../utils/raceTitle';
 import { Duck } from './Duck';
 
 const START_LABEL: Record<RacePhase, string> = {
@@ -8,13 +9,20 @@ const START_LABEL: Record<RacePhase, string> = {
   finished: 'Rivincita',
 };
 
-const FROM_LAST = ['Ultima', 'Penultima', 'Terzultima', 'Quartultima'];
+const FROM_LAST = [
+  'Ultima al tocco',
+  'Penultima',
+  'Terzultima',
+  'Quartultima',
+];
 
 interface HeaderProps {
   roles: Role[];
   phase: RacePhase;
   canStart: boolean;
   warning: string | null;
+  isMuted: boolean;
+  onToggleMute: () => void;
   onStart: () => void;
   onOpenSettings: () => void;
 }
@@ -24,6 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
   phase,
   canStart,
   warning,
+  isMuted,
+  onToggleMute,
   onStart,
   onOpenSettings,
 }) => (
@@ -32,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
       <Duck bandana="var(--color-coral)" size={54} />
       <div className="min-w-0">
         <h1 className="font-display text-3xl md:text-4xl leading-none text-white">
-          Gran Premio delle Paperelle
+          {RACE_TITLE}
         </h1>
         {warning ? (
           <p className="mt-1 text-sm font-extrabold text-coral">{warning}</p>
@@ -47,6 +57,21 @@ export const Header: React.FC<HeaderProps> = ({
     </div>
 
     <div className="flex items-center gap-3">
+      <button
+        onClick={onToggleMute}
+        aria-pressed={isMuted}
+        aria-label={isMuted ? 'Riattiva l’audio' : 'Disattiva l’audio'}
+        className="size-12 flex items-center justify-center rounded-full border-3 border-ink bg-paper text-ink shadow-sticker transition-transform active:translate-y-0.5"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+          {isMuted ? (
+            <path d="m16 9 5 6m0-6-5 6" />
+          ) : (
+            <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+          )}
+        </svg>
+      </button>
       <button
         onClick={onOpenSettings}
         disabled={phase === 'countdown' || phase === 'racing'}

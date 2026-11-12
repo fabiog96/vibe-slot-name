@@ -1,6 +1,13 @@
 export interface Participant {
   id: string;
   name: string;
+  isAbsent?: boolean;
+}
+
+export interface Runner {
+  id: string;
+  name: string;
+  color: string;
 }
 
 export interface Role {
@@ -10,7 +17,7 @@ export interface Role {
 
 export type RacePhase = 'idle' | 'countdown' | 'racing' | 'finished';
 
-export type DuckEffect = 'current' | 'whirlpool' | 'lilypad' | 'net';
+export type DuckEffect = 'jet' | 'rope' | 'capsize' | 'net';
 
 export interface DuckView {
   id: string;
@@ -36,4 +43,9 @@ export interface CommentaryLine {
   id: number;
   text: string;
   seconds: number;
+}
+
+export interface Turn {
+  day: string;
+  holderIds: string[];
 }

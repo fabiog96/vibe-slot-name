@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Confetti from 'react-confetti';
 
 import { CommentaryFeed } from './components/CommentaryFeed';
@@ -7,8 +7,12 @@ import { Header } from './components/Header';
 import { RaceTrack3D } from './components/RaceTrack3D';
 import { Results } from './components/Results';
 import { SettingsModal } from './components/SettingsModal';
+import { setMuted } from './audio/sounds';
 import { useDuckRace } from './hooks/useDuckRace';
-import { Participant, Role } from './types';
+import { useStoredState } from './hooks/useStoredState';
+import { Participant, Role, Runner, Turn } from './types';
+import { duckColor } from './utils/duckColor';
+import { previousHolders, recordTurn } from './utils/turns';
 
 const DEFAULT_PARTICIPANTS: Participant[] = [
   { id: '1', name: 'Capra' },
@@ -24,24 +28,35 @@ const DEFAULT_PARTICIPANTS: Participant[] = [
 ];
 
 const DEFAULT_ROLES: Role[] = [
-  { id: 'r1', name: 'Moderator' },
-  { id: 'r2', name: 'Notary' },
+  { id: 'r1', name: 'Moderatore' },
+  { id: 'r2', name: 'Notaio' },
 ];
 
 const CONFETTI_COLORS = ['#FFD43B', '#FF8A00', '#FFFFFF', '#33A0D6', '#FF5A5F'];
 
-const warningFor = (participants: Participant[], roles: Role[]) => {
+const presentRunners = (participants: Participant[]): Runner[] =>
+  participants.flatMap((p, i) =>
+    p.isAbsent ? [] : [{ id: p.id, name: p.name, color: duckColor(i) }],
+  );
+
+const warningFor = (runners: Runner[], roles: Role[]) => {
   if (roles.length === 0) return 'Aggiungi almeno un ruolo per partire';
-  if (participants.length < roles.length)
+  if (runners.length < roles.length)
     return `Servono almeno ${roles.length} concorrenti per ${roles.length} ruoli`;
   return null;
 };
 
 export const App: React.FC = () => {
-  const [participants, setParticipants] =
-    useState<Participant[]>(DEFAULT_PARTICIPANTS);
-  const [roles, setRoles] = useState<Role[]>(DEFAULT_ROLES);
+  const [participants, setParticipants] = useStoredState(
+    'participants',
+    DEFAULT_PARTICIPANTS,
+  );
+  const [roles, setRoles] = useStoredState('roles', DEFAULT_ROLES);
+  const [turns, setTurns] = useStoredState<Turn[]>('turns', []);
+  const [isMuted, setIsMuted] = useStoredState('muted', false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const runners = useMemo(() => presentRunners(participants), [participants]);
 
   const {
     phase,
@@ -50,12 +65,22 @@ export const App: React.FC = () => {
     arrivals,
     placements,
     unavailableIds,
+    restingIds,
     commentary,
     isRunning,
     hasEnoughRunners,
     startRace,
     toggleAvailability,
-  } = useDuckRace(participants, roles);
+  } = useDuckRace(runners, roles, previousHolders(turns));
+
+  const holderIds = placements.map((p) => p.arrival.id).join(',');
+
+  useEffect(() => setMuted(isMuted), [isMuted]);
+
+  useEffect(() => {
+    if (phase !== 'finished') return;
+    setTurns((prev) => recordTurn(prev, holderIds ? holderIds.split(',') : []));
+  }, [phase, holderIds, setTurns]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-river font-body text-ink">
@@ -72,7 +97,9 @@ export const App: React.FC = () => {
         roles={roles}
         phase={phase}
         canStart={hasEnoughRunners && !isRunning}
-        warning={warningFor(participants, roles)}
+        warning={warningFor(runners, roles)}
+        isMuted={isMuted}
+        onToggleMute={() => setIsMuted((prev) => !prev)}
         onStart={startRace}
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
@@ -80,7 +107,7 @@ export const App: React.FC = () => {
       <main className="flex-1 min-h-0 w-full max-w-[100rem] mx-auto flex flex-col lg:flex-row gap-4 px-4 pb-4 md:px-6 md:pb-6">
         <section className="relative order-2 flex-1 min-h-80 lg:min-h-0">
           <RaceTrack3D
-            participants={participants}
+            runners={runners}
             ducks={ducks}
             arrivals={arrivals}
             phase={phase}
@@ -92,6 +119,7 @@ export const App: React.FC = () => {
               arrivals={arrivals}
               placements={placements}
               unavailableIds={unavailableIds}
+              restingIds={restingIds}
               onToggleAvailability={toggleAvailability}
             />
           )}
