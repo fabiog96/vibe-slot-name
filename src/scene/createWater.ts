@@ -4,6 +4,7 @@ import { Water } from 'three/addons/objects/Water2.js';
 export type Quality = 'high' | 'low';
 
 const FLOW_SPEED = 0.05;
+const REFRACTION_WOBBLE = 0.012;
 
 const normalMap = (loader: THREE.TextureLoader, file: string) => {
   const texture = loader.load(`${import.meta.env.BASE_URL}textures/water/${file}`);
@@ -36,6 +37,10 @@ export const createWater = (
       normalMap0: normalMap(loader, 'Water_1_M_Normal.jpg'),
       normalMap1: normalMap(loader, 'Water_2_M_Normal.jpg'),
     });
+    water.material.fragmentShader = water.material.fragmentShader.replace(
+      'normal.xz * 0.05',
+      `normal.xz * ${REFRACTION_WOBBLE}`,
+    );
     water.rotation.x = -Math.PI / 2;
     return { mesh: water, tick: () => {} };
   }

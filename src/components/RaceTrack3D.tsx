@@ -56,7 +56,7 @@ export const RaceTrack3D: React.FC<RaceTrack3DProps> = ({
     >
       {!scene && (
         <p className="absolute inset-0 flex items-center justify-center font-display text-xl text-foam">
-          Riempio il fiume…
+          Riempio la vasca…
         </p>
       )}
     </div>

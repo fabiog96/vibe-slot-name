@@ -4,7 +4,7 @@ import { CSS2DObject, CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer
 import { Arrival, DuckView, RacePhase } from '../types';
 import { createCamera, fitCamera } from './camera';
 import { createLighting } from './createLighting';
-import { createRiver, riverLayout } from './createRiver';
+import { createPool, poolLayout } from './createPool';
 import { Quality } from './createWater';
 import { disposeTree } from './disposeTree';
 import { createDuckRig, DuckRig, poseDuckRig } from './duckRig';
@@ -68,10 +68,10 @@ export const createRaceScene = (container: HTMLElement) => {
   scene.environment = lighting.sky;
   scene.add(...lighting.lights);
 
-  let layout = riverLayout(0, 1);
+  let layout = poolLayout(0, 1);
   let runners: Runner[] = [];
   let layoutAspect = 1;
-  let river: ReturnType<typeof createRiver> | undefined;
+  let pool: ReturnType<typeof createPool> | undefined;
   let lanes: Lane[] = [];
   let world = new THREE.Group();
 
@@ -99,10 +99,10 @@ export const createRaceScene = (container: HTMLElement) => {
     scene.remove(world);
     disposeTree(world);
 
-    layout = riverLayout(runners.length, layoutAspect);
-    river = createRiver(layout, runners.length, quality, isReducedMotion);
+    layout = poolLayout(runners.length, layoutAspect);
+    pool = createPool(layout, runners.length, quality, isReducedMotion);
     world = new THREE.Group();
-    world.add(river.group);
+    world.add(pool.group);
 
     lanes = runners.map((runner, i) => {
       const z = layout.laneZ(i);
@@ -110,7 +110,7 @@ export const createRaceScene = (container: HTMLElement) => {
       rig.group.position.set(layout.startX + DUCK_START_OFFSET, 0, z);
 
       const name = nameLabel(runner.name, runner.color);
-      name.position.set(layout.startX - layout.dockWidth / 2 + 0.2, 0.35, z);
+      name.position.set(layout.startX - layout.deckWidth * 0.6, 0.35, z);
 
       const chip = arrivalChip();
       const chipLabel = new CSS2DObject(chip);
@@ -129,7 +129,7 @@ export const createRaceScene = (container: HTMLElement) => {
     renderer.setPixelRatio(1);
     renderer.shadowMap.enabled = false;
     lighting.sun.castShadow = false;
-    river?.setQuality('low');
+    pool?.setQuality('low');
     scene.traverse((node) => {
       if (node instanceof THREE.Mesh) {
         const materials: THREE.Material[] = Array.isArray(node.material)
@@ -167,7 +167,7 @@ export const createRaceScene = (container: HTMLElement) => {
     const arrivalById = new Map(frame.arrivals.map((a) => [a.id, a]));
     const travel = layout.finishX - 0.3 - (layout.startX + DUCK_START_OFFSET);
 
-    river?.tick(time, dt);
+    pool?.tick(time, dt);
 
     lanes.forEach((lane) => {
       const duck = duckById.get(lane.runner.id);
